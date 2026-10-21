@@ -108,7 +108,7 @@ export function buildTrajectory(document: ParticipationDocument | null, currentY
   const lanes = [...lanesById.values()]
     .map((lane) => ({ ...lane, segments: [...lane.segments].sort((a, b) => a.startYear - b.startYear) }))
     .sort((a, b) => {
-      const diff = a.segments[0].startYear - b.segments[0].startYear;
+      const diff = (a.segments[0]?.startYear ?? 0) - (b.segments[0]?.startYear ?? 0);
       return diff !== 0 ? diff : a.organizationName.localeCompare(b.organizationName);
     });
 

@@ -21,7 +21,8 @@ function back(path: string, message: string): never {
 function friendly(raw: string): string {
   if (raw.includes("reviewer authorization required")) return "Only stewards can do this.";
   const known = raw.match(/steward_[a-z_]+: (.+)$/);
-  return known ? known[1].charAt(0).toUpperCase() + known[1].slice(1) + "." : "Something went wrong. Please try again.";
+  const text = known?.[1];
+  return text ? text.charAt(0).toUpperCase() + text.slice(1) + "." : "Something went wrong. Please try again.";
 }
 
 export async function createImportBatchAction(formData: FormData): Promise<void> {

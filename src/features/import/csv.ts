@@ -123,13 +123,13 @@ function splitFullName(full: string): { givenName: string; familyName: string } 
   const trimmed = full.trim().replace(/\s+/g, " ");
   if (trimmed.includes(",")) {
     // "Family, Given"
-    const [family, ...rest] = trimmed.split(",");
+    const [family = "", ...rest] = trimmed.split(",");
     const given = rest.join(",").trim();
     return family.trim() && given ? { givenName: given, familyName: family.trim() } : null;
   }
   const parts = trimmed.split(" ");
   if (parts.length < 2) return null;
-  return { givenName: parts.slice(0, -1).join(" "), familyName: parts[parts.length - 1] };
+  return { givenName: parts.slice(0, -1).join(" "), familyName: parts[parts.length - 1] ?? "" };
 }
 
 export const MAX_IMPORT_ROWS = 5000;
@@ -143,7 +143,7 @@ export function parseGraduateCsv(text: string): CsvParseResult {
     return { rows: [], problems: ["The file is empty."] };
   }
 
-  const header = records[0].map((h) => HEADER_ALIASES[normalizeHeader(h)] ?? null);
+  const header = (records[0] ?? []).map((h) => HEADER_ALIASES[normalizeHeader(h)] ?? null);
   const has = (f: Field) => header.includes(f);
   // A lone "nome"/"name"-like given-name column with no family-name column is
   // really a full-name column (pt-BR "Nome" usually means the whole name).

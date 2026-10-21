@@ -23,7 +23,7 @@ contradizem os três documentos acima, valem os três.
 
 ## Como o trabalho anda
 
-- O código mora no GitHub (`Fernandovalealmeida/NETPDBFF`). Os testes rodam
+- O código mora no GitHub (`oRussoYT/nodes-of-knowlegde`). Os testes rodam
   sozinhos no GitHub Actions (`.github/workflows/testes.yml`) a cada envio.
 - A publicação é pela **Netlify** (não Vercel) com Supabase hospedado.
 - Nada vai para a branch principal com teste vermelho.
