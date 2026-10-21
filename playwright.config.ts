@@ -42,7 +42,9 @@ export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: false,
   retries: 0,
-  reporter: "list",
+  // On GitHub, also report each failure as an annotation so it can be read
+  // without downloading logs.
+  reporter: process.env.CI ? [["list"], ["github"]] : "list",
   use: {
     baseURL: process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:3000",
     // Was "on-first-retry", which never fires with retries: 0 above — no
