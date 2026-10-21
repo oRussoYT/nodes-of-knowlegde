@@ -1,0 +1,687 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   Nodes BDFFP design tokens — M5.1 (Design Foundations)
+   ==========================================================================
+
+   Status: implements docs/design-system-architecture.md's token system and
+   docs/decisions/0002-theming-and-server-client-theme-handling.md's theming
+   mechanism. Read those documents for the "why" behind every choice below;
+   this file is deliberately terse and points back to them rather than
+   re-explaining the reasoning inline.
+
+   Structure
+   ---------
+   1. Primitive tokens — raw values (color scales, one radius/shadow/motion
+      set). Never referenced directly from component code.
+   2. Semantic tokens — the only tokens component code may reference. Each
+      resolves differently per theme; primitives underneath are what
+      actually change between themes; semantic token *names* do not.
+   3. Theme wiring — `:root` (light, default), `[data-theme="dark"]`
+      (explicit override), and a `prefers-color-scheme` fallback scoped to
+      "no explicit preference recorded", per ADR-0002.
+   4. `@theme inline` — exposes every semantic token as a Tailwind utility
+      (`bg-background`, `text-foreground`, `border-default`, etc.) that
+      resolves the underlying CSS custom property at paint time, so a
+      runtime `data-theme` swap (no rebuild) repaints every utility that
+      uses it. This is the same mechanism the pre-M5.1 two-variable file
+      already used, extended to the full token set — not a new approach.
+
+   No component may reference a raw Tailwind color utility (e.g.
+   `bg-neutral-900`) directly — only the semantic tokens below. This is an
+   M5.1 acceptance criterion (docs/m5-application-ui-design-system.md,
+   item 1).
+
+   Dark-value duplication note: the dark primitive values appear twice
+   below — once under `[data-theme="dark"]`, once inside the
+   `prefers-color-scheme` fallback block — because CSS custom properties
+   have no "OR" combinator across an attribute selector and a media query
+   without a preprocessor, and this project deliberately carries zero build
+   tooling beyond Tailwind itself (see ADR-0002, ADR-0003, ADR-0005). If you
+   change a dark value, change it in both places. Both blocks are marked.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1 & 3a. Light primitives (default — :root, and explicit [data-theme="light"])
+   -------------------------------------------------------------------------- */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+
+  /* Warm-neutral primitive scale — hue ~40deg, low saturation. Deliberately
+     close to the stock Tailwind "neutral" scale already used everywhere in
+     M4 so refactoring FormField/FormMessage/SubmitButton onto these tokens
+     does not visibly change today's light-mode rendering — the warmth is a
+     structural token upgrade, not a visual redesign. See docs/ui-vision.md,
+     "Color philosophy". */
+  --neutral-50: #fcfcfb;
+  --neutral-100: #f6f6f5;
+  --neutral-200: #e8e7e5;
+  --neutral-300: #d7d5d2;
+  --neutral-400: #aaa69f;
+  --neutral-500: #7e796f;
+  --neutral-600: #5b5750;
+  --neutral-700: #484540;
+  --neutral-800: #2a2826;
+  --neutral-900: #1b1a18;
+  --neutral-950: #0e0e0e;
+
+  /* Single interactive accent — restrained, muted blue. Trust/scholarly,
+     not a "brand" color; used sparingly for primary actions and links. */
+  --accent-50: #f3f6fc;
+  --accent-100: #e2eaf9;
+  --accent-200: #bfd3f3;
+  --accent-300: #90b2ea;
+  --accent-400: #578adb;
+  --accent-500: #2464cc;
+  --accent-600: #1a52ad;
+  --accent-700: #144390;
+  --accent-800: #113773;
+  --accent-900: #0f2b57;
+
+  /* Semantic status scales — meaning-first, mapped 1:1 onto the controlled
+     vocabularies in docs/database-schema.md via the semantic layer below.
+     Never used directly by component code. */
+  --success-bg: #edf7f3;
+  --success-fg: #22774f;
+  --success-border: #b5e3ce;
+
+  --warning-bg: #faf4eb;
+  --warning-fg: #865c13;
+  --warning-border: #edd5ab;
+
+  --danger-bg: #f9ecec;
+  --danger-fg: #7e1e1b;
+  --danger-border: #e8b2b0;
+
+  --info-bg: #edf2f8;
+  --info-fg: #1f497a;
+  --info-border: #b3cae6;
+
+  /* "Disputed" is deliberately its own hue — never danger, never success.
+     See docs/design-system-architecture.md, "Semantic color roles". */
+  --disputed-bg: #f3eff5;
+  --disputed-fg: #572e6b;
+  --disputed-border: #d1bddb;
+
+  /* -------------------------------------------------------------------
+     2 & 3a. Semantic tokens (light values) — the only tokens components
+     reference. Every one of these is redefined under [data-theme="dark"]
+     and the prefers-color-scheme fallback below; none is derived by
+     mechanically inverting the other (ADR-0002, docs/ui-vision.md
+     "Dark-mode philosophy").
+     ------------------------------------------------------------------- */
+
+  /* Surfaces */
+  --color-background: #ffffff;
+  --color-surface: var(--neutral-50);
+  --color-surface-raised: #ffffff; /* dialogs/dropdowns — elevated via shadow, not tint, in light mode */
+  --color-surface-sunken: var(--neutral-100);
+  /* Scrim behind Dialog/Drawer — deliberately the same fixed value in both
+     themes (dimming the backdrop, not a themed surface); added when Dialog/
+     Drawer were built, kept as a named token rather than an inline
+     `bg-black/40` so it isn't a raw-color exception to the "semantic
+     tokens only" rule. */
+  --color-overlay: rgb(0 0 0 / 0.4);
+
+  /* Text */
+  --color-foreground: var(--neutral-900);
+  --color-muted-foreground: var(--neutral-600);
+  /* M5.5: was var(--neutral-500) (#7e796f on #ffffff = 4.33:1) — measured
+     just under the WCAG AA 4.5:1 floor item 1's own acceptance criterion
+     requires for every token. The only current consumer is
+     placeholder:text-subtle-foreground (field-control-classes.ts), which
+     axe-core's automated color-contrast rule doesn't reliably evaluate
+     (::placeholder is a pseudo-element, not a text node it crawls), so
+     this was found by direct contrast-ratio calculation, not the axe
+     scan itself. Given a real, confirmed gap against the written
+     criterion, decoupled from --neutral-500 (kept exactly as-is for
+     --color-border-strong, a non-text use with its own 3:1 floor) rather
+     than darkening the shared primitive scale. #777269 = 4.78:1. */
+  --color-subtle-foreground: #777269;
+  --color-disabled-foreground: var(--neutral-400);
+
+  /* Borders */
+  --color-border-default: var(--neutral-200);
+  --color-border-muted: var(--neutral-100);
+  --color-border-strong: var(--neutral-500);
+  --color-border-focus: var(--accent-500);
+
+  /* Accent / interactive */
+  --color-accent: var(--accent-500);
+  --color-accent-hover: var(--accent-600);
+  --color-accent-active: var(--accent-700);
+  --color-accent-foreground: #ffffff;
+  --color-accent-muted: var(--accent-50);
+
+  /* Destructive emphasis (Button variant="destructive") — distinct from the
+     "danger" *status* role below, which is for verification-status data,
+     not UI chrome. Kept visually related but named separately so a future
+     status-vs-action naming collision never happens. */
+  --color-destructive: #b3261e;
+  --color-destructive-hover: #8f1e18;
+  --color-destructive-foreground: #ffffff;
+
+  /* Status roles — fixed vocabulary, see docs/design-system-architecture.md.
+     Deferred in *use* (no M5.1 page renders these) but defined now so a
+     future Badge/status-pill has a reviewed vocabulary, not invented colors. */
+  --color-status-unreviewed-bg: var(--neutral-100);
+  --color-status-unreviewed-fg: var(--neutral-600);
+  --color-status-unreviewed-border: var(--neutral-300);
+
+  --color-status-under-review-bg: var(--warning-bg);
+  --color-status-under-review-fg: var(--warning-fg);
+  --color-status-under-review-border: var(--warning-border);
+
+  --color-status-provisional-bg: var(--info-bg);
+  --color-status-provisional-fg: var(--info-fg);
+  --color-status-provisional-border: var(--info-border);
+
+  --color-status-supported-bg: var(--success-bg);
+  --color-status-supported-fg: var(--success-fg);
+  --color-status-supported-border: var(--success-border);
+
+  --color-status-confirmed-bg: var(--success-bg);
+  --color-status-confirmed-fg: var(--success-fg);
+  --color-status-confirmed-border: var(--success-border);
+
+  --color-status-disputed-bg: var(--disputed-bg);
+  --color-status-disputed-fg: var(--disputed-fg);
+  --color-status-disputed-border: var(--disputed-border);
+
+  --color-status-rejected-bg: var(--neutral-100);
+  --color-status-rejected-fg: var(--neutral-500);
+  --color-status-rejected-border: var(--neutral-300);
+
+  /* Alert / FormMessage / Badge tones */
+  --color-tone-neutral-bg: var(--color-surface);
+  --color-tone-neutral-fg: var(--color-muted-foreground);
+  --color-tone-neutral-border: var(--color-border-default);
+
+  --color-tone-success-bg: var(--success-bg);
+  --color-tone-success-fg: var(--success-fg);
+  --color-tone-success-border: var(--success-border);
+
+  --color-tone-warning-bg: var(--warning-bg);
+  --color-tone-warning-fg: var(--warning-fg);
+  --color-tone-warning-border: var(--warning-border);
+
+  --color-tone-danger-bg: var(--danger-bg);
+  --color-tone-danger-fg: var(--danger-fg);
+  --color-tone-danger-border: var(--danger-border);
+
+  --color-tone-info-bg: var(--info-bg);
+  --color-tone-info-fg: var(--info-fg);
+  --color-tone-info-border: var(--info-border);
+}
+
+/* --------------------------------------------------------------------------
+   3b. Dark primitives + semantic values — explicit override via
+   [data-theme="dark"], set client-side only (never server-rendered; see
+   ADR-0002). DUPLICATE #1 of the dark values — kept in sync with the
+   prefers-color-scheme fallback block below.
+   -------------------------------------------------------------------------- */
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --neutral-50: #100f0f;
+  --neutral-100: #1c1b1a;
+  --neutral-200: #2b2927;
+  --neutral-300: #413e3a;
+  --neutral-400: #5c5851;
+  --neutral-500: #7f7a71;
+  --neutral-600: #a29e96;
+  --neutral-700: #c1beb9;
+  --neutral-800: #dcdbd8;
+  --neutral-900: #eeeeec;
+  --neutral-950: #f8f8f7;
+
+  --accent-50: #111b2c;
+  --accent-100: #172945;
+  --accent-200: #1e3a67;
+  --accent-300: #254f93;
+  --accent-400: #2b68ca;
+  --accent-500: #578fea;
+  --accent-600: #7ba9f4;
+  --accent-700: #9fc2f9;
+  --accent-800: #c0d7fc;
+  --accent-900: #dde9fe;
+
+  --success-bg: #192e24;
+  --success-fg: #9cdebf;
+  --success-border: #2e6049;
+
+  --warning-bg: #362812;
+  --warning-fg: #ebc98e;
+  --warning-border: #6f5220;
+
+  --danger-bg: #321615;
+  --danger-fg: #e49895;
+  --danger-border: #682927;
+
+  --info-bg: #172330;
+  --info-fg: #98bae1;
+  --info-border: #2b4564;
+
+  --disputed-bg: #251e29;
+  --disputed-fg: #c4a5d4;
+  --disputed-border: #4c3956;
+
+  --color-background: var(--neutral-50);
+  --color-surface: var(--neutral-100);
+  --color-surface-raised: var(--neutral-200);
+  --color-surface-sunken: #000000;
+  --color-overlay: rgb(0 0 0 / 0.4);
+
+  --color-foreground: var(--neutral-900);
+  --color-muted-foreground: var(--neutral-600);
+  /* M5.5: was var(--neutral-500) (#7f7a71 on #100f0f = 4.49:1) — measured
+     just under the WCAG AA 4.5:1 floor. See the identical fix's comment in
+     the light-theme block above for the full reasoning; #868178 = 4.94:1. */
+  --color-subtle-foreground: #868178;
+  --color-disabled-foreground: var(--neutral-400);
+
+  --color-border-default: var(--neutral-200);
+  --color-border-muted: var(--neutral-100);
+  --color-border-strong: var(--neutral-500);
+  --color-border-focus: var(--accent-500);
+
+  --color-accent: var(--accent-500);
+  --color-accent-hover: var(--accent-600);
+  --color-accent-active: var(--accent-700);
+  --color-accent-foreground: #0f172a;
+  --color-accent-muted: var(--accent-100);
+
+  --color-destructive: #f2b8b5;
+  --color-destructive-hover: #f7d3d1;
+  --color-destructive-foreground: #2c0605;
+
+  --color-status-unreviewed-bg: var(--neutral-100);
+  --color-status-unreviewed-fg: var(--neutral-600);
+  --color-status-unreviewed-border: var(--neutral-300);
+
+  --color-status-under-review-bg: var(--warning-bg);
+  --color-status-under-review-fg: var(--warning-fg);
+  --color-status-under-review-border: var(--warning-border);
+
+  --color-status-provisional-bg: var(--info-bg);
+  --color-status-provisional-fg: var(--info-fg);
+  --color-status-provisional-border: var(--info-border);
+
+  --color-status-supported-bg: var(--success-bg);
+  --color-status-supported-fg: var(--success-fg);
+  --color-status-supported-border: var(--success-border);
+
+  --color-status-confirmed-bg: var(--success-bg);
+  --color-status-confirmed-fg: var(--success-fg);
+  --color-status-confirmed-border: var(--success-border);
+
+  --color-status-disputed-bg: var(--disputed-bg);
+  --color-status-disputed-fg: var(--disputed-fg);
+  --color-status-disputed-border: var(--disputed-border);
+
+  --color-status-rejected-bg: var(--neutral-100);
+  --color-status-rejected-fg: var(--neutral-500);
+  --color-status-rejected-border: var(--neutral-300);
+
+  --color-tone-neutral-bg: var(--color-surface);
+  --color-tone-neutral-fg: var(--color-muted-foreground);
+  --color-tone-neutral-border: var(--color-border-default);
+
+  --color-tone-success-bg: var(--success-bg);
+  --color-tone-success-fg: var(--success-fg);
+  --color-tone-success-border: var(--success-border);
+
+  --color-tone-warning-bg: var(--warning-bg);
+  --color-tone-warning-fg: var(--warning-fg);
+  --color-tone-warning-border: var(--warning-border);
+
+  --color-tone-danger-bg: var(--danger-bg);
+  --color-tone-danger-fg: var(--danger-fg);
+  --color-tone-danger-border: var(--danger-border);
+
+  --color-tone-info-bg: var(--info-bg);
+  --color-tone-info-fg: var(--info-fg);
+  --color-tone-info-border: var(--info-border);
+}
+
+/* --------------------------------------------------------------------------
+   3c. prefers-color-scheme fallback — applies ONLY when no explicit
+   data-theme has ever been recorded (no attribute present on <html>).
+   A first-time visitor's experience is therefore identical to pre-M5.1
+   behavior. DUPLICATE #2 of the dark values above — see file header note.
+   -------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+
+    --neutral-50: #100f0f;
+    --neutral-100: #1c1b1a;
+    --neutral-200: #2b2927;
+    --neutral-300: #413e3a;
+    --neutral-400: #5c5851;
+    --neutral-500: #7f7a71;
+    --neutral-600: #a29e96;
+    --neutral-700: #c1beb9;
+    --neutral-800: #dcdbd8;
+    --neutral-900: #eeeeec;
+    --neutral-950: #f8f8f7;
+
+    --accent-50: #111b2c;
+    --accent-100: #172945;
+    --accent-200: #1e3a67;
+    --accent-300: #254f93;
+    --accent-400: #2b68ca;
+    --accent-500: #578fea;
+    --accent-600: #7ba9f4;
+    --accent-700: #9fc2f9;
+    --accent-800: #c0d7fc;
+    --accent-900: #dde9fe;
+
+    --success-bg: #192e24;
+    --success-fg: #9cdebf;
+    --success-border: #2e6049;
+
+    --warning-bg: #362812;
+    --warning-fg: #ebc98e;
+    --warning-border: #6f5220;
+
+    --danger-bg: #321615;
+    --danger-fg: #e49895;
+    --danger-border: #682927;
+
+    --info-bg: #172330;
+    --info-fg: #98bae1;
+    --info-border: #2b4564;
+
+    --disputed-bg: #251e29;
+    --disputed-fg: #c4a5d4;
+    --disputed-border: #4c3956;
+
+    --color-background: var(--neutral-50);
+    --color-surface: var(--neutral-100);
+    --color-surface-raised: var(--neutral-200);
+    --color-surface-sunken: #000000;
+    --color-overlay: rgb(0 0 0 / 0.4);
+
+    --color-foreground: var(--neutral-900);
+    --color-muted-foreground: var(--neutral-600);
+    /* M5.5: same fix as the [data-theme="dark"] block above -- this is the
+       prefers-color-scheme fallback path (no explicit choice stored yet),
+       which must stay value-identical to it per ADR-0002. */
+    --color-subtle-foreground: #868178;
+    --color-disabled-foreground: var(--neutral-400);
+
+    --color-border-default: var(--neutral-200);
+    --color-border-muted: var(--neutral-100);
+    --color-border-strong: var(--neutral-500);
+    --color-border-focus: var(--accent-500);
+
+    --color-accent: var(--accent-500);
+    --color-accent-hover: var(--accent-600);
+    --color-accent-active: var(--accent-700);
+    --color-accent-foreground: #0f172a;
+    --color-accent-muted: var(--accent-100);
+
+    --color-destructive: #f2b8b5;
+    --color-destructive-hover: #f7d3d1;
+    --color-destructive-foreground: #2c0605;
+
+    --color-status-unreviewed-bg: var(--neutral-100);
+    --color-status-unreviewed-fg: var(--neutral-600);
+    --color-status-unreviewed-border: var(--neutral-300);
+
+    --color-status-under-review-bg: var(--warning-bg);
+    --color-status-under-review-fg: var(--warning-fg);
+    --color-status-under-review-border: var(--warning-border);
+
+    --color-status-provisional-bg: var(--info-bg);
+    --color-status-provisional-fg: var(--info-fg);
+    --color-status-provisional-border: var(--info-border);
+
+    --color-status-supported-bg: var(--success-bg);
+    --color-status-supported-fg: var(--success-fg);
+    --color-status-supported-border: var(--success-border);
+
+    --color-status-confirmed-bg: var(--success-bg);
+    --color-status-confirmed-fg: var(--success-fg);
+    --color-status-confirmed-border: var(--success-border);
+
+    --color-status-disputed-bg: var(--disputed-bg);
+    --color-status-disputed-fg: var(--disputed-fg);
+    --color-status-disputed-border: var(--disputed-border);
+
+    --color-status-rejected-bg: var(--neutral-100);
+    --color-status-rejected-fg: var(--neutral-500);
+    --color-status-rejected-border: var(--neutral-300);
+
+    --color-tone-neutral-bg: var(--color-surface);
+    --color-tone-neutral-fg: var(--color-muted-foreground);
+    --color-tone-neutral-border: var(--color-border-default);
+
+    --color-tone-success-bg: var(--success-bg);
+    --color-tone-success-fg: var(--success-fg);
+    --color-tone-success-border: var(--success-border);
+
+    --color-tone-warning-bg: var(--warning-bg);
+    --color-tone-warning-fg: var(--warning-fg);
+    --color-tone-warning-border: var(--warning-border);
+
+    --color-tone-danger-bg: var(--danger-bg);
+    --color-tone-danger-fg: var(--danger-fg);
+    --color-tone-danger-border: var(--danger-border);
+
+    --color-tone-info-bg: var(--info-bg);
+    --color-tone-info-fg: var(--info-fg);
+    --color-tone-info-border: var(--info-border);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Theme-independent tokens — typography, spacing confirmation, radii,
+   borders, shadows, breakpoints, motion, opacity, z-index, containers.
+   These do not change between light/dark; defined once on :root.
+   -------------------------------------------------------------------------- */
+:root {
+  /* Typography — two families, per docs/ui-vision.md "Typography
+     philosophy". --font-reading intentionally equals --font-ui until a
+     reading typeface is deliberately chosen (no licensed/hosted font is
+     adopted in M5.1 — zero-dependency default, matches pre-M5.1 behavior
+     of loading no custom font at all). Both are full Latin Extended +
+     Portuguese-diacritic safe system stacks. */
+  --font-ui:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-reading: var(--font-ui);
+
+  /* Spacing: Tailwind's default 4px-base scale is reused as-is — no custom
+     scale (docs/design-system-architecture.md, "Spacing scale"). Nothing
+     to define here; documented for completeness. */
+
+  /* Radii */
+  --radius-sm: 0.25rem; /* badges, chips */
+  --radius-md: 0.375rem; /* default — inputs, buttons, cards, banners */
+  --radius-lg: 0.5rem; /* dialogs, drawers */
+  --radius-full: 9999px; /* avatars, pills, switches */
+
+  /* Borders */
+  --border-width-default: 1px;
+
+  /* Shadows / elevation — deliberately minimal, three levels */
+  --shadow-none: none;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-lg:
+    0 10px 15px -3px rgb(0 0 0 / 0.1),
+    0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+  /* Breakpoints: Tailwind's default sm/md/lg/xl/2xl are reused as-is.
+     `md` is the architecturally significant one — the navigation-collapse
+     point (docs/application-information-architecture.md). Nothing to
+     define here; documented for completeness. */
+
+  /* Motion — every transition built on these must respect
+     prefers-reduced-motion (see below); no animation library, per ADR-0005. */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Opacity — interactive states. Matches the disabled:opacity-60
+     convention already established by SubmitButton (M4). */
+  --opacity-disabled: 0.6;
+  --opacity-hover-overlay: 0.08;
+
+  /* Z-index scale — named layers, so future components never hand-pick an
+     arbitrary z-index. Ordered low to high. */
+  --z-dropdown: 30;
+  --z-sticky: 40;
+  --z-drawer: 50;
+  --z-dialog: 60;
+  --z-toast: 70;
+  --z-tooltip: 80;
+  --z-skip-link: 90; /* Highest layer — must sit above everything, but only
+    ever visible as the very first Tab stop on initial page load, before any
+    dropdown/drawer/dialog/toast/tooltip could plausibly be open. */
+
+  /* Container widths — named by purpose, not a single global max-width,
+     matching M4's existing per-purpose sizing
+     (docs/design-system-architecture.md, "Responsive behavior"). */
+  --container-form: 28rem; /* max-w-md — matches existing auth-form pages */
+  --container-shell: 48rem; /* max-w-3xl — matches existing header/shell width */
+  --container-content: 36rem; /* max-w-xl — matches existing landing-page width */
+
+  /* Focus ring — extends the existing focus-visible:ring-2
+     ring-offset-2 convention as a named, reusable pair. */
+  --focus-ring-width: 2px;
+  --focus-ring-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   4. Tailwind v4 @theme inline — exposes every semantic token above as a
+   Tailwind utility class that resolves the CSS custom property at paint
+   time (not build time), so the runtime data-theme swap repaints every
+   utility that uses it with no JavaScript re-render. Extends the exact
+   mechanism the pre-M5.1 two-variable file already used.
+   -------------------------------------------------------------------------- */
+@theme inline {
+  --color-background: var(--color-background);
+  --color-surface: var(--color-surface);
+  --color-surface-raised: var(--color-surface-raised);
+  --color-surface-sunken: var(--color-surface-sunken);
+  --color-overlay: var(--color-overlay);
+
+  --color-foreground: var(--color-foreground);
+  --color-muted-foreground: var(--color-muted-foreground);
+  --color-subtle-foreground: var(--color-subtle-foreground);
+  --color-disabled-foreground: var(--color-disabled-foreground);
+
+  --color-border-default: var(--color-border-default);
+  --color-border-muted: var(--color-border-muted);
+  --color-border-strong: var(--color-border-strong);
+  --color-border-focus: var(--color-border-focus);
+
+  --color-accent: var(--color-accent);
+  --color-accent-hover: var(--color-accent-hover);
+  --color-accent-active: var(--color-accent-active);
+  --color-accent-foreground: var(--color-accent-foreground);
+  --color-accent-muted: var(--color-accent-muted);
+
+  --color-destructive: var(--color-destructive);
+  --color-destructive-hover: var(--color-destructive-hover);
+  --color-destructive-foreground: var(--color-destructive-foreground);
+
+  --color-status-unreviewed-bg: var(--color-status-unreviewed-bg);
+  --color-status-unreviewed-fg: var(--color-status-unreviewed-fg);
+  --color-status-unreviewed-border: var(--color-status-unreviewed-border);
+  --color-status-under-review-bg: var(--color-status-under-review-bg);
+  --color-status-under-review-fg: var(--color-status-under-review-fg);
+  --color-status-under-review-border: var(--color-status-under-review-border);
+  --color-status-provisional-bg: var(--color-status-provisional-bg);
+  --color-status-provisional-fg: var(--color-status-provisional-fg);
+  --color-status-provisional-border: var(--color-status-provisional-border);
+  --color-status-supported-bg: var(--color-status-supported-bg);
+  --color-status-supported-fg: var(--color-status-supported-fg);
+  --color-status-supported-border: var(--color-status-supported-border);
+  --color-status-confirmed-bg: var(--color-status-confirmed-bg);
+  --color-status-confirmed-fg: var(--color-status-confirmed-fg);
+  --color-status-confirmed-border: var(--color-status-confirmed-border);
+  --color-status-disputed-bg: var(--color-status-disputed-bg);
+  --color-status-disputed-fg: var(--color-status-disputed-fg);
+  --color-status-disputed-border: var(--color-status-disputed-border);
+  --color-status-rejected-bg: var(--color-status-rejected-bg);
+  --color-status-rejected-fg: var(--color-status-rejected-fg);
+  --color-status-rejected-border: var(--color-status-rejected-border);
+
+  --color-tone-neutral-bg: var(--color-tone-neutral-bg);
+  --color-tone-neutral-fg: var(--color-tone-neutral-fg);
+  --color-tone-neutral-border: var(--color-tone-neutral-border);
+  --color-tone-success-bg: var(--color-tone-success-bg);
+  --color-tone-success-fg: var(--color-tone-success-fg);
+  --color-tone-success-border: var(--color-tone-success-border);
+  --color-tone-warning-bg: var(--color-tone-warning-bg);
+  --color-tone-warning-fg: var(--color-tone-warning-fg);
+  --color-tone-warning-border: var(--color-tone-warning-border);
+  --color-tone-danger-bg: var(--color-tone-danger-bg);
+  --color-tone-danger-fg: var(--color-tone-danger-fg);
+  --color-tone-danger-border: var(--color-tone-danger-border);
+  --color-tone-info-bg: var(--color-tone-info-bg);
+  --color-tone-info-fg: var(--color-tone-info-fg);
+  --color-tone-info-border: var(--color-tone-info-border);
+
+  --font-ui: var(--font-ui);
+  --font-reading: var(--font-reading);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-full: var(--radius-full);
+
+  --shadow-none: var(--shadow-none);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-lg: var(--shadow-lg);
+
+}
+
+/* --------------------------------------------------------------------------
+   Non-color, non-native-namespace tokens (motion, opacity, z-index,
+   container widths) are deliberately NOT re-declared under `@theme inline`
+   above. Tailwind v4 only auto-generates a named utility class (e.g.
+   `bg-accent` from `--color-accent`) for its own recognized theme
+   namespaces (`--color-*`, `--radius-*`, `--shadow-*`, `--font-*`, etc.).
+   `--duration-*`, `--ease-*`, `--opacity-*`, `--z-*`, and `--container-*`
+   above are plain custom properties, not Tailwind-recognized namespaces —
+   registering them under `@theme inline` would not produce the clean
+   utility names their names suggest (e.g. it would NOT make `duration-fast`
+   a valid class). Component code instead reads them directly via
+   Tailwind v4's arbitrary-value CSS-variable shorthand, e.g.
+   `duration-(--duration-fast)`, `ease-(--ease-standard)`,
+   `opacity-(--opacity-disabled)`, `z-(--z-dropdown)`,
+   `max-w-(--container-form)` — this works for any custom property in
+   scope, with no `@theme` registration required. See Container.tsx for a
+   working example.
+   -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+   Base element styles + reduced motion floor
+   -------------------------------------------------------------------------- */
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-ui);
+}
+
+/* Motion respects prefers-reduced-motion at the token/base level, not as a
+   per-component opt-in a developer might forget — docs/ui-vision.md
+   "Motion principles", ADR-0005. Every transition using the durations above
+   collapses to near-zero; the state change itself (e.g. open/closed) still
+   happens, only its animated approach is removed. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

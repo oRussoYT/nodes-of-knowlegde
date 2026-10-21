@@ -1,0 +1,89 @@
+# Testes automáticos — rodam no GitHub a cada envio (push) e a cada pull request.
+# Substituem o "npm run verify" no Mac e o vigia ship-watch.sh.
+#
+# Duas pistas (REGRAS.md):
+#   1. rapido   — revisão de código, tipos, testes unitários e build (poucos minutos)
+#   2. completo — banco de dados real (Supabase local no GitHub), testes pgTAP
+#                 e testes de tela com Playwright
+name: Testes
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: testes-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  rapido:
+    name: Rápido (código, tipos, unitários, build)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      NEXT_PUBLIC_SITE_URL: http://localhost:3000
+      NEXT_PUBLIC_SUPABASE_URL: http://127.0.0.1:54321
+      NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ci-placeholder-key
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Revisão de código (lint)
+        run: npm run lint
+      - name: Tipos (typecheck)
+        run: npm run typecheck
+      - name: Testes unitários
+        run: npm test
+      - name: Build
+        run: npm run build
+
+  completo:
+    name: Completo (banco + telas)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    needs: rapido
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Ligar o Supabase local (aplica todas as migrações)
+        run: npx supabase start
+
+      - name: Testes do banco (pgTAP)
+        run: npx supabase test db
+
+      - name: Preparar variáveis para o app
+        run: |
+          eval "$(npx supabase status -o env)"
+          {
+            echo "NEXT_PUBLIC_SITE_URL=http://localhost:3000"
+            echo "NEXT_PUBLIC_SUPABASE_URL=${API_URL}"
+            echo "NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=${PUBLISHABLE_KEY:-$ANON_KEY}"
+            echo "SUPABASE_SERVICE_ROLE_KEY=${SERVICE_ROLE_KEY}"
+          } > .env.local
+
+      - name: Instalar navegador dos testes de tela
+        run: npx playwright install --with-deps chromium
+
+      - name: Testes de tela (Playwright)
+        run: npm run test:e2e
+
+      - name: Guardar relatório se falhar
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-playwright
+          path: test-results/
+          retention-days: 7
+
+      - name: Desligar o Supabase
+        if: always()
+        run: npx supabase stop --no-backup
