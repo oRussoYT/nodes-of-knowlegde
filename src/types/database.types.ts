@@ -1515,6 +1515,7 @@ export type Database = {
           verification_status: string
         }[]
       }
+      list_contribution_options: { Args: never; Returns: Json }
       list_organizations: {
         Args: never
         Returns: {
@@ -1554,6 +1555,20 @@ export type Database = {
         }[]
       }
       my_steward_scope: { Args: never; Returns: Json }
+      my_contribution_candidates: {
+        Args: never
+        Returns: {
+          contribution_id: string | null
+          contribution_kind: string
+          created_at: string
+          decision_note: string | null
+          display_name: string
+          id: string
+          person_id: string
+          status: string
+          title: string
+        }[]
+      }
       my_suggestions: { Args: never; Returns: Json }
       pathway_entity_node: {
         Args: { p_id: string; p_type: string }
@@ -1566,6 +1581,20 @@ export type Database = {
           id: string
           status: string
         }[]
+      }
+      propose_contribution: {
+        Args: {
+          p_capacity: string
+          p_contribution_kind: string
+          p_description?: string
+          p_end_year?: number
+          p_organization_id?: string
+          p_person_id: string
+          p_source_note: string
+          p_start_year?: number
+          p_title: string
+        }
+        Returns: string
       }
       respond_confirmation: { Args: { p_note?: string; p_response: string; p_token: string }; Returns: string }
       reveal_organization_continuity: {
@@ -1654,6 +1683,30 @@ export type Database = {
           pending: number
           skipped: number
           total: number
+        }[]
+      }
+      steward_decide_contribution_candidate: {
+        Args: { p_candidate_id: string; p_decision: string; p_note?: string }
+        Returns: string | null
+      }
+      steward_list_contribution_candidates: {
+        Args: never
+        Returns: {
+          capacity: string
+          capacity_label: string
+          contribution_kind: string
+          created_at: string
+          description: string | null
+          display_name: string
+          end_year: number | null
+          id: string
+          is_own_proposal: boolean
+          kind_label: string
+          person_id: string
+          source_note: string
+          source_type: string
+          start_year: number | null
+          title: string
         }[]
       }
       steward_add_organization_name: {

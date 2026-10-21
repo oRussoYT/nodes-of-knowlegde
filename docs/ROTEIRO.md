@@ -5,7 +5,7 @@
 > não número de milestone. Cada etapa só termina quando existe **um link** que
 > o fundador abre no navegador.
 >
-> Atualizado: 13 out 2026.
+> Atualizado: 21 out 2026.
 
 ## Já feito (base que serve a qualquer versão do produto)
 
@@ -38,9 +38,9 @@ wipe_demo_data();`, rodada só pelo painel do Supabase).
 
 | Etapa | O que o fundador vê no final | Situação |
 |---|---|---|
-| **0. Resgate e faxina** | Todo o trabalho do Mac salvo no GitHub; 3 documentos (PRODUTO, REGRAS, ROTEIRO) no lugar de 67; regras novas no `CLAUDE.md` | **quase pronta** — 3 documentos escritos, `CLAUDE.md` reescrito, nome trocado para "Nodes BDFFP", documentos antigos marcados como histórico; falta refazer as peças do Mac (acima) |
+| **0. Resgate e faxina** | Todo o trabalho do Mac salvo no GitHub; 3 documentos (PRODUTO, REGRAS, ROTEIRO) no lugar de 67; regras novas no `CLAUDE.md` | **quase pronta** — 3 documentos escritos, `CLAUDE.md` reescrito, nome trocado para "Nodes BDFFP", documentos antigos marcados como histórico, código no GitHub (`oRussoYT/nodes-of-knowlegde`). Peças do Mac refeitas: console, dados de demonstração, nomes históricos das instituições (`/review/names`) e caminho de contribuição candidato → revisão → registro (a pessoa propõe em `/member/contributions`, o steward decide em `/review/contributions`; ninguém aprova a própria proposta), 21 out. Falta: proteção extra nas páginas de pessoa (definir o que é) |
 | **1. Linha de produção na nuvem** | O app atual num endereço real (Netlify), com dados de demonstração; testes rodando sozinhos no GitHub a cada mudança | **em andamento** — testes automáticos e configuração da Netlify escritos; falta criar o projeto na Netlify e o Supabase hospedado |
-| **2. Vitrine pública** | Página de pessoa e de programa abertas sem login (telas 01 e 07) | **pronta** (17 out): página pública de pessoa (`/p/[id]`, só com publicação deliberada e registrada) e páginas de programa (`/programmes`), publicadas pela própria instituição, **só com números, sem nomes**, sem contar quem pediu para não ser listado. Também: faixa de resumo e tela de trajetória (tela 10). Pendente: aprovar a nova página inicial animada |
+| **2. Vitrine pública** | Página de pessoa e de programa abertas sem login (telas 01 e 07) | **pronta** (17 out): página pública de pessoa (`/p/[id]`, só com publicação deliberada e registrada) e páginas de programa (`/programmes`), publicadas pela própria instituição, **só com números, sem nomes**, sem contar quem pediu para não ser listado. Também: faixa de resumo e tela de trajetória (tela 10). Página inicial refeita (21 out): o que a universidade recebe em 4 passos, desenho animado discreto da rede, links para as páginas públicas e rodapé |
 | **3. Várias instituições** | Cada universidade com seus dados, separados, no mesmo sistema | **pronta** (17 out): stewards por instituição (nomeados e removidos só por revisores da plataforma, em `/review/stewards`), console, importação e publicação limitados à própria instituição; fila de reivindicações continua só da plataforma. Um registro só, vários guardiões |
 | **4. Dados reais entrando** | Uma planilha de formados vira perfis, cruzados com ORCID e OpenAlex, com fila de conferência humana | **pronta** (17 out): subir a lista (CSV em inglês ou português) → conferência linha a linha em `/review/import` (mesma pessoa / pessoa nova / pular) → "Onde eles foram": busca no OpenAlex (traz ORCID junto), cada resultado com os motivos; aceitar grava identificadores e a instituição mais recente com ano e fonte. Precisa do site no ar para a busca funcionar |
 | → **Ponto de decisão** | Teste de cobertura: que % de uma turma real o sistema acha sozinho? | — |

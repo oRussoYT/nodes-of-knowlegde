@@ -170,6 +170,9 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
             <Link href="/member/suggestions" className="font-medium text-foreground underline underline-offset-2">
               People you may know
             </Link>
+            <Link href="/member/contributions" className="font-medium text-foreground underline underline-offset-2">
+              Propose a contribution
+            </Link>
             {isSteward ? (
               <Link href="/review/console" className="font-medium text-foreground underline underline-offset-2">
                 Steward console
