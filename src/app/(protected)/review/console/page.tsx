@@ -105,6 +105,9 @@ export default async function StewardConsolePage({
               <Link href="/review/import" className="underline underline-offset-2">
                 Import a list
               </Link>
+              <Link href="/review/names" className="underline underline-offset-2">
+                Institution names
+              </Link>
               {scope.platform ? (
                 <>
                   <Link href="/review/stewards" className="underline underline-offset-2">

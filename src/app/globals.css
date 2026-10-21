@@ -685,3 +685,55 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* --------------------------------------------------------------------------
+   Home page motion (src/app/(public)/page.tsx). Moves things in; never hides
+   text (no opacity on readable content), so a page read or scanned
+   mid-animation is still fully legible. Reduced motion removes it above.
+   -------------------------------------------------------------------------- */
+@keyframes home-rise {
+  from { transform: translateY(14px); }
+  to { transform: translateY(0); }
+}
+@keyframes home-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes home-pop {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+.home-rise {
+  animation: home-rise 700ms var(--ease-standard) both;
+}
+.home-network-link {
+  stroke: currentColor;
+  stroke-opacity: 0.45;
+  stroke-width: 1.5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: home-draw 900ms var(--ease-standard) forwards;
+}
+.home-network-node {
+  fill: var(--color-background);
+  stroke: currentColor;
+  stroke-width: 1.5;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: home-pop 500ms var(--ease-standard) both;
+}
+.home-network-node.is-accent {
+  fill: var(--color-accent);
+  stroke: var(--color-accent);
+}
+.home-step {
+  transition: transform var(--duration-base) var(--ease-standard),
+    border-color var(--duration-base) var(--ease-standard);
+}
+.home-step:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-border-strong, var(--color-accent));
+}
+@media (prefers-reduced-motion: reduce) {
+  .home-network-link { stroke-dashoffset: 0; }
+}

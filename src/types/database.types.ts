@@ -1656,6 +1656,35 @@ export type Database = {
           total: number
         }[]
       }
+      steward_add_organization_name: {
+        Args: {
+          p_end_year?: number
+          p_language?: string
+          p_name: string
+          p_name_type: string
+          p_organization_id: string
+          p_start_year?: number
+        }
+        Returns: string
+      }
+      steward_list_organization_names: {
+        Args: { p_organization_id: string }
+        Returns: {
+          created_at: string
+          end_year: number | null
+          id: string
+          language: string | null
+          name: string
+          name_type: string
+          source_type: string
+          start_year: number | null
+          verification_status: string
+        }[]
+      }
+      steward_remove_organization_name: {
+        Args: { p_name_id: string }
+        Returns: boolean
+      }
       steward_list_institution_stewards: {
         Args: never
         Returns: {
