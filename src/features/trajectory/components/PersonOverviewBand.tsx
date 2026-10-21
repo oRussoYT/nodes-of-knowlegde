@@ -53,7 +53,7 @@ export function PersonOverviewBand({
 
       {trajectory.lanes.length > 0 ? (
         <div className="mt-6">
-          <TrajectoryChart view={trajectory} compact />
+          <TrajectoryChart view={trajectory} compact linkInstitutions={false} />
         </div>
       ) : null}
 
