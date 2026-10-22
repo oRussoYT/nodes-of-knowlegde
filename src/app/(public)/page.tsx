@@ -80,7 +80,7 @@ const EXAMPLE_LANES = [
   { place: "Coastal Lab", spans: [{ left: 28, width: 5, delay: 1000, faint: true }] },
 ] as const;
 
-const fillButton = "nk-fill rounded-full px-6 py-3 text-[15px]";
+const fillButton = "nk-fill rounded-full! px-6! py-3! text-[15px]!";
 
 function ExampleRecord() {
   return (

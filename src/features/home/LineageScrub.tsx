@@ -119,7 +119,7 @@ export function LineageScrub() {
                     x={n.x}
                     y={n.y - 18}
                     textAnchor="middle"
-                    fontSize={13}
+                    fontSize={20}
                     fill="var(--color-muted-foreground)"
                   >
                     {n.label ?? n.year}
