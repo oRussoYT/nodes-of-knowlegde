@@ -21,12 +21,18 @@ export function StatTile({
   className?: string;
 }) {
   return (
-    <div className={cn("flex min-w-0 flex-col-reverse justify-end gap-1 rounded-xl border border-border-default bg-surface px-4 py-4", className)}>
-      <dt className="text-sm text-muted-foreground">{label}</dt>
+    <div
+      className={cn(
+        "flex min-h-32 min-w-0 flex-col-reverse justify-between gap-3 rounded-2xl border px-5 py-5",
+        emphasis ? "border-nk-ink bg-nk-ink" : "border-border-default bg-surface",
+        className,
+      )}
+    >
+      <dt className={cn("text-sm", emphasis ? "text-[#c3c8b6]" : "text-muted-foreground")}>{label}</dt>
       <dd
         className={cn(
-          "font-display text-4xl font-bold leading-none tracking-tight tabular-nums [font-stretch:85%]",
-          emphasis ? "text-accent" : "text-foreground",
+          "font-display text-5xl font-bold leading-none tracking-tight tabular-nums [font-stretch:80%] sm:text-6xl",
+          emphasis ? "text-nk-lime" : "text-foreground",
         )}
       >
         {value}
@@ -50,16 +56,16 @@ export function ActionTile({
   return (
     <Link
       href={href}
-      className="nk-tile group flex min-h-36 flex-col justify-between gap-4 rounded-xl border border-border-default bg-background p-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
+      className="nk-tile group flex min-h-44 flex-col justify-between gap-6 rounded-2xl border border-border-default bg-surface p-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
     >
       <span>
         <span className="flex items-start justify-between gap-3">
-          <span className="font-display text-lg font-bold leading-tight tracking-tight text-foreground">{title}</span>
-          <span aria-hidden="true" className="nk-arrow text-accent">
+          <span className="font-display text-2xl font-bold leading-tight tracking-tight text-foreground">{title}</span>
+          <span aria-hidden="true" className="nk-arrow shrink-0">
             ↗
           </span>
         </span>
-        <span className="mt-2 block text-sm text-muted-foreground">{description}</span>
+        <span className="mt-3 block text-[15px] text-muted-foreground">{description}</span>
       </span>
       {meta ? <span className="text-sm font-medium text-foreground">{meta}</span> : null}
     </Link>

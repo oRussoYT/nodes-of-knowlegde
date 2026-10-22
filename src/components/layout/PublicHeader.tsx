@@ -29,22 +29,24 @@ export function PublicHeader() {
   const items = getNavItemsByGroup("public-primary");
 
   return (
-    <header className="border-b border-border-default">
-      <div className="mx-auto flex max-w-(--container-shell) items-center justify-between gap-3 px-6 py-4">
-        <Link href="/" className="font-display text-lg font-extrabold tracking-tight text-foreground [font-stretch:112%]">
+    // Always ink (data-theme="dark" scopes the dark tokens to this bar, so
+    // the theme toggle and menu button stay visible in either theme).
+    <header data-theme="dark" className="border-b border-nk-ink-3 bg-nk-ink text-nk-bone">
+      <div className="flex items-center justify-between gap-3 px-6 py-4 sm:px-10">
+        <Link href="/" className="font-display text-xl font-extrabold tracking-tight text-nk-bone [font-stretch:118%]">
           {SITE_NAME}
         </Link>
 
         <div className="flex items-center gap-4">
-          <nav aria-label="Primary" className="hidden items-center gap-4 text-sm md:flex">
+          <nav aria-label="Primary" className="hidden items-center gap-6 text-sm md:flex">
             {items.map((item) => (
               <NavLink
                 key={item.id}
                 item={item}
                 className={
                   item.id === "register"
-                    ? "rounded-md bg-foreground px-3 py-1.5 text-background transition hover:opacity-90"
-                    : "text-muted-foreground transition-colors hover:text-foreground"
+                    ? "rounded-full bg-nk-lime px-4 py-2 font-medium text-nk-ink transition hover:bg-nk-bone"
+                    : "text-[#c3c8b6] transition-colors hover:text-nk-bone"
                 }
               />
             ))}

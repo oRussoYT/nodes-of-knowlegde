@@ -52,6 +52,8 @@ export default async function ProtectedLayout({
   const isReviewer = await isCurrentUserReviewer();
 
   return (
-    <AppShell header={<ProtectedHeader email={email} isReviewer={isReviewer} />}>{children}</AppShell>
+    <AppShell withSidebar header={<ProtectedHeader email={email} isReviewer={isReviewer} />}>
+      {children}
+    </AppShell>
   );
 }

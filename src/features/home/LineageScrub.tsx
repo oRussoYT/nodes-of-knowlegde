@@ -81,26 +81,26 @@ export function LineageScrub() {
 
   return (
     <section ref={sectionRef} aria-labelledby="lineage-heading" className="relative h-[200vh] motion-reduce:h-auto">
-      <div className="sticky top-16 flex min-h-[calc(100vh-4rem)] flex-col justify-center py-8 motion-reduce:static motion-reduce:min-h-0">
+      <div className="sticky top-0 flex min-h-screen flex-col justify-center py-8 motion-reduce:static motion-reduce:min-h-0">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 id="lineage-heading" className="max-w-[22ch] font-display text-2xl font-bold leading-tight tracking-tight text-foreground sm:text-3xl">
+          <h2 id="lineage-heading" className="max-w-[22ch] font-display text-3xl font-bold leading-[1.02] tracking-tight text-nk-bone sm:text-5xl">
             Scroll to watch a lineage being documented
           </h2>
           <p
             aria-hidden="true"
-            className="font-display text-5xl font-bold leading-none tabular-nums text-accent [font-stretch:75%] sm:text-6xl"
+            className="font-display text-6xl font-bold leading-none tabular-nums text-nk-lime [font-stretch:75%] sm:text-8xl"
           >
             {Math.round(year)}
           </p>
         </div>
-        <div className="mt-5 overflow-hidden rounded-2xl border border-border-default bg-surface">
+        <div className="mt-6 overflow-hidden rounded-3xl border border-nk-ink-3 bg-nk-ink-2">
           <svg
             viewBox="0 0 1000 460"
             role="img"
             aria-label="A fictional field station in 1979 with one supervisor; by 2026, four generations of documented students, each line a thesis."
-            className="block h-auto max-h-[58vh] w-full"
+            className="block h-auto max-h-[60vh] w-full"
           >
-            <g fill="none" stroke="var(--color-accent)" strokeWidth={2.4} strokeLinecap="round">
+            <g fill="none" stroke="var(--nk-lime)" strokeWidth={2.4} strokeLinecap="round">
               {NODES.map((n) => {
                 const d = curve(n);
                 if (!d) return null;
@@ -112,13 +112,13 @@ export function LineageScrub() {
               const on = year >= n.year;
               return (
                 <g key={n.id} style={{ transition: "opacity 300ms", opacity: on ? 1 : 0 }}>
-                  <circle cx={n.x} cy={n.y} r={n.from ? 9 : 13} fill="var(--color-foreground)" />
+                  <circle cx={n.x} cy={n.y} r={n.from ? 9 : 13} fill="var(--nk-bone)" />
                   <text
                     x={n.x}
                     y={n.y - 18}
                     textAnchor="middle"
                     fontSize={20}
-                    fill="var(--color-muted-foreground)"
+                    fill="var(--nk-moss)"
                   >
                     {n.label ?? n.year}
                   </text>
@@ -127,7 +127,7 @@ export function LineageScrub() {
             })}
           </svg>
         </div>
-        <div className="mt-3 flex flex-wrap justify-between gap-3 text-sm text-muted-foreground">
+        <div className="mt-3 flex flex-wrap justify-between gap-3 text-sm text-nk-moss">
           <p>Every line is a thesis or a documented period. Fictional example.</p>
           <p aria-hidden="true" className="tabular-nums">
             {shown === 1 ? "1 person" : `${shown} people, ${shown - 1} documented links`}
