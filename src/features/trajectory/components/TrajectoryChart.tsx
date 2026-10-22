@@ -85,7 +85,7 @@ export function TrajectoryChart({
 
       <div className="mt-2 grid grid-cols-[7rem_minmax(0,1fr)] gap-3 sm:grid-cols-[10rem_minmax(0,1fr)]" aria-hidden="true">
         <span />
-        <div className="relative h-4 text-[10px] text-subtle-foreground">
+        <div className="relative h-4 text-[10px] text-muted-foreground">
           {view.ticks.map((tick) => (
             <span key={tick} className="absolute -translate-x-1/2" style={{ left: `${percentOf(tick, view)}%` }}>
               {tick}
