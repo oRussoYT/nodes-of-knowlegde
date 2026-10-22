@@ -78,7 +78,7 @@ export function ProtectedHeader({ email, isReviewer }: ProtectedHeaderProps) {
             className="flex min-w-0 items-center gap-2.5 rounded-full text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nk-lime"
           >
             <Avatar name={email} size="sm" />
-            <span className="truncate text-[#c3c8b6]">{email}</span>
+            <span className="truncate text-[#c3c8b6]">Your account</span>
           </DropdownTrigger>
 
           <DropdownContent align="start">
