@@ -18,7 +18,7 @@ interface LoginPageProps {
   searchParams: Promise<{ returnTo?: string }>;
 }
 
-// Already-authenticated visitors never render this: src/proxy.ts redirects
+// Already-authenticated visitors never render this: src/middleware.ts redirects
 // them away before the request reaches here. This page still works
 // correctly if visited directly during the brief window before a proxy
 // redirect completes, since the form simply re-authenticates the same user.
@@ -26,7 +26,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
   const returnTo = sanitizeReturnTo(params.returnTo);
 
-  // A `returnTo` only ever appears here because src/proxy.ts (or
+  // A `returnTo` only ever appears here because src/middleware.ts (or
   // src/app/(protected)/layout.tsx) sent this visitor away from a
   // protected route — i.e. they were trying to reach somewhere that
   // requires a session and don't currently have a valid one. That's true

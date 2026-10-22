@@ -54,7 +54,7 @@ import { ThemeToggleDemo } from "./ThemeToggleDemo";
 //      client-side-hidden page that still ships its content.
 //
 //      Verifying this requires real Supabase env vars, even though this
-//      page itself never touches Supabase: `src/proxy.ts` runs on nearly
+//      page itself never touches Supabase: `src/middleware.ts` runs on nearly
 //      every request (its matcher covers this route too) and calls
 //      `updateSession()` → `getSupabaseEnv()`
 //      (`src/lib/supabase/env.ts`), whose `required()` helper *throws* in

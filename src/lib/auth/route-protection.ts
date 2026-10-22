@@ -1,9 +1,9 @@
-// Pure route-protection decision logic for src/proxy.ts.
+// Pure route-protection decision logic for src/middleware.ts.
 //
 // Deliberately has no dependency on Next.js request/response types or
 // Supabase so it can be unit tested directly (see
 // tests/unit/route-protection.test.ts) without spinning up a server or a
-// Supabase instance. src/proxy.ts is a thin adapter that calls
+// Supabase instance. src/middleware.ts is a thin adapter that calls
 // `decideProxyAction` with values read from the real request, and turns the
 // result into an actual redirect or pass-through response.
 //

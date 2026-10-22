@@ -56,3 +56,8 @@ next-env.d.ts
 .idea
 .vscode/*
 !.vscode/extensions.json
+
+# Cloudflare build output
+.open-next
+.wrangler
+.dev.vars

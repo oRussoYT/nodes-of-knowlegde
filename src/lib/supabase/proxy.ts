@@ -1,4 +1,4 @@
-// Session-refresh helper used by the top-level src/proxy.ts (Next.js 16's
+// Session-refresh helper used by the top-level src/middleware.ts (Next.js 16's
 // request-interception file, replacing the deprecated middleware.ts — see
 // docs/authentication-implementation.md for why this project uses proxy.ts).
 //
@@ -9,7 +9,7 @@
 // Components in this same request see the new token) and the response (so
 // the browser gets the new token). Route-protection *decisions* are
 // deliberately not made here — see src/lib/auth/route-protection.ts for the
-// pure, unit-tested logic, and src/proxy.ts for where it's applied.
+// pure, unit-tested logic, and src/middleware.ts for where it's applied.
 
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";

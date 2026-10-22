@@ -38,8 +38,17 @@ jobs:
         run: npm run typecheck
       - name: Testes unitários
         run: npm test
-      - name: Build
-        run: npm run build
+      - name: Build (o mesmo que vai ao ar na Cloudflare)
+        run: |
+          set +e
+          npx opennextjs-cloudflare build > cf.log 2>&1
+          code=$?
+          cat cf.log
+          if [ $code -ne 0 ]; then
+            msg=$(tail -n 40 cf.log | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error title=Cloudflare build::$msg"
+          fi
+          exit $code
 
   completo:
     name: Completo (banco + telas)

@@ -1,0 +1,27 @@
+// Cloudflare Workers configuration (the site's host).
+// Built by @opennextjs/cloudflare: `npx opennextjs-cloudflare build`, then
+// `npx opennextjs-cloudflare deploy`. Cloudflare's "Workers Builds" runs both
+// on every push to main once the repository is connected.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": ".open-next/worker.js",
+  "name": "nodes-bdffp",
+  "compatibility_date": "2025-09-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    {
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "nodes-bdffp"
+    }
+  ],
+  "images": {
+    "binding": "IMAGES"
+  },
+  "observability": {
+    "enabled": true
+  }
+}
