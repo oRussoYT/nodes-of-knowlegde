@@ -19,7 +19,7 @@ import { getNavItemsByGroup } from "@/lib/navigation/select";
 // requirement that both render from a single typed definition.
 //
 // The Log in/Register links are shown unconditionally, even to an already
-// authenticated visitor — that's safe, not stale: src/proxy.ts redirects an
+// authenticated visitor — that's safe, not stale: src/middleware.ts redirects an
 // authenticated visitor away from /login and /register the instant they're
 // clicked, straight to /member. Authenticated-only navigation (Member,
 // Account, the signed-in email, Log out) lives separately in

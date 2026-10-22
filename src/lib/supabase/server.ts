@@ -35,7 +35,7 @@ export async function createClient() {
           });
         } catch {
           // `setAll` was called from a Server Component, which cannot write
-          // cookies. This is safe to ignore only because src/proxy.ts
+          // cookies. This is safe to ignore only because src/middleware.ts
           // refreshes and persists the session on every request that isn't
           // itself a Server Component render — see
           // src/lib/supabase/proxy.ts.

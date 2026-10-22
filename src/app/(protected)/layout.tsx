@@ -6,7 +6,7 @@ import { isCurrentUserReviewer } from "@/features/review/authorization";
 import { createClient } from "@/lib/supabase/server";
 
 // Wraps /member, /account, /update-password (this is a route group — the
-// parentheses don't add a URL segment). src/proxy.ts already redirects
+// parentheses don't add a URL segment). src/middleware.ts already redirects
 // unauthenticated requests to these paths before they reach the app, but
 // this layout independently re-verifies the session here too, per "session
 // verification on protected server-rendered pages" — proxy decisions are

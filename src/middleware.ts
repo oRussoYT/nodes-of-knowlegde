@@ -1,8 +1,8 @@
-// Next.js 16 request-interception file. Next.js 16 renamed the previous
-// `middleware.ts` convention to `proxy.ts` (the exported function is named
-// `proxy`, not `middleware`); this project targets Next 16 from the start,
-// so only proxy.ts exists — see docs/authentication-implementation.md for
-// the migration note. Do not add a middleware.ts alongside this file.
+// Request-interception file. Next.js 16 prefers the name `proxy.ts`, but the
+// site is hosted on Cloudflare Workers through @opennextjs/cloudflare, which
+// runs the classic `middleware.ts` (edge) form and not yet the Node-runtime
+// proxy. So this file keeps the older name and export, which Next 16 still
+// supports. Do not add a proxy.ts alongside it.
 //
 // Responsibilities (and nothing else — see the linked modules for the
 // actual logic, kept separate so each half is independently testable):
@@ -17,7 +17,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { decideProxyAction } from "@/lib/auth/route-protection";
 import { updateSession } from "@/lib/supabase/proxy";
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { response, isAuthenticated } = await updateSession(request);
 
   const decision = decideProxyAction({
