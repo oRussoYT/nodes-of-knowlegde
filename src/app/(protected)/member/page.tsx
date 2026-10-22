@@ -173,13 +173,7 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
                 title="Read the record"
                 description="People, institutions and contributions, each with its sources."
               />
-              {identityStatus.kind === "approved" ? (
-                <ActionTile
-                  href={`/people/${identityStatus.claim.personId}`}
-                  title="Your record"
-                  description="Your page, your trajectory in time and place, and who was documented alongside you."
-                />
-              ) : (
+              {identityStatus.kind === "approved" ? null : (
                 <ActionTile
                   href="/member/claim"
                   title="Find your record"
