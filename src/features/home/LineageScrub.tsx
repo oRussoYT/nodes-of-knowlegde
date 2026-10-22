@@ -54,10 +54,8 @@ export function LineageScrub() {
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setYear(LAST);
-      return;
-    }
+    // Reduced motion: keep the finished drawing (the initial state).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let frame = 0;
     const update = () => {
       frame = 0;
@@ -69,7 +67,7 @@ export function LineageScrub() {
     const onScroll = () => {
       if (!frame) frame = window.requestAnimationFrame(update);
     };
-    update();
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
