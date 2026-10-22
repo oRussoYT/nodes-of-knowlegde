@@ -1,5 +1,7 @@
 "use client";
 
+import { motionAllowed } from "./motion";
+
 import { useEffect, useState } from "react";
 
 // Opening counter, Lando-style: 0 → 100 while a lime bar fills, then the ink
@@ -18,7 +20,7 @@ export function Preloader() {
     } catch {
       /* storage unavailable: just show it */
     }
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reduce = !motionAllowed();
     if (seen || reduce) {
       const t = window.setTimeout(() => setShow(false), 0);
       return () => window.clearTimeout(t);

@@ -1,25 +1,50 @@
 import Link from "next/link";
 
-import { SITE_DESCRIPTION, SITE_NAME } from "@/config/site";
+import { SITE_NAME } from "@/config/site";
 import { Cursor } from "@/features/home/Cursor";
 import { HorizontalSteps } from "@/features/home/HorizontalSteps";
 import { LineageScrub } from "@/features/home/LineageScrub";
 import { LitStatement } from "@/features/home/LitStatement";
+import { MotionToggle } from "@/features/home/MotionToggle";
+import { PhotoRail, type RailPhoto } from "@/features/home/PhotoRail";
 import { Preloader } from "@/features/home/Preloader";
+import { RevealImage } from "@/features/home/RevealImage";
+import { SmoothScroll } from "@/features/home/SmoothScroll";
 import { cn } from "@/lib/ui/cn";
 
-// Public landing -- the front door (docs/PRODUTO.md), in the spirit of a
-// racing driver's site: ink and bone bands, a lime signal, display type that
-// fills the width, an opening counter, a trailing cursor, magnetic buttons,
-// words that light up as you scroll, a lineage that draws itself, steps that
-// travel sideways, rules that stack, and a closing wordmark edge to edge.
+// Public landing -- the front door of Nodes BDFFP (docs/PRODUTO.md): the human
+// record of the Biological Dynamics of Forest Fragments Project, told the way
+// a racing driver's site tells a season. Ink and bone bands, a lime signal,
+// full-bleed photographs of the forest that wipe in and drift, an opening
+// counter, inertial scrolling, a trailing cursor, magnetic buttons, letters
+// that drop into place, words that light up, a lineage that draws itself,
+// photos and steps that travel sideways, rules that stack.
 //
-// The page keeps a fixed palette (theme-independent); ink bands carry
-// data-theme="dark" so any shared component inside reads the dark tokens.
-// Motion never leaves text unreadable and disappears with reduced motion.
-// Statically rendered. The example record and the lineage are fictional.
+// Motion is the identity of this page, so it runs even when the operating
+// system asks for less motion; instead the page has its own visible "Motion
+// off" switch (MotionToggle) that stops all of it. Text is never left
+// unreadable mid-animation. Photos: Wikimedia Commons, free licences, credited
+// in the footer. The example record and the lineage are fictional.
 
 const HEADLINE = ["Who you did it with.", "Who taught you.", "Where you all were."] as const;
+const LETTER_MS = 28;
+const HEADLINE_START_MS = 1350;
+
+// Letter-by-letter timing, computed once: each line starts after the previous.
+const HEADLINE_LINES = HEADLINE.map((text, line) => {
+  const before = HEADLINE.slice(0, line).reduce((n, t) => n + t.length * LETTER_MS + 60, 0);
+  const start = HEADLINE_START_MS + before;
+  const words = text.split(" ");
+  const offsets = words.map((_, w) => words.slice(0, w).reduce((n, word) => n + word.length, 0));
+  return {
+    text,
+    words: words.map((word, w) => ({
+      word,
+      last: w === words.length - 1,
+      letters: Array.from(word).map((ch, c) => ({ ch, delay: start + (offsets[w]! + c) * LETTER_MS })),
+    })),
+  };
+});
 
 const ROLES = [
   "Field assistant",
@@ -36,6 +61,47 @@ const ROLES = [
   "Mateiro",
 ] as const;
 
+const FACTS = [
+  { value: "1979", label: "the year the experiment began, north of Manaus" },
+  { value: "1 · 10 · 100", label: "hectares — the sizes of the forest fragments studied" },
+  { value: "INPA + Smithsonian", label: "the two institutions behind it" },
+] as const;
+
+const RAIL: readonly RailPhoto[] = [
+  {
+    src: "camp",
+    alt: "A black-and-white photograph of a research camp of tents in a cleared area of the Amazon forest.",
+    place: "The camp",
+    caption: "Where students, mateiros and cooks lived for weeks at a time. Rarely in a paper's author list.",
+  },
+  {
+    src: "canopy",
+    alt: "Looking down from a canopy walkway into the crowns of tall rainforest trees.",
+    place: "The canopy",
+    caption: "Towers and walkways built and climbed by people whose names live only in field notebooks.",
+    tall: true,
+  },
+  {
+    src: "river",
+    alt: "An aerial view of a dark river winding between islands of dense forest.",
+    place: "The river",
+    caption: "The boat pilots who brought every team in and out, season after season.",
+  },
+  {
+    src: "flooded",
+    alt: "Flooded forest with thin trunks standing in still water.",
+    place: "The igapó",
+    caption: "Plots measured by hand, tree by tree, year after year — often by the same people for decades.",
+    tall: true,
+  },
+  {
+    src: "mist",
+    alt: "A misty, black-and-white view of a rainforest stream at dawn.",
+    place: "The long run",
+    caption: "Generations of students passed through. Who taught whom is the thread this record keeps.",
+  },
+];
+
 const GAP = [
   { who: "ORCID", what: "records who you are." },
   { who: "Crossref, OpenAlex", what: "record what you published." },
@@ -43,22 +109,10 @@ const GAP = [
 ] as const;
 
 const STEPS = [
-  {
-    title: "Bring your graduate list",
-    body: "A spreadsheet with names, degrees, programmes and years. Nothing else is needed to start.",
-  },
-  {
-    title: "We find the documented trail",
-    body: "Each name is matched to public research records, with the reason shown. A person decides every match.",
-  },
-  {
-    title: "Graduates confirm or correct",
-    body: "Each graduate gets a private link to confirm where they went, correct it, or ask to be left out. Their answer wins.",
-  },
-  {
-    title: "Outcomes you can publish",
-    body: "Where your graduates went, by sector, country and decade. Exportable, and publishable with no names on it.",
-  },
+  { title: "Bring your graduate list", body: "A spreadsheet with names, degrees, programmes and years. Nothing else is needed to start." },
+  { title: "We find the documented trail", body: "Each name is matched to public research records, with the reason shown. A person decides every match." },
+  { title: "Graduates confirm or correct", body: "Each graduate gets a private link to confirm where they went, correct it, or ask to be left out." },
+  { title: "Outcomes you can publish", body: "Where your graduates went, by sector, country and decade. Exportable, and publishable with no names on it." },
 ] as const;
 
 const RULES = [
@@ -76,112 +130,100 @@ const RULES = [
   },
 ] as const;
 
-const EXAMPLE_LANES = [
-  { place: "Alpha Station", spans: [{ left: 4, width: 16, delay: 1500 }, { left: 34, width: 66, delay: 1900 }] },
-  { place: "Beta Institute", spans: [{ left: 18, width: 14, delay: 1700 }] },
-  { place: "Coastal Lab", spans: [{ left: 28, width: 5, delay: 1800 }] },
+const CREDITS = [
+  { what: "Aerial view of the Amazon rainforest", who: "lubasi", licence: "CC BY-SA 2.0", url: "https://commons.wikimedia.org/wiki/File:Aerial_view_of_the_Amazon_Rainforest.jpg" },
+  { what: "Amazon rainforest from the ISS", who: "Alexander Gerst / ESA", licence: "CC BY 2.0", url: "https://commons.wikimedia.org/wiki/File:Amazon_rainforest_(Satellite_picture)_-_3.jpg" },
+  { what: "Camp in a cleared area of the Amazon forest", who: "José Rosael, Hélio Nobre / Museu Paulista da USP", licence: "Public domain", url: "https://commons.wikimedia.org/wiki/File:Acampamento_em_%C3%81rea_Devassada_da_Floresta_Amaz%C3%B4nica_-_813,_Acervo_do_Museu_Paulista_da_USP.jpg" },
+  { what: "ACTS canopy walkway", who: "Jason Hollinger", licence: "CC BY 2.0", url: "https://commons.wikimedia.org/wiki/File:ACTS_Canopy_Walkway_-_Flickr_-_pellaea_(3).jpg" },
+  { what: "Amazon from the air", who: "Neil Palmer / CIAT", licence: "CC BY-SA 2.0", url: "https://commons.wikimedia.org/wiki/File:Amazon_CIAT_(3).jpg" },
+  { what: "Clouds over the Amazon", who: "Neil Palmer / CIAT", licence: "CC BY-SA 2.0", url: "https://commons.wikimedia.org/wiki/File:Amazon_CIAT_(5).jpg" },
+  { what: "Floresta Amazônica, Iranduba", who: "Alcimar Nascimento", licence: "CC BY-SA 4.0", url: "https://commons.wikimedia.org/wiki/File:Floresta_Amaz%C3%B4nica_-_Iranduba.jpeg" },
+  { what: "Floresta amazônica", who: "Djalma Armelin", licence: "CC BY-SA 4.0", url: "https://commons.wikimedia.org/wiki/File:Floresta_amaz%C3%B4nica.jpg" },
 ] as const;
 
 const pill =
   "nk-fill inline-flex items-center justify-center rounded-full px-7 py-4 text-base font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nk-lime focus-visible:ring-offset-2 focus-visible:ring-offset-nk-ink";
 
-function ExampleRecord() {
-  return (
-    <figure className="w-full max-w-md rounded-3xl border border-nk-ink-3 bg-nk-ink-2 p-6 text-nk-bone">
-      <div className="flex items-center gap-3">
-        <span aria-hidden="true" className="size-11 shrink-0 rounded-full bg-nk-lime" />
-        <div className="min-w-0">
-          <p className="font-semibold">Helena A. Costa</p>
-          <p className="text-sm text-nk-moss">Ecologist, fictional example</p>
-        </div>
-      </div>
-      <div className="mt-6 grid gap-3" aria-hidden="true">
-        {EXAMPLE_LANES.map((lane) => (
-          <div key={lane.place} className="grid grid-cols-[6.5rem_minmax(0,1fr)] items-center gap-3 text-xs text-nk-moss">
-            <span className="truncate">{lane.place}</span>
-            <span className="relative h-3 rounded-full bg-nk-ink-3">
-              {lane.spans.map((span) => (
-                <span
-                  key={span.left}
-                  className="nk-bar absolute inset-y-0 rounded-full bg-nk-lime"
-                  style={{ left: `${span.left}%`, width: `${span.width}%`, animationDelay: `${span.delay}ms` }}
-                />
-              ))}
-            </span>
-          </div>
-        ))}
-        <div className="ml-[calc(6.5rem+0.75rem)] flex justify-between text-[11px] tabular-nums text-nk-moss">
-          <span>1985</span>
-          <span>2005</span>
-          <span>2026</span>
-        </div>
-      </div>
-      <figcaption className="mt-6 border-t border-nk-ink-3 pt-4 text-sm">
-        <span className="text-nk-moss">Documented alongside her in 1989</span>
-        <span className="mt-2 flex flex-wrap gap-1.5">
-          {["Ana Ribeiro", "José Camargo", "Rui Moreira", "and 2 more"].map((name) => (
-            <span key={name} className="rounded-full border border-nk-ink-3 px-3 py-1">
-              {name}
-            </span>
-          ))}
-        </span>
-      </figcaption>
-    </figure>
-  );
-}
-
 export default function HomePage() {
   return (
-    <main id="main-content" tabIndex={-1} className="flex-1 overflow-x-clip bg-nk-ink text-nk-bone">
+    <main id="main-content" tabIndex={-1} data-motion="on" className="nk-motion flex-1 overflow-x-clip bg-nk-ink text-nk-bone">
       <Preloader />
       <Cursor />
+      <SmoothScroll />
+      <MotionToggle />
 
-      {/* Hero: full screen, edge to edge. */}
-      <section data-theme="dark" className="relative flex min-h-[calc(100svh-4.5rem)] flex-col justify-between px-6 pb-10 pt-12 sm:px-10">
-        <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-nk-moss">
-          <p className="flex items-center gap-3">
-            <span aria-hidden="true" className="nk-live-dot" />
-            <span className="text-nk-bone">{SITE_NAME}</span> — demonstration data
-          </p>
-          <p className="hidden sm:block">Forest fragments, Amazonia, since 1979</p>
+      {/* Hero: the forest, full bleed, with the question over it. */}
+      <section data-theme="dark" className="relative isolate flex min-h-[calc(100svh-4.5rem)] flex-col justify-between overflow-hidden px-6 pb-10 pt-10 sm:px-10">
+        <div aria-hidden="true" className="absolute inset-0 -z-10">
+          {/* eslint-disable-next-line @next/next/no-img-element -- self-hosted hero photo with srcset */}
+          <img
+            src="/photos/aerial-1920.jpg"
+            srcSet="/photos/aerial-960.jpg 960w, /photos/aerial-1920.jpg 1920w"
+            sizes="100vw"
+            alt=""
+            className="nk-hero-photo size-full object-cover"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,20,14,0.6)_0%,rgba(17,20,14,0.35)_40%,rgba(17,20,14,0.92)_100%)]" />
         </div>
 
-        <h1 className="my-10 font-display text-[clamp(2.4rem,9.6vw,13rem)] font-bold leading-[0.92] tracking-[-0.035em]">
-          {HEADLINE.map((text, i) => (
-            <span key={text} className="nk-line sm:whitespace-nowrap">
-              <span style={{ animationDelay: `${1300 + i * 110}ms` }}>{text}</span>
+        <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-nk-bone">
+          <p className="flex items-center gap-3">
+            <span aria-hidden="true" className="nk-live-dot" />
+            {SITE_NAME} — the people behind the forest science
+          </p>
+          <p className="hidden rounded-full bg-nk-ink/70 px-3 py-1 backdrop-blur sm:block">Demonstration data</p>
+        </div>
+
+        <h1
+          aria-label={HEADLINE.join(" ")}
+          className="my-12 font-display text-[clamp(2.4rem,9.6vw,13rem)] font-bold leading-[0.92] tracking-[-0.035em]"
+        >
+          {HEADLINE_LINES.map((line) => (
+            <span key={line.text} aria-hidden="true" className="nk-line">
+              {line.words.map((w) => (
+                <span key={w.word} className="inline-block whitespace-nowrap">
+                  {w.letters.map((l) => (
+                    <span key={l.delay} className="nk-letter" style={{ animationDelay: `${l.delay}ms` }}>
+                      {l.ch}
+                    </span>
+                  ))}
+                  {w.last ? null : " "}
+                </span>
+              ))}
             </span>
           ))}
         </h1>
 
-        <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_auto]">
+        <div className="flex flex-wrap items-end justify-between gap-8">
           <div className="max-w-2xl">
-            <p className="text-lg text-[#c3c8b6] sm:text-xl">
+            <p className="text-lg text-nk-bone sm:text-xl">
               A reading record of scientific lives, the institutions they worked through, and the
               contributions they made — each with its history, its sources, and its honest gaps.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link
-                href="/register"
-                data-magnetic
-                className={cn(pill, "bg-nk-lime text-nk-ink [--nk-fill:var(--nk-bone)]")}
-              >
+              <Link href="/register" data-magnetic className={cn(pill, "bg-nk-lime text-nk-ink [--nk-fill:var(--nk-bone)]")}>
                 Create an account to read
               </Link>
               <Link
                 href="/login"
                 data-magnetic
-                className={cn(pill, "border border-nk-ink-3 text-nk-bone [--nk-fill:var(--nk-lime)]")}
+                className={cn(pill, "border border-nk-bone/40 bg-nk-ink/60 text-nk-bone backdrop-blur [--nk-fill:var(--nk-lime)]")}
               >
                 Sign in
               </Link>
             </div>
           </div>
-          <ExampleRecord />
+          <p aria-hidden="true" className="hidden items-center gap-3 text-sm text-nk-bone sm:flex">
+            Scroll
+            <span className="relative block h-12 w-px overflow-hidden bg-nk-bone/30">
+              <span className="absolute inset-x-0 top-0 h-1/2 animate-[nk-scrollcue_1.6s_ease-in-out_infinite] bg-nk-lime" />
+            </span>
+          </p>
         </div>
       </section>
 
-      {/* Ribbon of roles the record keeps. Decorative; they are named below too. */}
+      {/* Ribbon of roles the record keeps. Decorative; the roles are named in the captions too. */}
       <div aria-hidden="true" className="nk-ribbon border-y border-nk-ink-3 py-6">
         <div className="nk-ribbon-track">
           {[0, 1].map((copy) => (
@@ -189,10 +231,7 @@ export default function HomePage() {
               {ROLES.map((role, i) => (
                 <span
                   key={`${copy}-${role}`}
-                  className={cn(
-                    "flex items-center font-display text-4xl font-bold tracking-tight sm:text-6xl",
-                    i % 2 === 1 ? "nk-outline" : "text-nk-bone",
-                  )}
+                  className={cn("flex items-center font-display text-4xl font-bold tracking-tight sm:text-6xl", i % 2 === 1 ? "nk-outline" : "text-nk-bone")}
                 >
                   <span className="px-8">{role}</span>
                   <span className="size-3 rounded-full bg-nk-lime" />
@@ -203,13 +242,61 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Statement that lights up word by word. */}
-      <section aria-label="Why this exists" className="px-6 py-28 sm:px-10 sm:py-40">
+      {/* The project. */}
+      <section aria-labelledby="project-heading" className="grid gap-12 px-6 py-24 sm:px-10 sm:py-36 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-center">
+        <div>
+          <p className="text-sm font-semibold text-nk-lime">The project</p>
+          <h2 id="project-heading" className="mt-4 font-display text-4xl font-bold leading-[1] tracking-[-0.025em] sm:text-6xl">
+            The longest-running experiment on what happens when a forest is cut into pieces.
+          </h2>
+          <p className="mt-6 max-w-xl text-lg text-[#c3c8b6]">
+            The Biological Dynamics of Forest Fragments Project has followed isolated patches of Amazon
+            forest since 1979. Its science is published. The people who made it — and who trained whom —
+            mostly are not. That is the record this Node keeps.
+          </p>
+          <dl className="mt-10 grid gap-6 border-t border-nk-ink-3 pt-8 sm:grid-cols-3">
+            {FACTS.map((f) => (
+              <div key={f.value}>
+                <dt className="font-display text-3xl font-bold tracking-tight text-nk-bone [font-stretch:85%]">{f.value}</dt>
+                <dd className="mt-2 text-sm text-nk-moss">{f.label}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+        <figure>
+          <RevealImage
+            src="satellite"
+            alt="The Amazon seen from space: dark forest broken by pale cleared land into separate patches."
+            className="aspect-[4/3] rounded-3xl"
+            drift={70}
+          />
+          <figcaption className="mt-3 text-sm text-nk-moss">Forest and cleared land, seen from the International Space Station.</figcaption>
+        </figure>
+      </section>
+
+      {/* Statement that lights up word by word, over the forest. */}
+      <section aria-label="Why this exists" className="relative isolate overflow-hidden px-6 py-32 sm:px-10 sm:py-48">
+        <div aria-hidden="true" className="absolute inset-0 -z-10 opacity-30">
+          <RevealImage src="clouds" alt="" className="size-full" drift={120} sizes="100vw" />
+        </div>
         <LitStatement
-          className="max-w-6xl font-display text-[clamp(1.8rem,4.2vw,4.5rem)] font-bold leading-[1.08] tracking-[-0.02em]"
+          className="relative max-w-6xl font-display text-[clamp(1.8rem,4.4vw,4.8rem)] font-bold leading-[1.06] tracking-[-0.02em]"
           text="Everyone records the paper. Nobody records the people who were there — the field assistant who knew every plot, the boat pilot, the supervisor, the student who stayed for a season and left for good."
         />
       </section>
+
+      {/* Photos travel sideways: the places, and who worked there. */}
+      <PhotoRail
+        photos={RAIL}
+        heading={
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <h2 id="rail-heading" className="max-w-[14ch] font-display text-4xl font-bold leading-[0.98] tracking-tight sm:text-7xl">
+              Who was there
+            </h2>
+            <p className="max-w-md text-lg text-[#c3c8b6]">Every place in this forest had people in it. The record starts with them.</p>
+          </div>
+        }
+      />
 
       {/* The gap, on bone. */}
       <section aria-labelledby="gap-heading" className="bg-nk-bone px-6 py-24 text-nk-ink sm:px-10 sm:py-32">
@@ -253,8 +340,7 @@ export default function HomePage() {
               </h2>
             </div>
             <p className="max-w-md text-lg">
-              Not a survey few people return: Onward builds it from the documented record, and lets every
-              graduate check it.
+              Not a survey few people return: Onward builds it from the documented record, and lets every graduate check it.
             </p>
           </div>
         }
@@ -290,10 +376,7 @@ export default function HomePage() {
       {/* Closing. */}
       <section data-theme="dark" aria-labelledby="close-heading" className="px-6 pt-28 sm:px-10">
         <div className="flex flex-wrap items-end justify-between gap-10">
-          <h2
-            id="close-heading"
-            className="font-display text-[clamp(3rem,9vw,11rem)] font-bold leading-[0.9] tracking-[-0.04em] [font-stretch:85%]"
-          >
+          <h2 id="close-heading" className="font-display text-[clamp(3rem,9vw,11rem)] font-bold leading-[0.9] tracking-[-0.04em] [font-stretch:85%]">
             <span className="nk-stretch">Find</span> <span className="nk-stretch">your</span>
             <br />
             <span className="nk-stretch text-nk-lime">people.</span>
@@ -308,11 +391,11 @@ export default function HomePage() {
         </div>
         <p className="mt-12 max-w-2xl text-[#c3c8b6]">
           This platform is under development. Reading requires a free account, and the record currently holds
-          demonstration data only. {SITE_DESCRIPTION}.
+          demonstration data only.
         </p>
 
         <footer className="mt-24 border-t border-nk-ink-3 pt-8">
-          <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-nk-moss">
+          <div className="flex flex-wrap items-start justify-between gap-8 text-sm text-nk-moss">
             <p>{SITE_NAME}, a Node of Nodes of Knowledge</p>
             <nav aria-label="Footer" className="flex flex-wrap gap-6">
               <Link href="/programmes" className="hover:text-nk-bone">
@@ -329,9 +412,19 @@ export default function HomePage() {
               </Link>
             </nav>
           </div>
+          <details className="mt-8 text-sm text-nk-moss">
+            <summary className="cursor-pointer hover:text-nk-bone">Photo credits</summary>
+            <span className="mt-3 flex flex-col gap-1.5">
+              {CREDITS.map((c) => (
+                <a key={c.url} href={c.url} className="hover:text-nk-bone" rel="noreferrer" target="_blank">
+                  {c.what} — {c.who}, {c.licence}, via Wikimedia Commons
+                </a>
+              ))}
+            </span>
+          </details>
           <p
             aria-hidden="true"
-            className="nk-outline mt-10 select-none whitespace-nowrap font-display text-[15.2vw] font-extrabold leading-[0.8] tracking-[-0.045em] [--nk-stroke:var(--nk-moss)] [--nk-stroke-w:2px] [font-stretch:80%]"
+            className="nk-outline mt-10 select-none whitespace-nowrap font-display text-[15.2vw] font-extrabold leading-[0.8] tracking-[-0.045em] [--nk-stroke-w:2px] [--nk-stroke:var(--nk-moss)] [font-stretch:80%]"
           >
             NODES BDFFP
           </p>

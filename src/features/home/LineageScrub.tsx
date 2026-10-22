@@ -1,5 +1,7 @@
 "use client";
 
+import { motionAllowed } from "./motion";
+
 import { useEffect, useRef, useState } from "react";
 
 // The home page's one orchestrated moment: scrolling through this section
@@ -55,7 +57,7 @@ export function LineageScrub() {
     const section = sectionRef.current;
     if (!section) return;
     // Reduced motion: keep the finished drawing (the initial state).
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!motionAllowed()) return;
     let frame = 0;
     const update = () => {
       frame = 0;
@@ -80,8 +82,8 @@ export function LineageScrub() {
   const shown = NODES.filter((n) => year >= n.year).length;
 
   return (
-    <section ref={sectionRef} aria-labelledby="lineage-heading" className="relative h-[200vh] motion-reduce:h-auto">
-      <div className="sticky top-0 flex min-h-screen flex-col justify-center py-8 motion-reduce:static motion-reduce:min-h-0">
+    <section ref={sectionRef} aria-labelledby="lineage-heading" className="relative h-[200vh]">
+      <div className="sticky top-0 flex min-h-screen flex-col justify-center py-8">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <h2 id="lineage-heading" className="max-w-[22ch] font-display text-3xl font-bold leading-[1.02] tracking-tight text-nk-bone sm:text-5xl">
             Scroll to watch a lineage being documented

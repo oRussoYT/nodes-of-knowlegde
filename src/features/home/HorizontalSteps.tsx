@@ -1,5 +1,7 @@
 "use client";
 
+import { motionAllowed } from "./motion";
+
 import type { ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 
@@ -17,8 +19,7 @@ export function HorizontalSteps({ steps, intro }: { steps: readonly Step[]; intr
 
   useEffect(() => {
     const wide = window.matchMedia("(min-width: 768px)");
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const decide = () => setPinned(wide.matches && !reduce.matches);
+    const decide = () => setPinned(wide.matches && motionAllowed());
     const t = window.setTimeout(decide, 0);
     wide.addEventListener("change", decide);
     return () => {

@@ -1,5 +1,7 @@
 "use client";
 
+import { motionAllowed } from "./motion";
+
 import { useEffect, useRef, useState } from "react";
 
 // A statement whose words light up one by one as it scrolls through the
@@ -13,7 +15,7 @@ export function LitStatement({ text, className }: { text: string; className?: st
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!motionAllowed()) return;
     let frame = 0;
     const update = () => {
       frame = 0;
