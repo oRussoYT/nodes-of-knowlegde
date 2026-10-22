@@ -38,12 +38,10 @@ jobs:
         run: npm run typecheck
       - name: Testes unitários
         run: npm test
-      - name: Build
-        run: npm run build
-      - name: Build para a Cloudflare (o que vai ao ar)
+      - name: Build (o mesmo que vai ao ar na Cloudflare)
         run: |
           set +e
-          npx opennextjs-cloudflare build --skipNextBuild > cf.log 2>&1
+          npx opennextjs-cloudflare build > cf.log 2>&1
           code=$?
           cat cf.log
           if [ $code -ne 0 ]; then
