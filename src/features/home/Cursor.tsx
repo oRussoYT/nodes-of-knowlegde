@@ -1,5 +1,7 @@
 "use client";
 
+import { motionAllowed } from "./motion";
+
 import { useEffect, useRef } from "react";
 
 // A lime cursor dot that trails the pointer and swells over anything
@@ -11,7 +13,7 @@ export function Cursor() {
   useEffect(() => {
     const el = dot.current;
     if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (!motionAllowed()) return;
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
     let x = window.innerWidth / 2;
