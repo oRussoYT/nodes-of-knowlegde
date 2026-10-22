@@ -1,3 +1,6 @@
+# O banco do site no ar é atualizado pela integração GitHub do Supabase
+# (Settings → Integrations): cada envio à branch main aplica as migrações novas.
+
 # For detailed configuration reference documentation, visit:
 # https://supabase.com/docs/guides/local-development/cli/config
 # A string used to distinguish different Supabase projects on the same host. Defaults to the
