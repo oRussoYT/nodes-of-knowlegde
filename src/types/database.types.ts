@@ -1644,6 +1644,16 @@ export type Database = {
         }[]
       }
       steward_create_confirmations: { Args: { p_batch_id: string }; Returns: number }
+      steward_create_organization: {
+        Args: {
+          p_location?: string
+          p_name: string
+          p_organization_type?: string
+          p_short_name?: string
+          p_website?: string
+        }
+        Returns: string
+      }
       steward_create_import_batch: {
         Args: { p_label: string; p_organization_id: string | null; p_rows: Json }
         Returns: string

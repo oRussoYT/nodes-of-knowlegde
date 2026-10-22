@@ -11,7 +11,11 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { Select } from "@/components/ui/Select";
 import { pageTitle } from "@/config/site";
 import { listInstitutionOptions } from "@/features/import/read";
-import { grantInstitutionStewardAction, revokeInstitutionStewardAction } from "@/features/steward/actions";
+import {
+  createInstitutionAction,
+  grantInstitutionStewardAction,
+  revokeInstitutionStewardAction,
+} from "@/features/steward/actions";
 import { getStewardScope, listInstitutionStewards } from "@/features/steward/read";
 
 // Institution stewards (ROTEIRO etapa 3): who looks after which institution's
@@ -26,7 +30,7 @@ export default async function StewardsPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { error } = await searchParams;
+  const { error, added } = await searchParams;
   const scope = await getStewardScope();
 
   if (!scope.platform) {
@@ -61,7 +65,48 @@ export default async function StewardsPage({
           </Alert>
         ) : null}
 
-        <form action={grantInstitutionStewardAction} className="mt-8 flex flex-col gap-4 rounded-md border border-border-default px-4 py-5">
+        {added === "1" ? (
+          <Alert tone="success" className="mt-6">
+            Institution added. You can now import its graduate list and appoint its stewards.
+          </Alert>
+        ) : null}
+
+        <section aria-labelledby="add-institution-heading" className="mt-8">
+          <h2 id="add-institution-heading" className="text-sm font-medium text-foreground">
+            Add an institution
+          </h2>
+          <form action={createInstitutionAction} className="mt-3 grid gap-4 rounded-md border border-border-default px-4 py-5 sm:grid-cols-2">
+            <div className="flex flex-col gap-1.5 sm:col-span-2">
+              <Label htmlFor="institutionName">Name</Label>
+              <Input id="institutionName" name="institutionName" required placeholder="McGill University" />
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="institutionType">Kind</Label>
+              <Select id="institutionType" name="institutionType" defaultValue="university">
+                <option value="university">University</option>
+                <option value="research_institute">Research institute</option>
+                <option value="field_station">Field station</option>
+                <option value="museum">Museum</option>
+                <option value="government_agency">Government agency</option>
+                <option value="other">Other</option>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="institutionLocation">City (optional)</Label>
+              <Input id="institutionLocation" name="institutionLocation" placeholder="Montreal, QC" />
+            </div>
+            <div className="flex flex-col gap-1.5 sm:col-span-2">
+              <Label htmlFor="institutionWebsite">Website (optional)</Label>
+              <Input id="institutionWebsite" name="institutionWebsite" type="url" placeholder="https://www.mcgill.ca" />
+            </div>
+            <div className="sm:col-span-2">
+              <Button type="submit">Add institution</Button>
+            </div>
+          </form>
+        </section>
+
+        <h2 className="mt-10 text-sm font-medium text-foreground">Appoint a steward</h2>
+        <form action={grantInstitutionStewardAction} className="mt-3 flex flex-col gap-4 rounded-md border border-border-default px-4 py-5">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="organizationId">Institution</Label>
             <Select id="organizationId" name="organizationId" required defaultValue="">
