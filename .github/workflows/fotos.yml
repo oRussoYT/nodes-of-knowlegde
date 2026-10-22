@@ -15,25 +15,47 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Baixar as fotos
+        shell: python
         run: |
-          mkdir -p public/photos
-          UA="NodesBDFFP/1.0 (https://nodesofknowlegde.netlify.app; site photos)"
-          get() { curl -fsSL -A "$UA" -o "public/photos/$1" "$2"; }
-          B=https://upload.wikimedia.org/wikipedia/commons/thumb
-          for w in 1920 960; do
-            get aerial-$w.jpg        "$B/d/d0/Aerial_view_of_the_Amazon_Rainforest.jpg/${w}px-Aerial_view_of_the_Amazon_Rainforest.jpg"
-            get satellite-$w.jpg     "$B/5/54/Amazon_rainforest_%28Satellite_picture%29_-_3.jpg/${w}px-Amazon_rainforest_%28Satellite_picture%29_-_3.jpg"
-            get camp-$w.jpg          "$B/1/13/Acampamento_em_%C3%81rea_Devassada_da_Floresta_Amaz%C3%B4nica_-_813%2C_Acervo_do_Museu_Paulista_da_USP.jpg/${w}px-Acampamento_em_%C3%81rea_Devassada_da_Floresta_Amaz%C3%B4nica_-_813%2C_Acervo_do_Museu_Paulista_da_USP.jpg"
-            get canopy-$w.jpg        "$B/e/ed/ACTS_Canopy_Walkway_-_Flickr_-_pellaea_%283%29.jpg/${w}px-ACTS_Canopy_Walkway_-_Flickr_-_pellaea_%283%29.jpg"
-            get river-$w.jpg         "$B/f/f9/Amazon_CIAT_%283%29.jpg/${w}px-Amazon_CIAT_%283%29.jpg"
-            get flooded-$w.jpg       "$B/f/f7/Floresta_Amaz%C3%B4nica_-_Iranduba.jpeg/${w}px-Floresta_Amaz%C3%B4nica_-_Iranduba.jpeg"
-            get mist-$w.jpg          "$B/6/61/Floresta_amaz%C3%B4nica.jpg/${w}px-Floresta_amaz%C3%B4nica.jpg"
-            get clouds-$w.jpg        "$B/1/18/Amazon_CIAT_%285%29.jpg/${w}px-Amazon_CIAT_%285%29.jpg"
-            sleep 1
-          done
-          ls -la public/photos
+          import json, os, time, urllib.parse, urllib.request
+          UA = "NodesBDFFP/1.0 (https://nodesofknowlegde.netlify.app; contact via GitHub oRussoYT)"
+          FILES = {
+              "aerial": "Aerial view of the Amazon Rainforest.jpg",
+              "satellite": "Amazon rainforest (Satellite picture) - 3.jpg",
+              "camp": "Acampamento em Área Devassada da Floresta Amazônica - 813, Acervo do Museu Paulista da USP.jpg",
+              "canopy": "ACTS Canopy Walkway - Flickr - pellaea (3).jpg",
+              "river": "Amazon CIAT (3).jpg",
+              "flooded": "Floresta Amazônica - Iranduba.jpeg",
+              "mist": "Floresta amazônica.jpg",
+              "clouds": "Amazon CIAT (5).jpg",
+          }
+          os.makedirs("public/photos", exist_ok=True)
+          def get(url):
+              req = urllib.request.Request(url, headers={"User-Agent": UA})
+              with urllib.request.urlopen(req, timeout=60) as r:
+                  return r.read()
+          failed = []
+          for name, title in FILES.items():
+              for width in (1920, 960):
+                  try:
+                      q = urllib.parse.urlencode({"action": "query", "titles": "File:" + title, "prop": "imageinfo",
+                                                  "iiprop": "url", "iiurlwidth": width, "format": "json"})
+                      info = json.loads(get("https://commons.wikimedia.org/w/api.php?" + q))
+                      page = next(iter(info["query"]["pages"].values()))
+                      url = page["imageinfo"][0]["thumburl"]
+                      data = get(url)
+                      with open(f"public/photos/{name}-{width}.jpg", "wb") as f:
+                          f.write(data)
+                      print(name, width, len(data), url)
+                  except Exception as e:
+                      print(f"::error::{name} {width}: {e}")
+                      failed.append(f"{name}-{width}")
+                  time.sleep(1.5)
+          if failed:
+              raise SystemExit("failed: " + ", ".join(failed))
       - name: Guardar no repositório
         run: |
+          ls -la public/photos
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add public/photos
