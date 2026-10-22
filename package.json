@@ -20,6 +20,7 @@
     "supabase:types": "supabase gen types --lang typescript --local > src/types/database.types.ts",
     "db:new": "supabase migration new",
     "db:reset": "supabase db reset",
+    "build:pages": "opennextjs-cloudflare build && node scripts/cloudflare-pages.mjs",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"

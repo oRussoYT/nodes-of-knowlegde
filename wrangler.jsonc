@@ -1,7 +1,8 @@
-// Cloudflare Workers configuration (the site's host).
-// Built by @opennextjs/cloudflare: `npx opennextjs-cloudflare build`, then
-// `npx opennextjs-cloudflare deploy`. Cloudflare's "Workers Builds" runs both
-// on every push to main once the repository is connected.
+// Cloudflare settings used while building the site with @opennextjs/cloudflare.
+// The site is hosted on Cloudflare PAGES (nodes-bdffp.pages.dev): Pages runs
+// `npm run build:pages` on every push and serves .open-next/assets. Pages
+// ignores this file (it has no pages_build_output_dir); the compatibility
+// flags below are set the same way in the Pages project settings.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "main": ".open-next/worker.js",
@@ -11,17 +12,5 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
-  },
-  "services": [
-    {
-      "binding": "WORKER_SELF_REFERENCE",
-      "service": "nodes-bdffp"
-    }
-  ],
-  "images": {
-    "binding": "IMAGES"
-  },
-  "observability": {
-    "enabled": true
   }
 }
