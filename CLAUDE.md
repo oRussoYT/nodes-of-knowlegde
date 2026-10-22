@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 Regras permanentes de trabalho para quem altera este projeto — pessoa ou
-agente de IA. Atualizado em 13 out 2026.
+agente de IA. Atualizado em 21 out 2026.
 
 ## Leia primeiro (e só isto é obrigatório)
 
@@ -9,10 +9,11 @@ agente de IA. Atualizado em 13 out 2026.
 2. `docs/REGRAS.md` — as regras inegociáveis e o teste que garante cada uma.
 3. `docs/ROTEIRO.md` — a lista única de etapas e o que já está feito.
 
-Todos os outros arquivos em `docs/` (Constituição, Blueprint, Design Bible,
-relatórios M6–M8, ADRs em `docs/decisions/`, `development-roadmap.md`) são
-**histórico**. Servem para consulta; não são lei e não bloqueiam trabalho. Se
-contradizem os três documentos acima, valem os três.
+Todo o resto foi arquivado em `docs/arquivo/` (Constituição, Blueprint, Design
+Bible, relatórios M5–M8, ADRs, planos antigos). É **histórico**: serve para
+consulta, não é lei e não bloqueia trabalho. Comentários no código que citam
+`docs/x.md` apontam hoje para `docs/arquivo/x.md`. Se algo lá
+contradiz os três documentos acima, valem os três.
 
 ## O fundador
 
