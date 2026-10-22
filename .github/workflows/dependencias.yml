@@ -1,0 +1,42 @@
+# Instala/atualiza pacotes do projeto e grava o package-lock.json, sem
+# Terminal: aba Actions → "Dependências" → informe os pacotes e a branch.
+name: Dependências
+
+on:
+  workflow_dispatch:
+    inputs:
+      pacotes:
+        description: "Pacotes de produção (ex.: @opennextjs/cloudflare@latest)"
+        required: false
+        default: ""
+      pacotes_dev:
+        description: "Pacotes de desenvolvimento (ex.: wrangler@latest)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  instalar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Instalar
+        env:
+          PACOTES: ${{ inputs.pacotes }}
+          PACOTES_DEV: ${{ inputs.pacotes_dev }}
+        run: |
+          npm ci
+          if [ -n "$PACOTES" ]; then npm install $PACOTES; fi
+          if [ -n "$PACOTES_DEV" ]; then npm install --save-dev $PACOTES_DEV; fi
+      - name: Guardar
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          git commit -m "Dependencies: ${{ inputs.pacotes }} ${{ inputs.pacotes_dev }}" || echo "nothing new"
+          git push
