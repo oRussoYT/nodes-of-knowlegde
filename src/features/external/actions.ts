@@ -103,3 +103,27 @@ export async function decideExternalMatchAction(formData: FormData): Promise<voi
   revalidatePath(`/review/import/${batchId}`);
   redirect(`/review/import/${batchId}`);
 }
+
+export async function undoExternalMatchAction(formData: FormData): Promise<void> {
+  const batchId = String(formData.get("batchId") ?? "");
+  const matchId = String(formData.get("matchId") ?? "");
+  const reason = String(formData.get("reason") ?? "").trim();
+  if (!UUID.test(batchId) || !UUID.test(matchId)) redirect("/review/import");
+  if (!reason) back(batchId, "error", "Say why the match was wrong, then undo it.");
+
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("steward_undo_external_match", { p_match_id: matchId, p_reason: reason });
+  if (error) {
+    back(
+      batchId,
+      "error",
+      error.message?.includes("only an accepted match")
+        ? "Only an accepted match can be undone."
+        : error.message?.includes("reviewer authorization required")
+          ? "Only this institution's stewards can do this."
+          : "Something went wrong. Please try again.",
+    );
+  }
+  revalidatePath(`/review/import/${batchId}`);
+  back(batchId, "notice", "Undone. The other proposals for this person are back for you to choose.");
+}

@@ -1730,6 +1730,10 @@ export type Database = {
         }
         Returns: string
       }
+      steward_undo_external_match: {
+        Args: { p_match_id: string; p_reason: string }
+        Returns: number
+      }
       steward_list_organization_names: {
         Args: { p_organization_id: string }
         Returns: {

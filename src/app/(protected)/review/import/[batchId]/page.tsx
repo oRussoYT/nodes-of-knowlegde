@@ -10,7 +10,7 @@ import { PageHeader } from "@/components/ui/PageHeader";
 import { pageTitle } from "@/config/site";
 import { listConfirmationLinks } from "@/features/confirm/read";
 import { createConfirmationLinksAction } from "@/features/confirm/steward";
-import { decideExternalMatchAction, lookUpBatchInOpenAlexAction } from "@/features/external/actions";
+import { decideExternalMatchAction, lookUpBatchInOpenAlexAction, undoExternalMatchAction } from "@/features/external/actions";
 import { getSiteUrl } from "@/lib/supabase/env";
 import { REASON_LABELS, type ExternalReason } from "@/features/external/openalex";
 import { getExternalBatch } from "@/features/external/read";
@@ -237,6 +237,29 @@ export default async function ImportBatchPage({
                               </Badge>
                             )}
                           </div>
+                          {m.status === "accepted" ? (
+                            <details className="mt-2 text-xs">
+                              <summary className="cursor-pointer text-muted-foreground underline underline-offset-2">
+                                Wrong person? Undo
+                              </summary>
+                              <form action={undoExternalMatchAction} className="mt-2 flex flex-wrap items-end gap-2">
+                                <input type="hidden" name="batchId" value={batchId} />
+                                <input type="hidden" name="matchId" value={m.id} />
+                                <label className="flex min-w-56 flex-1 flex-col gap-1">
+                                  <span className="text-muted-foreground">Why it was wrong</span>
+                                  <input
+                                    name="reason"
+                                    required
+                                    placeholder="e.g. a homonym in another field"
+                                    className="rounded-md border border-border-default bg-background px-2 py-1.5 text-sm"
+                                  />
+                                </label>
+                                <Button type="submit" size="sm" emphasis="secondary">
+                                  Undo this match
+                                </Button>
+                              </form>
+                            </details>
+                          ) : null}
                           <div className="mt-2 flex flex-wrap gap-1.5">
                             {m.reasons.map((reason) => (
                               <Badge key={reason} size="sm" tone="info">
