@@ -281,11 +281,11 @@ otp_expiry = 3600
 # same-origin path this app chose, never something derived from
 # request-time input — see docs/authentication-implementation.md.
 [auth.email.template.confirmation]
-subject = "Confirm your NetPDBFF account"
+subject = "Confirm your Nodes BDFFP account"
 content_path = "./supabase/templates/confirmation.html"
 
 [auth.email.template.recovery]
-subject = "Reset your NetPDBFF password"
+subject = "Reset your Nodes BDFFP password"
 content_path = "./supabase/templates/recovery.html"
 
 # Uncomment to customize notification email template
