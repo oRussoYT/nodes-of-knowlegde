@@ -48,7 +48,7 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
             ) : (
               <Avatar name={name} size="lg" className="size-36 text-4xl" />
             )}
-            <p className="mt-5 font-display text-3xl font-bold leading-tight tracking-tight text-foreground">{name}</p>
+            <p className="mt-5 max-w-full font-display text-3xl font-bold leading-tight tracking-tight text-foreground [overflow-wrap:anywhere]">{name}</p>
             {profile.headline ? <p className="mt-2 text-[15px] text-foreground">{profile.headline}</p> : null}
             {profile.location ? <p className="mt-1 text-sm text-muted-foreground">{profile.location}</p> : null}
           </div>
