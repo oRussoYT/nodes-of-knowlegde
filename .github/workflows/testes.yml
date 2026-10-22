@@ -41,7 +41,16 @@ jobs:
       - name: Build
         run: npm run build
       - name: Build para a Cloudflare (o que vai ao ar)
-        run: npx opennextjs-cloudflare build --skipNextBuild
+        run: |
+          set +e
+          npx opennextjs-cloudflare build --skipNextBuild > cf.log 2>&1
+          code=$?
+          cat cf.log
+          if [ $code -ne 0 ]; then
+            msg=$(tail -n 40 cf.log | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error title=Cloudflare build::$msg"
+          fi
+          exit $code
 
   completo:
     name: Completo (banco + telas)
