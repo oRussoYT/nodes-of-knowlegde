@@ -9,10 +9,18 @@ import type { NextConfig } from "next";
  */
 // On Netlify, the site's own address arrives as URL; use it as the public site
 // URL (email links) unless NEXT_PUBLIC_SITE_URL is set explicitly.
+// The public Supabase settings are also written into the build here, so the
+// hosted server functions see them even though they only exist at build time.
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? process.env.URL;
+const publicEnv: Record<string, string> = {};
+if (siteUrl) publicEnv.NEXT_PUBLIC_SITE_URL = siteUrl;
+if (process.env.NEXT_PUBLIC_SUPABASE_URL) publicEnv.NEXT_PUBLIC_SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+if (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY) {
+  publicEnv.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+}
 
 const nextConfig: NextConfig = {
-  ...(siteUrl ? { env: { NEXT_PUBLIC_SITE_URL: siteUrl } } : {}),
+  env: publicEnv,
 };
 
 export default nextConfig;

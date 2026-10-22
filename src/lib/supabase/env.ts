@@ -8,8 +8,16 @@
 // secret/service-role key here — see "Credentials that must never be
 // committed" in docs/supabase-development.md.
 
+// Read with literal names so Next.js writes the values into the built app
+// (a dynamic process.env[name] lookup is only resolved at run time, and the
+// hosted server functions do not receive build-time settings).
+const PUBLIC_ENV: Record<string, string | undefined> = {
+  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+};
+
 function required(name: string): string {
-  const value = process.env[name];
+  const value = PUBLIC_ENV[name];
 
   if (!value) {
     if (process.env.NODE_ENV === "production") {
