@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { AppShell } from "@/components/layout/AppShell";
 import { ProtectedHeader } from "@/components/layout/ProtectedHeader";
+import { getMyProfile } from "@/features/member-profile/read";
 import { isCurrentUserReviewer } from "@/features/review/authorization";
 import { createClient } from "@/lib/supabase/server";
 
@@ -49,10 +50,15 @@ export default async function ProtectedLayout({
   // do this). Purely a nav-visibility signal -- see
   // src/features/review/authorization.ts's own doc comment for why this
   // is not, and must never become, the authorization boundary itself.
-  const isReviewer = await isCurrentUserReviewer();
+  const [isReviewer, mine] = await Promise.all([isCurrentUserReviewer(), getMyProfile()]);
 
   return (
-    <AppShell withSidebar header={<ProtectedHeader email={email} isReviewer={isReviewer} />}>
+    <AppShell withSidebar header={<ProtectedHeader
+          email={email}
+          displayName={mine?.profile.displayName ?? null}
+          photoUrl={mine?.photoUrl ?? null}
+          isReviewer={isReviewer}
+        />}>
       {children}
     </AppShell>
   );

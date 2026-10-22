@@ -19,6 +19,10 @@ import { getNavItemsByGroup } from "@/lib/navigation/select";
 
 interface ProtectedHeaderProps {
   email: string;
+  /** The member's chosen name (their profile), shown instead of the email. */
+  displayName?: string | null;
+  /** Short-lived link to the member's profile photo, if they added one. */
+  photoUrl?: string | null;
   /**
    * Whether the signed-in account is an authorized reviewer -- see
    * MobileNavigationProps' matching field for the full reasoning. Purely
@@ -40,20 +44,18 @@ interface ProtectedHeaderProps {
 // (signed-in email, links to Member and Account, Log out — fully
 // keyboard-operable, Escape closes, focus returns to the trigger, all
 // supplied by Radix per ADR-0003).
-export function ProtectedHeader({ email, isReviewer }: ProtectedHeaderProps) {
+export function ProtectedHeader({ email, displayName, photoUrl, isReviewer }: ProtectedHeaderProps) {
+  const name = displayName ?? email;
   const primaryItems = getNavItemsByGroup("protected-primary");
   const menuLinkItems = getNavItemsByGroup("user-menu").filter(
     (item) => item.availability.status === "available" && item.href,
   );
 
   return (
-    // Ink sidebar on md+ (fixed, full height); a slim ink bar on phones,
-    // where MobileNavigation's drawer carries the links. data-theme="dark"
-    // scopes the dark tokens to this chrome in either theme.
-    <header
-      data-theme="dark"
-      className="z-40 bg-nk-ink text-nk-bone md:fixed md:inset-y-0 md:left-0 md:flex md:w-64 md:flex-col md:border-r md:border-nk-ink-3"
-    >
+    // Sidebar on md+ (fixed, full height); a slim bar on phones, where
+    // MobileNavigation's drawer carries the links. It follows the theme:
+    // near-white in light mode, ink in dark mode, lime for the current page.
+    <header className="nk-app-chrome z-40 border-b border-border-default text-foreground md:fixed md:inset-y-0 md:left-0 md:flex md:w-64 md:flex-col md:border-r md:border-b-0">
       <div className="flex items-center justify-between gap-3 px-5 py-4 md:py-6">
         <Link href="/member" className="font-display text-xl font-extrabold tracking-tight [font-stretch:118%]">
           {SITE_NAME}
@@ -71,14 +73,22 @@ export function ProtectedHeader({ email, isReviewer }: ProtectedHeaderProps) {
         {isReviewer ? <NavLink item={REVIEW_NAV_ITEM} className="nk-side-link" /> : null}
       </nav>
 
-      <div className="mt-auto hidden items-center justify-between gap-3 border-t border-nk-ink-3 px-5 py-4 md:flex">
+      <div className="mt-auto hidden items-center justify-between gap-3 border-t border-border-default px-5 py-4 md:flex">
         <Dropdown>
           <DropdownTrigger
             aria-label={`Account menu for ${email}`}
-            className="flex min-w-0 items-center gap-2.5 rounded-full text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nk-lime"
+            className="flex min-w-0 items-center gap-2.5 rounded-full text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-border-focus"
           >
-            <Avatar name={email} size="sm" />
-            <span className="truncate text-[#c3c8b6]">Your account</span>
+            {photoUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element -- short-lived signed link to a private photo
+              <img src={photoUrl} alt="" className="size-9 shrink-0 rounded-full object-cover" />
+            ) : (
+              <Avatar name={name} size="md" />
+            )}
+            <span className="min-w-0">
+              <span className="block truncate font-medium text-foreground">{displayName ?? "Your account"}</span>
+              {displayName ? <span className="block truncate text-xs text-muted-foreground">Your account</span> : null}
+            </span>
           </DropdownTrigger>
 
           <DropdownContent align="start">
