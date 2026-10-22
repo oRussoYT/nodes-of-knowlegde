@@ -22,7 +22,7 @@ export function PageHeader({ title, description, action, className }: PageHeader
   return (
     <div className={cn("flex flex-wrap items-end justify-between gap-x-6 gap-y-4 border-b border-border-default pb-6", className)}>
       <div className="min-w-0">
-        <h1 className="font-display text-3xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-4xl">
+        <h1 className="font-display text-4xl font-bold leading-[1] tracking-[-0.02em] text-foreground sm:text-6xl">
           {title}
         </h1>
         {description ? <p className="mt-3 max-w-prose text-base text-muted-foreground">{description}</p> : null}

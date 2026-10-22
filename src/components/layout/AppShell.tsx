@@ -22,14 +22,16 @@ import { SkipLink } from "@/components/layout/SkipLink";
 export interface AppShellProps {
   header: ReactNode;
   children: ReactNode;
+  /** The signed-in area: the header is a fixed left sidebar on md+, so the content shifts right. */
+  withSidebar?: boolean;
 }
 
-export function AppShell({ header, children }: AppShellProps) {
+export function AppShell({ header, children, withSidebar = false }: AppShellProps) {
   return (
     <div className="flex min-h-dvh flex-col">
       <SkipLink />
       {header}
-      {children}
+      {withSidebar ? <div className="flex min-h-dvh flex-1 flex-col md:pl-64">{children}</div> : children}
     </div>
   );
 }

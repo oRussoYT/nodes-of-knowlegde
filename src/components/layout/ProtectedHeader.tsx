@@ -14,6 +14,7 @@ import {
   DropdownSeparator,
   DropdownTrigger,
 } from "@/components/ui/Dropdown";
+import { SITE_NAME } from "@/config/site";
 import { getNavItemsByGroup } from "@/lib/navigation/select";
 
 interface ProtectedHeaderProps {
@@ -46,82 +47,57 @@ export function ProtectedHeader({ email, isReviewer }: ProtectedHeaderProps) {
   );
 
   return (
-    <header className="border-b border-border-default bg-surface">
-      <div className="mx-auto flex max-w-(--container-shell) flex-wrap items-center justify-between gap-3 px-6 py-2 text-sm">
-        <nav aria-label="Primary" className="hidden flex-wrap items-center gap-4 md:flex">
-          {primaryItems.map((item) => (
-            <NavLink
-              key={item.id}
-              item={item}
-              className="text-muted-foreground transition-colors hover:text-foreground"
-              activeClassName="text-foreground font-medium"
-            />
-          ))}
-          {isReviewer ? (
-            <NavLink
-              item={REVIEW_NAV_ITEM}
-              className="text-muted-foreground transition-colors hover:text-foreground"
-              activeClassName="text-foreground font-medium"
-            />
-          ) : null}
-        </nav>
-
-        <div className="flex items-center gap-3">
+    // Ink sidebar on md+ (fixed, full height); a slim ink bar on phones,
+    // where MobileNavigation's drawer carries the links. data-theme="dark"
+    // scopes the dark tokens to this chrome in either theme.
+    <header
+      data-theme="dark"
+      className="z-40 bg-nk-ink text-nk-bone md:fixed md:inset-y-0 md:left-0 md:flex md:w-64 md:flex-col md:border-r md:border-nk-ink-3"
+    >
+      <div className="flex items-center justify-between gap-3 px-5 py-4 md:py-6">
+        <Link href="/member" className="font-display text-xl font-extrabold tracking-tight [font-stretch:118%]">
+          {SITE_NAME}
+        </Link>
+        <div className="flex items-center gap-2 md:hidden">
           <ThemeToggle />
-
-          {/* md-and-up only: below `md`, MobileNavigation's single
-              disclosure trigger is the sole way to reach Member/Account/
-              email/Log out, per docs/application-information-architecture.md's
-              "Mobile navigation" ("collapse... into a single disclosure
-              trigger"). Without this, the avatar trigger and the hamburger
-              trigger would both be live on the same narrow viewport —
-              two entry points to the same actions. */}
-          <Dropdown>
-            <DropdownTrigger
-              aria-label={`Account menu for ${email}`}
-              className="hidden items-center gap-2 rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-border-focus md:flex"
-            >
-              <Avatar name={email} size="sm" />
-            </DropdownTrigger>
-
-            <DropdownContent align="end">
-              <DropdownLabel>{email}</DropdownLabel>
-              <DropdownSeparator />
-
-              {menuLinkItems.map((item) => (
-                // Plain Link, not NavLink, inside a Radix DropdownItem: the
-                // item's `href`/`label` still come from the same single
-                // navigationConfig entry (no duplicated data), but the menu
-                // is a momentary, Radix-managed surface that already
-                // supplies its own selection/keyboard handling — NavLink's
-                // own active-state machinery isn't needed here the way it
-                // is in persistent header chrome.
-                <DropdownItem key={item.id} asChild>
-                  <Link href={item.href!}>{item.label}</Link>
-                </DropdownItem>
-              ))}
-
-              <DropdownSeparator />
-
-              {/* Intentionally not a DropdownItem: LogoutButton is a Server
-                  Component (unchanged Server Action-backed <form>, per the
-                  M5 spec's "reused, not rebuilt" requirement). Radix's
-                  `asChild` prop-merging clones a live client element — by
-                  the time a Server Component's output crosses into this
-                  Client Component tree, it's already resolved, opaque
-                  markup, not something `cloneElement` can attach
-                  role/keyboard props to. It remains a real, Tab-reachable,
-                  Enter/Space-activatable <button> with a real accessible
-                  name; the one thing it doesn't get is inclusion in Radix's
-                  arrow-key roving-tabindex loop alongside the links above. */}
-              <div className="px-1 py-0.5">
-                <LogoutButton className="block w-full rounded-sm px-2 py-1.5 text-left text-foreground transition-colors hover:bg-surface" />
-              </div>
-            </DropdownContent>
-          </Dropdown>
-
           <MobileNavigation audience="protected" email={email} isReviewer={isReviewer} />
         </div>
+      </div>
+
+      <nav aria-label="Primary" className="hidden flex-col gap-1 px-3 text-[15px] md:flex">
+        {primaryItems.map((item) => (
+          <NavLink key={item.id} item={item} className="nk-side-link" />
+        ))}
+        {isReviewer ? <NavLink item={REVIEW_NAV_ITEM} className="nk-side-link" /> : null}
+      </nav>
+
+      <div className="mt-auto hidden items-center justify-between gap-3 border-t border-nk-ink-3 px-5 py-4 md:flex">
+        <Dropdown>
+          <DropdownTrigger
+            aria-label={`Account menu for ${email}`}
+            className="flex min-w-0 items-center gap-2.5 rounded-full text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nk-lime"
+          >
+            <Avatar name={email} size="sm" />
+            <span className="truncate text-[#c3c8b6]">Your account</span>
+          </DropdownTrigger>
+
+          <DropdownContent align="start">
+            <DropdownLabel>{email}</DropdownLabel>
+            <DropdownSeparator />
+            {menuLinkItems.map((item) => (
+              <DropdownItem key={item.id} asChild>
+                <Link href={item.href!}>{item.label}</Link>
+              </DropdownItem>
+            ))}
+            <DropdownSeparator />
+            {/* LogoutButton is a Server Component (a Server Action form), so it
+                sits beside the Radix items rather than inside one. */}
+            <div className="px-1 py-0.5">
+              <LogoutButton className="block w-full rounded-sm px-2 py-1.5 text-left text-foreground transition-colors hover:bg-surface" />
+            </div>
+          </DropdownContent>
+        </Dropdown>
+        <ThemeToggle />
       </div>
     </header>
   );

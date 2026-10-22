@@ -6,7 +6,6 @@ import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { FormMessage } from "@/components/ui/FormMessage";
 import { FutureAction } from "@/components/ui/FutureAction";
-import { PageHeader } from "@/components/ui/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { buttonVariants } from "@/components/ui/Button";
 import { ActionTile } from "@/components/ui/Tiles";
@@ -63,10 +62,25 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
   const isSteward = await isCurrentUserSteward();
 
   return (
-    <main id="main-content" tabIndex={-1} className="py-16">
-      <Container width="content">
-        {/* 1. Welcome/status header */}
-        <PageHeader title="Member area" />
+    <main id="main-content" tabIndex={-1} className="px-4 py-6 sm:px-8 sm:py-10">
+      <Container width="content" padded={false}>
+        {/* 1. Welcome band (ink, like the home page). */}
+        <section data-theme="dark" className="relative overflow-hidden rounded-3xl bg-nk-ink px-7 py-10 text-nk-bone sm:px-12 sm:py-14">
+          <p className="flex items-center gap-3 text-sm text-[#c3c8b6]">
+            <span aria-hidden="true" className="nk-live-dot" />
+            You&apos;re signed in as <strong className="font-medium text-nk-bone">{email}</strong>.
+          </p>
+          <h1 className="mt-6 font-display text-5xl font-bold leading-[0.95] tracking-[-0.03em] sm:text-7xl">
+            Member area
+          </h1>
+          <p className="mt-5 max-w-xl text-lg text-[#c3c8b6]">
+            Read the record, find your own place in it, and see who you were documented alongside.
+          </p>
+          <span
+            aria-hidden="true"
+            className="pointer-events-none absolute -right-16 -top-16 size-64 rounded-full border-[28px] border-nk-lime/90 sm:-right-10 sm:-top-10"
+          />
+        </section>
 
         {/* Explicit "confirmation success" state — only shown once, right
             after following the signup-confirmation link. */}
@@ -76,11 +90,7 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
           </div>
         ) : null}
 
-        <p className="mt-2 text-sm text-muted-foreground">
-          You&apos;re signed in as <strong className="font-medium text-foreground">{email}</strong>.
-        </p>
-
-        <Section spacing="sm" className="mt-8 flex flex-col gap-6">
+        <Section spacing="sm" className="mt-6 flex flex-col gap-6">
           {/* 2. "Your account" summary card — the same minimal facts
               /account shows, surfaced here too as a real, currently-true
               summary, not a placeholder. */}
@@ -164,10 +174,10 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
 
           {/* 4. Where to go next -- whole-card links, not a list of records. */}
           <section aria-labelledby="next-heading">
-            <h2 id="next-heading" className="font-display text-xl font-bold tracking-tight text-foreground">
+            <h2 id="next-heading" className="mt-6 font-display text-3xl font-bold tracking-tight text-foreground">
               Where to go next
             </h2>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               <ActionTile
                 href="/explore"
                 title="Read the record"
