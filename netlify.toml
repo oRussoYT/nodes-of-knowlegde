@@ -1,10 +1,10 @@
 # Configuração da Netlify (publicação do site).
 # A Netlify detecta o Next.js e instala sozinha o adaptador oficial.
-# As chaves do Supabase hospedado NÃO ficam aqui: são cadastradas no painel da
-# Netlify (Site configuration → Environment variables):
-#   NEXT_PUBLIC_SITE_URL
-#   NEXT_PUBLIC_SUPABASE_URL
-#   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+# O endereço do Supabase hospedado e a chave PUBLICÁVEL ficam aqui de propósito:
+# são públicos por natureza (vão para o navegador de qualquer visitante).
+# Nenhuma chave secreta (service-role) entra neste arquivo, nunca.
+# O endereço do site vem sozinho da Netlify (variável URL), ver next.config.ts;
+# para usar um domínio próprio, cadastre NEXT_PUBLIC_SITE_URL no painel.
 
 [build]
   command = "npm run build"
@@ -12,3 +12,5 @@
 
 [build.environment]
   NODE_VERSION = "22"
+  NEXT_PUBLIC_SUPABASE_URL = "https://stxvicpqqzpbwenoppma.supabase.co"
+  NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_9Oh5phD9rK086D3ypboaEA_hpu_yib_"
