@@ -812,12 +812,14 @@ main.nk-motion[data-motion="off"] .nk-preloader,
 main.nk-motion[data-motion="off"] .nk-cursor { display: none; }
 
 /* Images that wipe in when they reach the screen, then drift with scroll. */
-.nk-reveal { clip-path: inset(100% 0 0 0); transition: clip-path 1.4s cubic-bezier(0.77, 0, 0.18, 1); }
-.nk-reveal.is-in { clip-path: inset(0 0 0 0); }
-.nk-reveal > img { transform: scale(1.18); transition: transform 2.2s cubic-bezier(0.19, 1, 0.22, 1); will-change: transform; }
-.nk-reveal.is-in > img { transform: scale(1.08) translateY(var(--nk-py, 0px)); }
-main.nk-motion[data-motion="off"] .nk-reveal { clip-path: none; }
-main.nk-motion[data-motion="off"] .nk-reveal > img { transform: none; }
+/* The observed frame (.nk-reveal) is never clipped -- an element clipped to
+   nothing never counts as on screen -- so the wipe lives on an inner mask. */
+.nk-reveal-mask { position: absolute; inset: 0; clip-path: inset(100% 0 0 0); transition: clip-path 1.4s cubic-bezier(0.77, 0, 0.18, 1); }
+.nk-reveal.is-in .nk-reveal-mask { clip-path: inset(0 0 0 0); }
+.nk-reveal-mask > img { transform: scale(1.18); transition: transform 2.2s cubic-bezier(0.19, 1, 0.22, 1); will-change: transform; }
+.nk-reveal.is-in .nk-reveal-mask > img { transform: scale(1.08) translateY(var(--nk-py, 0px)); }
+main.nk-motion[data-motion="off"] .nk-reveal-mask { clip-path: none; }
+main.nk-motion[data-motion="off"] .nk-reveal-mask > img { transform: none; }
 
 /* Hero photo: slow breathing zoom under the headline. */
 @keyframes nk-breathe { from { transform: scale(1.12); } to { transform: scale(1.02); } }

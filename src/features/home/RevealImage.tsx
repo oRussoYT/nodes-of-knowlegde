@@ -72,8 +72,9 @@ export function RevealImage({
 
   return (
     <div ref={ref} className={cn("nk-reveal relative overflow-hidden bg-nk-ink-2", shown && "is-in", className)}>
-      {/* eslint-disable-next-line @next/next/no-img-element -- self-hosted, pre-sized photos with srcset */}
-      <img
+      <div className="nk-reveal-mask">
+        {/* eslint-disable-next-line @next/next/no-img-element -- self-hosted, pre-sized photos with srcset */}
+        <img
         src={`/photos/${src}-1920.jpg`}
         srcSet={`/photos/${src}-960.jpg 960w, /photos/${src}-1920.jpg 1920w`}
         sizes={sizes}
@@ -81,7 +82,8 @@ export function RevealImage({
         loading={eager ? "eager" : "lazy"}
         decoding="async"
         className="absolute inset-0 size-full object-cover"
-      />
+        />
+      </div>
     </div>
   );
 }
