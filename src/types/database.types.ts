@@ -1311,6 +1311,48 @@ export type Database = {
           },
         ]
       }
+      member_profiles: {
+        Row: {
+          biography: string | null
+          created_at: string
+          display_name: string | null
+          headline: string | null
+          location: string | null
+          orcid: string | null
+          photo_path: string | null
+          updated_at: string
+          user_id: string
+          visibility: string
+          website: string | null
+        }
+        Insert: {
+          biography?: string | null
+          created_at?: string
+          display_name?: string | null
+          headline?: string | null
+          location?: string | null
+          orcid?: string | null
+          photo_path?: string | null
+          updated_at?: string
+          user_id: string
+          visibility?: string
+          website?: string | null
+        }
+        Update: {
+          biography?: string | null
+          created_at?: string
+          display_name?: string | null
+          headline?: string | null
+          location?: string | null
+          orcid?: string | null
+          photo_path?: string | null
+          updated_at?: string
+          user_id?: string
+          visibility?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       reviewers: {
         Row: {
           created_at: string

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { Card } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { FormMessage } from "@/components/ui/FormMessage";
@@ -11,6 +10,8 @@ import { buttonVariants } from "@/components/ui/Button";
 import { ActionTile } from "@/components/ui/Tiles";
 import { pageTitle } from "@/config/site";
 import { getIdentityStatus } from "@/features/identity/status";
+import { Avatar } from "@/components/ui/Avatar";
+import { getMyProfile } from "@/features/member-profile/read";
 import { getIdentityStatusCopy } from "@/features/identity/copy";
 import { isCurrentUserSteward } from "@/features/review/authorization";
 import { createClient } from "@/lib/supabase/server";
@@ -60,6 +61,11 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
   const identityStatus = await getIdentityStatus();
   const statusCopy = getIdentityStatusCopy(identityStatus);
   const isSteward = await isCurrentUserSteward();
+  const mine = await getMyProfile();
+  const profile = mine?.profile;
+  const photoUrl = mine?.photoUrl ?? null;
+  const shown = profile?.displayName ?? email;
+  const profileStarted = Boolean(profile?.displayName || profile?.headline || profile?.photoPath);
 
   return (
     <main id="main-content" tabIndex={-1} className="px-4 py-6 sm:px-8 sm:py-10">
@@ -94,9 +100,28 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
           {/* 2. "Your account" summary card — the same minimal facts
               /account shows, surfaced here too as a real, currently-true
               summary, not a placeholder. */}
-          <Card>
-            <h2 className="text-sm font-medium text-foreground">Your account</h2>
-            <dl className="mt-3 divide-y divide-border-default text-sm">
+          <section aria-labelledby="profile-heading" className="rounded-3xl border border-border-default bg-surface p-6 sm:p-7">
+            <div className="flex flex-wrap items-center gap-5">
+              {photoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element -- short-lived signed link to a private photo
+                <img src={photoUrl} alt={`Photo of ${shown}`} className="size-20 rounded-full object-cover ring-4 ring-nk-lime/70" />
+              ) : (
+                <Avatar name={shown} size="lg" className="size-20 text-2xl" />
+              )}
+              <div className="min-w-0 flex-1">
+                <h2 id="profile-heading" className="font-display text-2xl font-bold leading-tight tracking-tight text-foreground">
+                  {profile?.displayName ?? "Your profile"}
+                </h2>
+                <p className="mt-1 text-[15px] text-muted-foreground">
+                  {profile?.headline ?? (profileStarted ? "" : "Add your photo, your name and a few words about you.")}
+                </p>
+                {profile?.location ? <p className="text-sm text-muted-foreground">{profile.location}</p> : null}
+              </div>
+              <Link href="/profile" className={buttonVariants({ emphasis: profileStarted ? "secondary" : "primary", size: "sm" })}>
+                {profileStarted ? "Edit your profile" : "Set up your profile"}
+              </Link>
+            </div>
+            <dl className="mt-5 divide-y divide-border-default border-t border-border-default text-sm">
               <div className="flex items-center justify-between gap-4 py-2">
                 <dt className="text-muted-foreground">Email</dt>
                 <dd className="text-foreground">{email}</dd>
@@ -106,7 +131,7 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
                 <dd className="text-foreground">Authenticated</dd>
               </div>
             </dl>
-          </Card>
+          </section>
 
           {/* 3. Identity-claim status — the real workflow, M5.3. Every branch
               renders only real, currently-true state from

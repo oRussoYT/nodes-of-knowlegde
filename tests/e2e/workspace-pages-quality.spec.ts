@@ -66,10 +66,12 @@ test.describe("/member — accessible structure and honest empty state", () => {
     await page.goto("/member");
 
     // Exactly one h1 ("Member area"), consistent with the single-main-landmark,
-    // no-skipped-levels requirement — Card's "Your account" is a genuine h2
-    // beneath it, not a second h1.
+    // no-skipped-levels requirement — the profile card's "Your profile" is a
+    // genuine h2 beneath it, not a second h1. A new member is invited to set
+    // up their profile (a real, working page).
     await expect(page.getByRole("heading", { level: 1, name: "Member area" })).toBeVisible();
-    await expect(page.getByRole("heading", { level: 2, name: "Your account" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: "Your profile" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Set up your profile" })).toHaveAttribute("href", "/profile");
 
     // As of M5.3, the claim workflow is real — "Claim a person record" is
     // now a genuine link to /member/claim, not the M5.2-era inert

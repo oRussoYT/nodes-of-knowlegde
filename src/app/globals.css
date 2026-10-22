@@ -115,6 +115,10 @@
   /* Surfaces */
   --color-background: #ffffff;
   --color-surface: var(--neutral-50);
+  /* Signed-in area canvas: warm bone, so white cards and the lime accent sit
+     on it instead of a stark black/white split. */
+  --color-app: #f1f0e8;
+  --color-app-chrome: #fbfaf5;
   --color-surface-raised: #ffffff; /* dialogs/dropdowns — elevated via shadow, not tint, in light mode */
   --color-surface-sunken: var(--neutral-100);
   /* Scrim behind Dialog/Drawer — deliberately the same fixed value in both
@@ -269,6 +273,8 @@
 
   --color-background: var(--neutral-50);
   --color-surface: var(--neutral-100);
+  --color-app: var(--neutral-50);
+  --color-app-chrome: #11140e;
   --color-surface-raised: var(--neutral-200);
   --color-surface-sunken: #000000;
   --color-overlay: rgb(0 0 0 / 0.4);
@@ -400,6 +406,8 @@
 
     --color-background: var(--neutral-50);
     --color-surface: var(--neutral-100);
+    --color-app: var(--neutral-50);
+    --color-app-chrome: #11140e;
     --color-surface-raised: var(--neutral-200);
     --color-surface-sunken: #000000;
     --color-overlay: rgb(0 0 0 / 0.4);
@@ -795,11 +803,14 @@ body {
 }
 
 /* Sidebar navigation (ink, theme-independent). */
+/* Signed-in area: warm canvas + a sidebar that follows the theme. */
+.nk-app { background: var(--color-app); }
+.nk-app-chrome { background: var(--color-app-chrome); }
 .nk-side-link {
   display: flex; align-items: center; gap: 0.75rem; border-radius: 0.75rem;
-  padding: 0.6rem 0.85rem; color: #c3c8b6; transition: background-color 200ms, color 200ms;
+  padding: 0.6rem 0.85rem; color: var(--color-muted-foreground); transition: background-color 200ms, color 200ms;
 }
-.nk-side-link:hover { background: var(--nk-ink-3); color: var(--nk-bone); }
+.nk-side-link:hover { background: var(--color-surface-sunken); color: var(--color-foreground); }
 .nk-side-link[aria-current="page"] { background: var(--nk-lime); color: var(--nk-ink); font-weight: 600; }
 /* Visitor switched motion off on the home page. */
 main.nk-motion[data-motion="off"] *,

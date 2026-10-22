@@ -90,11 +90,8 @@ export const navigationConfig: NavItem[] = [
   {
     id: "profile",
     label: "Profile",
-    groups: ["protected-primary"],
-    availability: {
-      status: "planned",
-      reason:
-        "Person-record view not yet built — reserved per docs/application-information-architecture.md's 'Future member structure' and the IA doc's primary-navigation section, which names this exact future entry point.",
-    },
+    href: "/profile",
+    groups: ["protected-primary", "user-menu"],
+    availability: { status: "available" },
   },
 ];

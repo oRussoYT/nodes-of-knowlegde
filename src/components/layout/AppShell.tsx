@@ -31,7 +31,7 @@ export function AppShell({ header, children, withSidebar = false }: AppShellProp
     <div className="flex min-h-dvh flex-col">
       <SkipLink />
       {header}
-      {withSidebar ? <div className="flex min-h-dvh flex-1 flex-col md:pl-64">{children}</div> : children}
+      {withSidebar ? <div className="nk-app flex min-h-dvh flex-1 flex-col md:pl-64">{children}</div> : children}
     </div>
   );
 }
