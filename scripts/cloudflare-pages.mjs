@@ -9,7 +9,7 @@
 // Run after `npx opennextjs-cloudflare build` (see "build:pages" in
 // package.json). Pages build settings: command `npm run build:pages`,
 // output folder `.open-next/assets`.
-import { cpSync, existsSync, readdirSync, renameSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 const root = ".open-next";
@@ -26,7 +26,25 @@ for (const entry of readdirSync(root)) {
   if (entry === "assets") continue;
   cpSync(join(root, entry), join(worker, entry), { recursive: true });
 }
-renameSync(join(worker, "worker.js"), join(worker, "index.js"));
+// Pages starts the server from _worker.js/index.js. A small entry loads the
+// OpenNext server; on preview addresses (not the main site) it shows the error
+// text instead of Cloudflare's blank error page, to make problems findable.
+writeFileSync(
+  join(worker, "index.js"),
+  `const MAIN_HOST = "nodes-bdffp.pages.dev";
+export default {
+  async fetch(request, env, ctx) {
+    try {
+      const { default: server } = await import("./worker.js");
+      return await server.fetch(request, env, ctx);
+    } catch (error) {
+      if (new URL(request.url).hostname === MAIN_HOST) throw error;
+      return new Response(String((error && error.stack) || error), { status: 500 });
+    }
+  },
+};
+`,
+);
 
 writeFileSync(
   join(assets, "_routes.json"),
