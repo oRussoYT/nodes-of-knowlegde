@@ -31,7 +31,7 @@ export function PublicHeader() {
   return (
     <header className="border-b border-border-default">
       <div className="mx-auto flex max-w-(--container-shell) items-center justify-between gap-3 px-6 py-4">
-        <Link href="/" className="text-sm font-semibold tracking-tight text-foreground">
+        <Link href="/" className="font-display text-lg font-extrabold tracking-tight text-foreground [font-stretch:112%]">
           {SITE_NAME}
         </Link>
 

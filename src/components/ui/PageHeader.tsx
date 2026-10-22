@@ -20,10 +20,12 @@ export interface PageHeaderProps {
 // ready to compose. Server Component: no interactivity of its own.
 export function PageHeader({ title, description, action, className }: PageHeaderProps) {
   return (
-    <div className={cn("flex flex-wrap items-start justify-between gap-4", className)}>
-      <div>
-        <h1 className="text-2xl font-semibold text-foreground">{title}</h1>
-        {description ? <p className="mt-1 text-sm text-muted-foreground">{description}</p> : null}
+    <div className={cn("flex flex-wrap items-end justify-between gap-x-6 gap-y-4 border-b border-border-default pb-6", className)}>
+      <div className="min-w-0">
+        <h1 className="font-display text-3xl font-bold leading-[1.05] tracking-tight text-foreground sm:text-4xl">
+          {title}
+        </h1>
+        {description ? <p className="mt-3 max-w-prose text-base text-muted-foreground">{description}</p> : null}
       </div>
       {action ? <div className="shrink-0">{action}</div> : null}
     </div>

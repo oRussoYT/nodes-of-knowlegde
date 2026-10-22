@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { ActionTile, StatTile } from "@/components/ui/Tiles";
 import { pageTitle } from "@/config/site";
 import { listInstitutionOptions } from "@/features/import/read";
 import {
@@ -23,15 +24,6 @@ export const metadata: Metadata = {
   title: pageTitle("Steward console"),
 };
 
-function Stat({ value, label }: { value: number | string; label: string }) {
-  return (
-    <div className="flex flex-col-reverse rounded-md border border-border-default bg-surface px-3 py-2">
-      <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">{label}</dt>
-      <dd className="text-lg font-semibold tabular-nums text-foreground">{value}</dd>
-    </div>
-  );
-}
-
 function Attention<T>({
   title,
   description,
@@ -44,7 +36,7 @@ function Attention<T>({
   render: (item: T) => React.ReactNode;
 }) {
   return (
-    <section className="rounded-md border border-border-default px-4 py-3">
+    <section className="rounded-xl border border-border-default bg-surface px-5 py-4">
       <h3 className="text-sm font-semibold text-foreground">
         {title} <span className="font-normal tabular-nums text-muted-foreground">· {section.total}</span>
       </h3>
@@ -97,33 +89,50 @@ export default async function StewardConsolePage({
         <PageHeader
           title="Steward console"
           description="What the record holds and what needs a human. Counts of records, never scores of people."
-          action={
-            <span className="flex gap-4 text-sm">
-              <Link href="/review/outcomes" className="underline underline-offset-2">
-                Graduate outcomes
-              </Link>
-              <Link href="/review/import" className="underline underline-offset-2">
-                Import a list
-              </Link>
-              <Link href="/review/names" className="underline underline-offset-2">
-                Institution names
-              </Link>
-              <Link href="/review/contributions" className="underline underline-offset-2">
-                Proposed contributions
-              </Link>
-              {scope.platform ? (
-                <>
-                  <Link href="/review/stewards" className="underline underline-offset-2">
-                    Institution stewards
-                  </Link>
-                  <Link href="/review/claims" className="underline underline-offset-2">
-                    Claim review queue
-                  </Link>
-                </>
-              ) : null}
-            </span>
-          }
         />
+
+        <section aria-labelledby="work-heading" className="mt-8">
+          <h2 id="work-heading" className="sr-only">
+            Places to work
+          </h2>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <ActionTile
+              href="/review/import"
+              title="Import a list"
+              description="Upload graduates from a spreadsheet and decide each row: same person, new person, or skip."
+            />
+            <ActionTile
+              href="/review/outcomes"
+              title="Graduate outcomes"
+              description="Where your graduates went, by sector, country and year. Export or publish without names."
+            />
+            <ActionTile
+              href="/review/contributions"
+              title="Proposed contributions"
+              description="Contributions people proposed for their own record, waiting for a steward."
+            />
+            <ActionTile
+              href="/review/names"
+              title="Institution names"
+              description="Former, other and translated names, with the years each was used."
+            />
+            {scope.platform ? (
+              <>
+                <ActionTile
+                  href="/review/stewards"
+                  title="Institutions and stewards"
+                  description="Add an institution and appoint the people who look after it."
+                />
+                <ActionTile
+                  href="/review/claims"
+                  title="Claim review queue"
+                  description="People asking to link their account to a person record."
+                  meta={overview && overview.claimsAwaitingReview > 0 ? `${overview.claimsAwaitingReview} waiting` : undefined}
+                />
+              </>
+            ) : null}
+          </div>
+        </section>
 
         <form method="get" className="mt-6 flex flex-wrap items-center gap-3 text-sm">
           <label htmlFor="org" className="text-muted-foreground">
@@ -157,19 +166,19 @@ export default async function StewardConsolePage({
         ) : null}
 
         <section aria-labelledby="overview-heading" className="mt-10">
-          <h2 id="overview-heading" className="text-sm font-medium text-foreground">
+          <h2 id="overview-heading" className="font-display text-xl font-bold tracking-tight text-foreground">
             The record
           </h2>
           {overview ? (
-            <dl className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <Stat value={overview.people.total} label="people" />
-              <Stat value={overview.people.claimed} label="claimed by their person" />
-              <Stat value={overview.organizations.total} label="institutions" />
-              <Stat value={overview.claimsAwaitingReview} label="claims awaiting review" />
-              <Stat value={overview.participations.total} label="participations" />
-              <Stat value={overview.participations.undated} label="without a date" />
-              <Stat value={overview.relationships.total} label="relationships" />
-              <Stat value={overview.contributions.total} label="contributions" />
+            <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <StatTile value={overview.people.total} label="people" emphasis />
+              <StatTile value={overview.people.claimed} label="claimed by their person" />
+              <StatTile value={overview.organizations.total} label="institutions" />
+              <StatTile value={overview.claimsAwaitingReview} label="claims awaiting review" />
+              <StatTile value={overview.participations.total} label="participations" />
+              <StatTile value={overview.participations.undated} label="without a date" />
+              <StatTile value={overview.relationships.total} label="relationships" />
+              <StatTile value={overview.contributions.total} label="contributions" />
             </dl>
           ) : (
             <EmptyState className="mt-3" title="The overview could not be read" description="Reload the page to try again." />
@@ -177,7 +186,7 @@ export default async function StewardConsolePage({
         </section>
 
         <section aria-labelledby="attention-heading" className="mt-12">
-          <h2 id="attention-heading" className="text-sm font-medium text-foreground">
+          <h2 id="attention-heading" className="font-display text-xl font-bold tracking-tight text-foreground">
             Needs a human
           </h2>
           {attention ? (
@@ -231,7 +240,7 @@ export default async function StewardConsolePage({
         </section>
 
         <section aria-labelledby="timeline-heading" className="mt-12">
-          <h2 id="timeline-heading" className="text-sm font-medium text-foreground">
+          <h2 id="timeline-heading" className="font-display text-xl font-bold tracking-tight text-foreground">
             The record through time
           </h2>
           <p className="mt-1 text-xs text-muted-foreground">Participations beginning in each decade.</p>
@@ -242,7 +251,7 @@ export default async function StewardConsolePage({
                   <span className="tabular-nums text-muted-foreground">{d.decade}s</span>
                   <span className="h-3 rounded-sm bg-surface-sunken">
                     <span
-                      className="block h-3 rounded-sm bg-accent"
+                      className="nk-bar block h-3 rounded-sm bg-accent"
                       style={{ width: `${(d.participationsStarting / maxDecade) * 100}%` }}
                     />
                   </span>
