@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/ui/cn";
 
@@ -26,19 +26,21 @@ export function RevealImage({
   eager?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
+  // Kept in state (not classList) so parent re-renders don't wipe it.
+  const [shown, setShown] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     if (!motionAllowed()) {
-      el.classList.add("is-in");
-      return;
+      const t = window.setTimeout(() => setShown(true), 0);
+      return () => window.clearTimeout(t);
     }
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
           if (e.isIntersecting) {
-            el.classList.add("is-in");
+            setShown(true);
             io.disconnect();
           }
         }
@@ -69,7 +71,7 @@ export function RevealImage({
   }, [drift]);
 
   return (
-    <div ref={ref} className={cn("nk-reveal relative overflow-hidden bg-nk-ink-2", className)}>
+    <div ref={ref} className={cn("nk-reveal relative overflow-hidden bg-nk-ink-2", shown && "is-in", className)}>
       {/* eslint-disable-next-line @next/next/no-img-element -- self-hosted, pre-sized photos with srcset */}
       <img
         src={`/photos/${src}-1920.jpg`}
