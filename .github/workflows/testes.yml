@@ -40,6 +40,8 @@ jobs:
         run: npm test
       - name: Build
         run: npm run build
+      - name: Build para a Cloudflare (o que vai ao ar)
+        run: npx opennextjs-cloudflare build --skipNextBuild
 
   completo:
     name: Completo (banco + telas)
