@@ -146,7 +146,7 @@ export default function HomePage() {
           <p className="hidden sm:block">Forest fragments, Amazonia, since 1979</p>
         </div>
 
-        <h1 className="my-10 font-display text-[clamp(2.4rem,7.6vw,10rem)] font-bold leading-[0.95] tracking-[-0.035em]">
+        <h1 className="my-10 font-display text-[clamp(2.4rem,9.6vw,13rem)] font-bold leading-[0.92] tracking-[-0.035em]">
           {HEADLINE.map((text, i) => (
             <span key={text} className="nk-line sm:whitespace-nowrap">
               <span style={{ animationDelay: `${1300 + i * 110}ms` }}>{text}</span>
@@ -191,7 +191,7 @@ export default function HomePage() {
                   key={`${copy}-${role}`}
                   className={cn(
                     "flex items-center font-display text-4xl font-bold tracking-tight sm:text-6xl",
-                    i % 2 === 1 ? "nk-outline text-nk-bone" : "text-nk-bone",
+                    i % 2 === 1 ? "nk-outline" : "text-nk-bone",
                   )}
                 >
                   <span className="px-8">{role}</span>
@@ -331,7 +331,7 @@ export default function HomePage() {
           </div>
           <p
             aria-hidden="true"
-            className="nk-outline mt-10 select-none whitespace-nowrap font-display text-[15.2vw] font-extrabold leading-[0.8] tracking-[-0.045em] text-nk-moss [font-stretch:80%]"
+            className="nk-outline mt-10 select-none whitespace-nowrap font-display text-[15.2vw] font-extrabold leading-[0.8] tracking-[-0.045em] [--nk-stroke:var(--nk-moss)] [--nk-stroke-w:2px] [font-stretch:80%]"
           >
             NODES BDFFP
           </p>

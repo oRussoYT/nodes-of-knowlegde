@@ -744,7 +744,7 @@ body {
 .nk-ribbon { overflow: hidden; white-space: nowrap; }
 .nk-ribbon-track { display: inline-flex; animation: nk-run 38s linear infinite; }
 .nk-ribbon:hover .nk-ribbon-track { animation-play-state: paused; }
-.nk-outline { color: transparent; -webkit-text-stroke: 1.5px currentColor; }
+.nk-outline { color: transparent; -webkit-text-stroke: var(--nk-stroke-w, 1.5px) var(--nk-stroke, var(--nk-bone)); }
 
 /* Preloader: counts to 100 then lifts like a curtain; never blocks clicks. */
 .nk-preloader {
