@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Archivo, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 
 import { ThemeScript } from "@/components/theme/ThemeScript";
@@ -9,6 +10,12 @@ import { SITE_DESCRIPTION, SITE_NAME } from "@/config/site";
 // become dynamic (e.g. driven by a locale segment/middleware), per
 // docs/architecture.md.
 const LOCALE = "en";
+
+// Two families (globals.css --font-ui / --font-display): Instrument Sans for
+// reading and interface text, Archivo -- with its variable width axis -- for
+// headings and numbers. Self-hosted at build time by next/font.
+const instrument = Instrument_Sans({ subsets: ["latin", "latin-ext"], variable: "--font-instrument", display: "swap" });
+const archivo = Archivo({ subsets: ["latin", "latin-ext"], axes: ["wdth"], variable: "--font-archivo", display: "swap" });
 
 export const metadata: Metadata = {
   title: SITE_NAME,
@@ -38,7 +45,7 @@ export default function RootLayout({
     // internally) — see React's own docs on `suppressHydrationWarning` for
     // "an element's attribute or text content will (necessarily) differ
     // between the server and the client, and you can't fix it."
-    <html lang={LOCALE} suppressHydrationWarning>
+    <html lang={LOCALE} suppressHydrationWarning className={`${instrument.variable} ${archivo.variable}`}>
       <body className="antialiased">
         {/* Must render before any themed content — see ThemeScript.tsx. */}
         <ThemeScript />

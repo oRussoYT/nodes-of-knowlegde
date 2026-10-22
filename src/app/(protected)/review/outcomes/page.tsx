@@ -5,6 +5,7 @@ import { buttonVariants } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { StatTile } from "@/components/ui/Tiles";
 import { pageTitle } from "@/config/site";
 import { listInstitutionOptions } from "@/features/import/read";
 import { formatMinutes } from "@/features/outcomes/parse";
@@ -37,7 +38,7 @@ const SECTOR_LABEL: Record<string, string> = {
 function Bar({ value, max }: { value: number; max: number }) {
   return (
     <span className="block h-2.5 rounded-sm bg-surface-sunken">
-      <span className="block h-2.5 rounded-sm bg-accent" style={{ width: `${max > 0 ? (value / max) * 100 : 0}%` }} />
+      <span className="nk-bar block h-2.5 rounded-sm bg-accent" style={{ width: `${max > 0 ? (value / max) * 100 : 0}%` }} />
     </span>
   );
 }
@@ -134,25 +135,18 @@ export default async function OutcomesPage({
         ) : (
           <>
             <section aria-labelledby="totals-heading" className="mt-10">
-              <h2 id="totals-heading" className="text-sm font-medium text-foreground">
-                {orgName} · {doc.totals.graduates} graduates on record
+              <h2 id="totals-heading" className="font-display text-xl font-bold tracking-tight text-foreground">
+                {orgName}, {doc.totals.graduates} graduates on record
               </h2>
-              <dl className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {[
-                  { v: doc.totals.found, k: "found — destination confirmed" },
-                  { v: doc.totals.probable, k: "probable — proposals waiting" },
-                  { v: doc.totals.needsPerson, k: "need a person" },
-                  { v: formatMinutes(doc.timeSaved.minutes), k: "of searching saved" },
-                ].map((s) => (
-                  <div key={s.k} className="flex flex-col-reverse rounded-md border border-border-default bg-surface px-3 py-2">
-                    <dt className="text-[11px] uppercase tracking-wide text-muted-foreground">{s.k}</dt>
-                    <dd className="text-xl font-semibold tabular-nums text-foreground">{s.v}</dd>
-                  </div>
-                ))}
+              <dl className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <StatTile value={doc.totals.found} label="Found, destination confirmed" emphasis />
+                <StatTile value={doc.totals.probable} label="Probable, proposals waiting" />
+                <StatTile value={doc.totals.needsPerson} label="Need a person" />
+                <StatTile value={formatMinutes(doc.timeSaved.minutes)} label="Of searching saved" />
               </dl>
-              <div className="mt-3" aria-hidden="true">
-                <span className="flex h-3 overflow-hidden rounded-sm bg-surface-sunken">
-                  <span className="bg-accent" style={{ width: `${(doc.totals.found / doc.totals.graduates) * 100}%` }} />
+              <div className="mt-4" aria-hidden="true">
+                <span className="flex h-4 overflow-hidden rounded-full bg-surface-sunken">
+                  <span className="nk-bar bg-accent" style={{ width: `${(doc.totals.found / doc.totals.graduates) * 100}%` }} />
                   <span className="bg-accent opacity-40" style={{ width: `${(doc.totals.probable / doc.totals.graduates) * 100}%` }} />
                 </span>
               </div>
@@ -186,7 +180,7 @@ export default async function OutcomesPage({
 
             <div className="mt-12 grid gap-10 sm:grid-cols-2">
               <section aria-labelledby="sector-heading">
-                <h2 id="sector-heading" className="text-sm font-medium text-foreground">
+                <h2 id="sector-heading" className="font-display text-lg font-bold tracking-tight text-foreground">
                   Where they work now, by sector
                 </h2>
                 {doc.bySector.length === 0 ? (
@@ -205,7 +199,7 @@ export default async function OutcomesPage({
               </section>
 
               <section aria-labelledby="country-heading">
-                <h2 id="country-heading" className="text-sm font-medium text-foreground">
+                <h2 id="country-heading" className="font-display text-lg font-bold tracking-tight text-foreground">
                   By country
                 </h2>
                 {doc.byCountry.length === 0 ? (
@@ -224,7 +218,7 @@ export default async function OutcomesPage({
               </section>
 
               <section aria-labelledby="year-heading">
-                <h2 id="year-heading" className="text-sm font-medium text-foreground">
+                <h2 id="year-heading" className="font-display text-lg font-bold tracking-tight text-foreground">
                   By graduation year
                 </h2>
                 <ul className="mt-3 flex flex-col gap-2 text-sm">
@@ -242,7 +236,7 @@ export default async function OutcomesPage({
               </section>
 
               <section aria-labelledby="programme-heading">
-                <h2 id="programme-heading" className="text-sm font-medium text-foreground">
+                <h2 id="programme-heading" className="font-display text-lg font-bold tracking-tight text-foreground">
                   By programme
                 </h2>
                 <ul className="mt-3 flex flex-col gap-2 text-sm">
@@ -261,7 +255,7 @@ export default async function OutcomesPage({
 
             {doc.destinations.length > 0 ? (
               <section aria-labelledby="dest-heading" className="mt-12">
-                <h2 id="dest-heading" className="text-sm font-medium text-foreground">
+                <h2 id="dest-heading" className="font-display text-lg font-bold tracking-tight text-foreground">
                   Destinations
                 </h2>
                 <p className="mt-1 text-xs text-muted-foreground">Alphabetical. Not a ranking.</p>

@@ -9,6 +9,7 @@ import { FutureAction } from "@/components/ui/FutureAction";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Section } from "@/components/ui/Section";
 import { buttonVariants } from "@/components/ui/Button";
+import { ActionTile } from "@/components/ui/Tiles";
 import { pageTitle } from "@/config/site";
 import { getIdentityStatus } from "@/features/identity/status";
 import { getIdentityStatusCopy } from "@/features/identity/copy";
@@ -161,24 +162,47 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
             />
           )}
 
-          {/* 4. Quick links */}
-          <div className="flex flex-wrap items-center gap-4 text-sm">
-            <Link href="/account" className="font-medium text-foreground underline underline-offset-2">
-              Account
-            </Link>
-            <FutureAction label="Account → Security" />
-            <Link href="/member/suggestions" className="font-medium text-foreground underline underline-offset-2">
-              People you may know
-            </Link>
-            <Link href="/member/contributions" className="font-medium text-foreground underline underline-offset-2">
-              Propose a contribution
-            </Link>
-            {isSteward ? (
-              <Link href="/review/console" className="font-medium text-foreground underline underline-offset-2">
-                Steward console
-              </Link>
-            ) : null}
-          </div>
+          {/* 4. Where to go next -- whole-card links, not a list of records. */}
+          <section aria-labelledby="next-heading">
+            <h2 id="next-heading" className="font-display text-xl font-bold tracking-tight text-foreground">
+              Where to go next
+            </h2>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              <ActionTile
+                href="/explore"
+                title="Read the record"
+                description="People, institutions and contributions, each with its sources."
+              />
+              {identityStatus.kind === "approved" ? null : (
+                <ActionTile
+                  href="/member/claim"
+                  title="Find your record"
+                  description="Search for the person record that is you and ask to link it to this account."
+                />
+              )}
+              <ActionTile
+                href="/member/suggestions"
+                title="People you may know"
+                description="Documented in the same place at the same time, or trained by the same mentor. Always with the reason."
+              />
+              <ActionTile
+                href="/member/contributions"
+                title="Propose a contribution"
+                description="Something you helped bring into being. A steward checks what documents it."
+              />
+              {isSteward ? (
+                <ActionTile
+                  href="/review/console"
+                  title="Steward console"
+                  description="Import graduate lists, see where they went, and work through what needs a human."
+                />
+              ) : null}
+              <ActionTile href="/account" title="Account" description="Your email and sign-in details." />
+            </div>
+            <div className="mt-4 text-sm">
+              <FutureAction label="Account → Security" />
+            </div>
+          </section>
         </Section>
       </Container>
     </main>

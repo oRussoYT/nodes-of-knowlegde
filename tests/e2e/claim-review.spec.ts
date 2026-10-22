@@ -254,7 +254,10 @@ test.describe("Approve workflow — claimant-visible outcome", () => {
     const linkedRecord = claimantPage.getByRole("link", { name: "Read your linked record" });
     await expect(linkedRecord).toHaveAttribute("href", `/people/${claimablePerson.id}`);
     await linkedRecord.click();
-    await expect(claimantPage).toHaveURL(new RegExp(`/people/${claimablePerson.id}$`));
+    // The first visit to a person page compiles it in the dev server (and,
+    // since the type refresh, fetches its fonts), which can take longer than
+    // the default 5 s on a cold CI machine.
+    await expect(claimantPage).toHaveURL(new RegExp(`/people/${claimablePerson.id}$`), { timeout: 20_000 });
     await expect(claimantPage.getByRole("heading", { level: 1 })).toHaveCount(1);
 
     await claimantPage.goto("/account");
