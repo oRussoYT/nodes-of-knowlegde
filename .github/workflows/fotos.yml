@@ -1,0 +1,41 @@
+# Baixa as fotos da página inicial (Wikimedia Commons, licenças livres) e as
+# guarda no próprio site, em public/photos/, para não depender de links
+# externos. Roda só quando acionado à mão (aba Actions → "Fotos").
+name: Fotos
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  baixar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Baixar as fotos
+        run: |
+          mkdir -p public/photos
+          UA="NodesBDFFP/1.0 (https://nodesofknowlegde.netlify.app; site photos)"
+          get() { curl -fsSL -A "$UA" -o "public/photos/$1" "$2"; }
+          B=https://upload.wikimedia.org/wikipedia/commons/thumb
+          for w in 1920 960; do
+            get aerial-$w.jpg        "$B/d/d0/Aerial_view_of_the_Amazon_Rainforest.jpg/${w}px-Aerial_view_of_the_Amazon_Rainforest.jpg"
+            get satellite-$w.jpg     "$B/5/54/Amazon_rainforest_%28Satellite_picture%29_-_3.jpg/${w}px-Amazon_rainforest_%28Satellite_picture%29_-_3.jpg"
+            get camp-$w.jpg          "$B/1/13/Acampamento_em_%C3%81rea_Devassada_da_Floresta_Amaz%C3%B4nica_-_813%2C_Acervo_do_Museu_Paulista_da_USP.jpg/${w}px-Acampamento_em_%C3%81rea_Devassada_da_Floresta_Amaz%C3%B4nica_-_813%2C_Acervo_do_Museu_Paulista_da_USP.jpg"
+            get canopy-$w.jpg        "$B/e/ed/ACTS_Canopy_Walkway_-_Flickr_-_pellaea_%283%29.jpg/${w}px-ACTS_Canopy_Walkway_-_Flickr_-_pellaea_%283%29.jpg"
+            get river-$w.jpg         "$B/f/f9/Amazon_CIAT_%283%29.jpg/${w}px-Amazon_CIAT_%283%29.jpg"
+            get flooded-$w.jpg       "$B/f/f7/Floresta_Amaz%C3%B4nica_-_Iranduba.jpeg/${w}px-Floresta_Amaz%C3%B4nica_-_Iranduba.jpeg"
+            get mist-$w.jpg          "$B/6/61/Floresta_amaz%C3%B4nica.jpg/${w}px-Floresta_amaz%C3%B4nica.jpg"
+            get clouds-$w.jpg        "$B/1/18/Amazon_CIAT_%285%29.jpg/${w}px-Amazon_CIAT_%285%29.jpg"
+            sleep 1
+          done
+          ls -la public/photos
+      - name: Guardar no repositório
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/photos
+          git commit -m "Home page photos from Wikimedia Commons" || echo "nothing new"
+          git push
