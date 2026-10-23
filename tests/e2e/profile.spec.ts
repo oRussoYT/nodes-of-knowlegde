@@ -24,7 +24,7 @@ test("a member edits their profile and sees it in the member area", async ({ pag
   await page.goto("/profile");
   await expect(page.getByRole("heading", { level: 1, name: "Your profile" })).toBeVisible();
 
-  await page.getByLabel("Name").fill("Ana Field");
+  await page.getByLabel("Name", { exact: true }).fill("Ana Field");
   await page.getByLabel("Headline").fill("Doctoral student, forest ecology");
   await page.getByLabel("Where you are").fill("Manaus, Brazil");
   await page.getByLabel("ORCID iD").fill("https://orcid.org/0000-0002-1825-0097");
@@ -58,7 +58,7 @@ test("a member searches people by name", async ({ page }) => {
 
   await page.goto("/people");
   await page.getByRole("searchbox", { name: "Search people by name or institution" }).fill("arvoredo");
-  await page.getByRole("button", { name: "Search" }).click();
+  await page.getByRole("search").getByRole("button", { name: "Search", exact: true }).click();
   await expect(page).toHaveURL(/\/people\?q=arvoredo$/);
   await expect(page.getByRole("link", { name: /Helena Arvoredo/ })).toBeVisible();
   await expect(page.getByRole("status")).toContainText("for “arvoredo”");
