@@ -46,7 +46,7 @@ describe("navigationConfig", () => {
     expect(byId.register.groups).toContain("public-primary");
     expect(byId.member.groups).toEqual(expect.arrayContaining(["protected-primary", "user-menu"]));
     // Account is merged into Profile: no longer a menu entry of its own.
-    expect(byId.account.groups).toEqual([]);
+    expect(byId.account).toBeUndefined();
     expect(byId.profile.groups).toEqual(expect.arrayContaining(["protected-primary", "user-menu"]));
   });
 

@@ -81,15 +81,6 @@ export const navigationConfig: NavItem[] = [
     availability: { status: "available" },
   },
   {
-    id: "account",
-    label: "Account",
-    href: "/account",
-    // Merged into Profile ("Access and security"); the page stays reachable
-    // by its address but is no longer a menu entry.
-    groups: [],
-    availability: { status: "available" },
-  },
-  {
     id: "messages",
     label: "Messages",
     href: "/messages",
