@@ -84,7 +84,9 @@ export const navigationConfig: NavItem[] = [
     id: "account",
     label: "Account",
     href: "/account",
-    groups: ["protected-primary", "user-menu"],
+    // Merged into Profile ("Access and security"); the page stays reachable
+    // by its address but is no longer a menu entry.
+    groups: [],
     availability: { status: "available" },
   },
   {

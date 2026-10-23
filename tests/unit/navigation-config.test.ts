@@ -45,7 +45,9 @@ describe("navigationConfig", () => {
     expect(byId.login.groups).toContain("public-primary");
     expect(byId.register.groups).toContain("public-primary");
     expect(byId.member.groups).toEqual(expect.arrayContaining(["protected-primary", "user-menu"]));
-    expect(byId.account.groups).toEqual(expect.arrayContaining(["protected-primary", "user-menu"]));
+    // Account is merged into Profile: no longer a menu entry of its own.
+    expect(byId.account.groups).toEqual([]);
+    expect(byId.profile.groups).toEqual(expect.arrayContaining(["protected-primary", "user-menu"]));
   });
 
   it("reserves the /about slot as planned, never as a live link", () => {

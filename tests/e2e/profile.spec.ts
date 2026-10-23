@@ -23,6 +23,10 @@ test("a member edits their profile and sees it in the member area", async ({ pag
 
   await page.goto("/profile");
   await expect(page.getByRole("heading", { level: 1, name: "Your profile" })).toBeVisible();
+  // Account details live here too now, under "Access and security".
+  await expect(page.getByRole("heading", { level: 2, name: "Access and security" })).toBeVisible();
+  await expect(page.locator("#access").getByText(email)).toBeVisible();
+  await expect(page.getByRole("link", { name: "Change password" })).toHaveAttribute("href", "/update-password");
 
   await page.getByLabel("Name", { exact: true }).fill("Ana Field");
   await page.getByLabel("Headline").fill("Doctoral student, forest ecology");

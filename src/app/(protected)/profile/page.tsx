@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { FormMessage } from "@/components/ui/FormMessage";
@@ -9,6 +8,7 @@ import { SubmitButton } from "@/components/ui/SubmitButton";
 import { Textarea } from "@/components/ui/Textarea";
 import { pageTitle } from "@/config/site";
 import { removeProfilePhotoAction, saveProfileAction } from "@/features/member-profile/actions";
+import { AccessSection } from "@/features/member-profile/components/AccessSection";
 import { PhotoUploader } from "@/features/member-profile/components/PhotoUploader";
 import {
   LIMITS,
@@ -157,8 +157,8 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
             <div>
               <h2 className="font-display text-2xl font-bold tracking-tight text-foreground">Edit your profile</h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                What you say about yourself. Your record in the project stays sourced and reviewed. Sign-in details are
-                under <Link href="/account" className="underline underline-offset-4">Account</Link>.
+                What you say about yourself. Your record in the project stays sourced and reviewed. Your email and
+                password are in <a href="#access" className="underline underline-offset-4">Access and security</a>, below.
               </p>
             </div>
 
@@ -258,6 +258,8 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
             </ul>
           </aside>
         </div>
+
+        <AccessSection />
       </div>
     </main>
   );
