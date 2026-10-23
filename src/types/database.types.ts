@@ -1311,6 +1311,39 @@ export type Database = {
           },
         ]
       }
+      external_record_sources: {
+        Row: {
+          external_id: string
+          id: string
+          retrieved_at: string
+          retrieved_by_user_id: string | null
+          source: string
+          subject_id: string
+          subject_type: string
+          url: string | null
+        }
+        Insert: {
+          external_id: string
+          id?: string
+          retrieved_at?: string
+          retrieved_by_user_id?: string | null
+          source: string
+          subject_id: string
+          subject_type: string
+          url?: string | null
+        }
+        Update: {
+          external_id?: string
+          id?: string
+          retrieved_at?: string
+          retrieved_by_user_id?: string | null
+          source?: string
+          subject_id?: string
+          subject_type?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
       member_profiles: {
         Row: {
           biography: string | null
@@ -1702,6 +1735,8 @@ export type Database = {
       }
       steward_decide_external_match: { Args: { p_accept: boolean; p_match_id: string }; Returns: string }
       steward_demo_summary: { Args: never; Returns: Json }
+      steward_openalex_author_for_person: { Args: { p_person_id: string }; Returns: string }
+      steward_record_openalex_history: { Args: { p_payload: Json; p_person_id: string }; Returns: Json }
       steward_grant_institution_steward: {
         Args: { p_email: string; p_organization_id: string }
         Returns: string
