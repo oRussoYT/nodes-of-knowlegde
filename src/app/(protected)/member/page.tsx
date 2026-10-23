@@ -232,7 +232,7 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
                   description="Import graduate lists, see where they went, and work through what needs a human."
                 />
               ) : null}
-              <ActionTile href="/account" title="Account" description="Your email and sign-in details." />
+              <ActionTile href="/profile" title="Your profile" description="Your photo and details, plus your email and password under Access and security." />
             </div>
             <div className="mt-4 text-sm">
               <FutureAction label="Account → Security" />

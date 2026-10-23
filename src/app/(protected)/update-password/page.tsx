@@ -63,8 +63,8 @@ export default async function UpdatePasswordPage() {
             >
               Request a password-reset link
             </Link>
-            <Link href="/account" className="font-medium text-foreground underline underline-offset-2">
-              Back to account
+            <Link href="/profile#access" className="font-medium text-foreground underline underline-offset-2">
+              Back to your profile
             </Link>
           </div>
         </Container>

@@ -81,10 +81,10 @@ export const navigationConfig: NavItem[] = [
     availability: { status: "available" },
   },
   {
-    id: "account",
-    label: "Account",
-    href: "/account",
-    groups: ["protected-primary", "user-menu"],
+    id: "messages",
+    label: "Messages",
+    href: "/messages",
+    groups: ["protected-primary"],
     availability: { status: "available" },
   },
   {

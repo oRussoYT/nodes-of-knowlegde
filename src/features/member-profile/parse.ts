@@ -31,6 +31,7 @@ export interface MemberProfile {
   orcid: string | null;
   photoPath: string | null;
   visibility: ProfileVisibility;
+  acceptsMessages: boolean;
   updatedAt: string | null;
 }
 
@@ -43,6 +44,7 @@ export const EMPTY_PROFILE: MemberProfile = {
   orcid: null,
   photoPath: null,
   visibility: "members",
+  acceptsMessages: false,
   updatedAt: null,
 };
 
@@ -67,6 +69,7 @@ export function parseProfileRow(row: unknown): MemberProfile {
     orcid: text(r.orcid),
     photoPath: text(r.photo_path),
     visibility: isVisibility(r.visibility) ? r.visibility : "members",
+    acceptsMessages: r.accepts_messages === true,
     updatedAt: text(r.updated_at),
   };
 }
@@ -79,6 +82,7 @@ export interface ProfileFormValues {
   website: string | null;
   orcid: string | null;
   visibility: ProfileVisibility;
+  accepts_messages: boolean;
 }
 
 export type ProfileFormResult = { ok: true; values: ProfileFormValues } | { ok: false; error: string };
@@ -150,6 +154,7 @@ export function parseProfileForm(form: FormData): ProfileFormResult {
       website,
       orcid,
       visibility: visibilityRaw,
+      accepts_messages: form.get("acceptsMessages") === "on",
     },
   };
 }

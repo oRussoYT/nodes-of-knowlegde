@@ -23,8 +23,12 @@ test("a member edits their profile and sees it in the member area", async ({ pag
 
   await page.goto("/profile");
   await expect(page.getByRole("heading", { level: 1, name: "Your profile" })).toBeVisible();
+  // Account details live here too now, under "Access and security".
+  await expect(page.getByRole("heading", { level: 2, name: "Access and security" })).toBeVisible();
+  await expect(page.locator("#access").getByText(email)).toBeVisible();
+  await expect(page.getByRole("link", { name: "Change password" })).toHaveAttribute("href", "/update-password");
 
-  await page.getByLabel("Name").fill("Ana Field");
+  await page.getByLabel("Name", { exact: true }).fill("Ana Field");
   await page.getByLabel("Headline").fill("Doctoral student, forest ecology");
   await page.getByLabel("Where you are").fill("Manaus, Brazil");
   await page.getByLabel("ORCID iD").fill("https://orcid.org/0000-0002-1825-0097");
@@ -50,4 +54,27 @@ test("a bad ORCID is refused with a clear message", async ({ page }) => {
   await page.getByLabel("ORCID iD").fill("12345");
   await page.getByRole("button", { name: "Save profile" }).click();
   await expect(page.getByText("The ORCID iD should look like 0000-0002-1825-0097.")).toBeVisible();
+});
+
+test("a member searches people by name", async ({ page }) => {
+  const email = `e2e-search-${Date.now()}@example.com`;
+  await registerAndConfirm(page, email, "correcthorse1");
+
+  await page.goto("/people");
+  await page.getByRole("searchbox", { name: "Search people by name or institution" }).fill("arvoredo");
+  await page.getByRole("search").getByRole("button", { name: "Search", exact: true }).click();
+  await expect(page).toHaveURL(/\/people\?q=arvoredo$/);
+  await expect(page.getByRole("link", { name: /Helena Arvoredo/ })).toBeVisible();
+  await expect(page.getByRole("status")).toContainText("for “arvoredo”");
+
+  await page.getByRole("link", { name: /Helena Arvoredo/ }).click();
+  await expect(page.getByRole("heading", { level: 2, name: "Get in touch" })).toBeVisible();
+});
+
+test("the messages page explains how to start", async ({ page }) => {
+  const email = `e2e-messages-${Date.now()}@example.com`;
+  await registerAndConfirm(page, email, "correcthorse1");
+  await page.goto("/messages");
+  await expect(page.getByRole("heading", { level: 1, name: "Messages" })).toBeVisible();
+  await expect(page.getByText("No messages yet")).toBeVisible();
 });

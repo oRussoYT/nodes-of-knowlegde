@@ -1346,6 +1346,7 @@ export type Database = {
       }
       member_profiles: {
         Row: {
+          accepts_messages: boolean
           biography: string | null
           created_at: string
           display_name: string | null
@@ -1359,6 +1360,7 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          accepts_messages?: boolean
           biography?: string | null
           created_at?: string
           display_name?: string | null
@@ -1372,6 +1374,7 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          accepts_messages?: boolean
           biography?: string | null
           created_at?: string
           display_name?: string | null
@@ -1737,6 +1740,13 @@ export type Database = {
       steward_demo_summary: { Args: never; Returns: Json }
       steward_openalex_author_for_person: { Args: { p_person_id: string }; Returns: string }
       steward_record_openalex_history: { Args: { p_payload: Json; p_person_id: string }; Returns: Json }
+      my_messages: { Args: never; Returns: Json }
+      mark_messages_read: { Args: never; Returns: number }
+      unread_message_count: { Args: never; Returns: number }
+      search_people: { Args: { p_query?: string | null }; Returns: Json }
+      send_message_to_person: { Args: { p_body: string; p_person_id: string }; Returns: string }
+      reply_to_message: { Args: { p_body: string; p_message_id: string }; Returns: string }
+      person_contact_options: { Args: { p_person_id: string }; Returns: Json }
       steward_grant_institution_steward: {
         Args: { p_email: string; p_organization_id: string }
         Returns: string
