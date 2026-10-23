@@ -49,8 +49,10 @@ describe("member profile parsing", () => {
     const ok = parseProfileForm(form({ displayName: " Ana ", headline: "", orcid: "", website: "", visibility: "members" }));
     expect(ok).toEqual({
       ok: true,
-      values: { display_name: "Ana", headline: null, location: null, biography: null, website: null, orcid: null, visibility: "members" },
+      values: { display_name: "Ana", headline: null, location: null, biography: null, website: null, orcid: null, visibility: "members", accepts_messages: false },
     });
+    const opted = parseProfileForm(form({ visibility: "members", acceptsMessages: "on" }));
+    expect(opted.ok && opted.values.accepts_messages).toBe(true);
     expect(parseProfileForm(form({ orcid: "12", visibility: "members" })).ok).toBe(false);
     expect(parseProfileForm(form({ website: "ftp://x.org", visibility: "members" })).ok).toBe(false);
     expect(parseProfileForm(form({ visibility: "everyone" })).ok).toBe(false);

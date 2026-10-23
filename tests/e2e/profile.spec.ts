@@ -51,3 +51,26 @@ test("a bad ORCID is refused with a clear message", async ({ page }) => {
   await page.getByRole("button", { name: "Save profile" }).click();
   await expect(page.getByText("The ORCID iD should look like 0000-0002-1825-0097.")).toBeVisible();
 });
+
+test("a member searches people by name", async ({ page }) => {
+  const email = `e2e-search-${Date.now()}@example.com`;
+  await registerAndConfirm(page, email, "correcthorse1");
+
+  await page.goto("/people");
+  await page.getByRole("searchbox", { name: "Search people by name or institution" }).fill("arvoredo");
+  await page.getByRole("button", { name: "Search" }).click();
+  await expect(page).toHaveURL(/\/people\?q=arvoredo$/);
+  await expect(page.getByRole("link", { name: /Helena Arvoredo/ })).toBeVisible();
+  await expect(page.getByRole("status")).toContainText("for “arvoredo”");
+
+  await page.getByRole("link", { name: /Helena Arvoredo/ }).click();
+  await expect(page.getByRole("heading", { level: 2, name: "Get in touch" })).toBeVisible();
+});
+
+test("the messages page explains how to start", async ({ page }) => {
+  const email = `e2e-messages-${Date.now()}@example.com`;
+  await registerAndConfirm(page, email, "correcthorse1");
+  await page.goto("/messages");
+  await expect(page.getByRole("heading", { level: 1, name: "Messages" })).toBeVisible();
+  await expect(page.getByText("No messages yet")).toBeVisible();
+});

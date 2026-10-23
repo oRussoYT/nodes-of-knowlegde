@@ -210,6 +210,16 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
               <p className="text-xs text-muted-foreground">Never shown to people who are not signed in.</p>
             </fieldset>
 
+            <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border-default p-4 text-sm has-[:checked]:border-foreground">
+              <input type="checkbox" name="acceptsMessages" defaultChecked={profile.acceptsMessages} className="mt-0.5 size-4 accent-current" />
+              <span>
+                <span className="block font-medium text-foreground">Let other members send me messages</span>
+                <span className="mt-0.5 block text-muted-foreground">
+                  They see your name, never your email. Works once your account is linked to your record. You can turn it off any time.
+                </span>
+              </span>
+            </label>
+
             <div className="flex justify-end">
               <SubmitButton pendingLabel="Saving…">Save profile</SubmitButton>
             </div>
