@@ -29,6 +29,8 @@ import {
 import { Timeline } from "@/features/timeline/components/Timeline";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 import { bringInPersonHistoryAction } from "@/features/external/history-actions";
+import { ContactPanel } from "@/features/messages/components/ContactPanel";
+import { getContactOptions } from "@/features/messages/read";
 import { PublishControl } from "@/features/public-person/components/PublishControl";
 import { getPublicPerson } from "@/features/public-person/read";
 import { isCurrentUserSteward } from "@/features/review/authorization";
@@ -73,7 +75,7 @@ interface BiographyPageProps {
 
 export default async function BiographyPage({ params, searchParams }: BiographyPageProps) {
   const { personId } = await params;
-  const { pathwayTo, publishError, historyNotice, historyError } = await searchParams;
+  const { pathwayTo, publishError, historyNotice, historyError, messageSent, messageError } = await searchParams;
   const document = await getPersonBiography(personId);
 
   if (!document) {
@@ -97,6 +99,7 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
   const overview = buildPersonOverview(trajectory, cohorts, mentorshipLineage);
   // Steward-only publish control (ROTEIRO etapa 2). Readers never see it.
   const isReviewer = await isCurrentUserSteward();
+  const contactOptions = await getContactOptions(personId);
   const isPublic = isReviewer ? (await getPublicPerson(personId)) !== null : false;
 
   return (
@@ -105,6 +108,14 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
         <IdentityHeader document={document} />
 
         <PersonOverviewBand personId={personId} overview={overview} trajectory={trajectory} />
+
+        <ContactPanel
+          personId={personId}
+          personName={document.identity.displayName}
+          options={contactOptions}
+          sent={messageSent === "1"}
+          error={typeof messageError === "string" ? messageError : null}
+        />
 
         {isReviewer ? (
           <PublishControl
