@@ -1738,10 +1738,8 @@ export type Database = {
       }
       steward_decide_external_match: { Args: { p_accept: boolean; p_match_id: string }; Returns: string }
       steward_demo_summary: { Args: never; Returns: Json }
-<<<<<<< HEAD
       steward_openalex_author_for_person: { Args: { p_person_id: string }; Returns: string }
       steward_record_openalex_history: { Args: { p_payload: Json; p_person_id: string }; Returns: Json }
-=======
       my_messages: { Args: never; Returns: Json }
       mark_messages_read: { Args: never; Returns: number }
       unread_message_count: { Args: never; Returns: number }
@@ -1749,7 +1747,6 @@ export type Database = {
       send_message_to_person: { Args: { p_body: string; p_person_id: string }; Returns: string }
       reply_to_message: { Args: { p_body: string; p_message_id: string }; Returns: string }
       person_contact_options: { Args: { p_person_id: string }; Returns: Json }
->>>>>>> fae3e23 (People search with last institution and counts; get in touch: member messages (opt-in, no emails) and public paths)
       steward_grant_institution_steward: {
         Args: { p_email: string; p_organization_id: string }
         Returns: string
