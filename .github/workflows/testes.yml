@@ -33,7 +33,16 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Revisão de código (lint)
-        run: npm run lint
+        run: |
+          set +e
+          npm run lint > lint.log 2>&1
+          code=$?
+          cat lint.log
+          if [ $code -ne 0 ]; then
+            msg=$(grep -E "error|warning|^/" lint.log | tail -n 40 | sed -e 's/%/%25/g' | awk '{printf "%s%%0A", $0}')
+            echo "::error title=Lint::$msg"
+          fi
+          exit $code
       - name: Tipos (typecheck)
         run: npm run typecheck
       - name: Testes unitários
