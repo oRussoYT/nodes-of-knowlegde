@@ -176,3 +176,21 @@ export function photoProblem(file: { type: string; size: number }): string | nul
 export function shownName(profile: MemberProfile, email: string): string {
   return profile.displayName ?? email;
 }
+
+export interface ChecklistItem {
+  key: "photo" | "name" | "headline" | "location" | "biography" | "links";
+  label: string;
+  done: boolean;
+}
+
+/** What is still missing from the member's own card (never compared with anyone else). */
+export function profileChecklist(profile: MemberProfile): ChecklistItem[] {
+  return [
+    { key: "photo", label: "A photo", done: Boolean(profile.photoPath) },
+    { key: "name", label: "Your name", done: Boolean(profile.displayName) },
+    { key: "headline", label: "A headline", done: Boolean(profile.headline) },
+    { key: "location", label: "Where you are", done: Boolean(profile.location) },
+    { key: "biography", label: "A short biography", done: Boolean(profile.biography) },
+    { key: "links", label: "ORCID or a website", done: Boolean(profile.orcid || profile.website) },
+  ];
+}

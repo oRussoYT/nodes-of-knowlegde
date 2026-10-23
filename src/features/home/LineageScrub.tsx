@@ -113,8 +113,16 @@ export function LineageScrub() {
             {NODES.map((n) => {
               const on = year >= n.year;
               return (
-                <g key={n.id} style={{ transition: "opacity 300ms", opacity: on ? 1 : 0 }}>
-                  <circle cx={n.x} cy={n.y} r={n.from ? 9 : 13} fill="var(--nk-bone)" />
+                <g key={n.id} style={{ visibility: on ? "visible" : "hidden" }}>
+                  {/* Only the dot fades in; the label appears at full strength
+                      so it is never read while half transparent. */}
+                  <circle
+                    cx={n.x}
+                    cy={n.y}
+                    r={n.from ? 9 : 13}
+                    fill="var(--nk-bone)"
+                    style={{ transition: "opacity 300ms", opacity: on ? 1 : 0 }}
+                  />
                   <text
                     x={n.x}
                     y={n.y - 18}

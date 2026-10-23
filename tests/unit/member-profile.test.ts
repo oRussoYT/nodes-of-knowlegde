@@ -8,6 +8,7 @@ import {
   parseProfileForm,
   parseProfileRow,
   photoProblem,
+  profileChecklist,
   shownName,
 } from "@/features/member-profile/parse";
 
@@ -73,5 +74,14 @@ describe("member profile parsing", () => {
   it("shows the chosen name, else the email", () => {
     expect(shownName(EMPTY_PROFILE, "a@b.c")).toBe("a@b.c");
     expect(shownName({ ...EMPTY_PROFILE, displayName: "Ana" }, "a@b.c")).toBe("Ana");
+  });
+});
+
+
+describe("profile checklist", () => {
+  it("lists what is filled and what is missing", () => {
+    expect(profileChecklist(EMPTY_PROFILE).every((item) => !item.done)).toBe(true);
+    const items = profileChecklist({ ...EMPTY_PROFILE, displayName: "Ana", orcid: "0000-0002-1825-0097" });
+    expect(items.filter((item) => item.done).map((item) => item.key)).toEqual(["name", "links"]);
   });
 });
