@@ -27,6 +27,8 @@ import {
   getPersonRecurrence,
 } from "@/features/revelation/read";
 import { Timeline } from "@/features/timeline/components/Timeline";
+import { SubmitButton } from "@/components/ui/SubmitButton";
+import { bringInPersonHistoryAction } from "@/features/external/history-actions";
 import { PublishControl } from "@/features/public-person/components/PublishControl";
 import { getPublicPerson } from "@/features/public-person/read";
 import { isCurrentUserSteward } from "@/features/review/authorization";
@@ -71,7 +73,7 @@ interface BiographyPageProps {
 
 export default async function BiographyPage({ params, searchParams }: BiographyPageProps) {
   const { personId } = await params;
-  const { pathwayTo, publishError } = await searchParams;
+  const { pathwayTo, publishError, historyNotice, historyError } = await searchParams;
   const document = await getPersonBiography(personId);
 
   if (!document) {
@@ -110,6 +112,32 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
             isPublic={isPublic}
             error={typeof publishError === "string" ? publishError : null}
           />
+        ) : null}
+
+        {isReviewer ? (
+          <section aria-labelledby="history-heading" className="mt-6 rounded-2xl border border-border-default bg-surface px-5 py-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="max-w-prose">
+                <h2 id="history-heading" className="text-sm font-semibold text-foreground">
+                  Bring in their history
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  From OpenAlex and ROR: institutions over the years (closed or renamed ones too), theses, articles and
+                  datasets. Everything enters as provisional, with its public link. Needs an accepted OpenAlex match.
+                </p>
+              </div>
+              <form action={bringInPersonHistoryAction}>
+                <input type="hidden" name="personId" value={personId} />
+                <SubmitButton pendingLabel="Bringing in…">Bring in history</SubmitButton>
+              </form>
+            </div>
+            {typeof historyNotice === "string" ? (
+              <p role="status" className="mt-3 text-sm text-tone-success-fg">{historyNotice}</p>
+            ) : null}
+            {typeof historyError === "string" ? (
+              <p role="alert" className="mt-3 text-sm text-tone-danger-fg">{historyError}</p>
+            ) : null}
+          </section>
         ) : null}
 
         <Divider />

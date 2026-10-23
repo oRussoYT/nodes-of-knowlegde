@@ -13,6 +13,7 @@ import { createConfirmationLinksAction } from "@/features/confirm/steward";
 import { decideExternalMatchAction, lookUpBatchInOpenAlexAction, undoExternalMatchAction } from "@/features/external/actions";
 import { getSiteUrl } from "@/lib/supabase/env";
 import { REASON_LABELS, type ExternalReason } from "@/features/external/openalex";
+import { bringInBatchHistoryAction } from "@/features/external/history-actions";
 import { getExternalBatch } from "@/features/external/read";
 import { resolveImportRowAction } from "@/features/import/actions";
 import { getImportCandidates, listImportBatches } from "@/features/import/read";
@@ -50,6 +51,16 @@ export default async function ImportBatchPage({
     getExternalBatch(batchId),
     listConfirmationLinks(batchId),
   ]);
+  const matchedPeople = external
+    ? [
+        ...new Set(
+          external.rows
+            .filter((r) => r.personId && r.matches.some((m) => m.status === "accepted"))
+            .map((r) => r.personId as string),
+        ),
+      ]
+    : [];
+
   const site = getSiteUrl().replace(/\/$/, "");
   const ANSWER: Record<string, string> = { confirmed: "Confirmed", corrected: "Sent a correction", declined: "Asked not to be listed" };
   const summary = batches.find((b) => b.id === batchId);
@@ -174,13 +185,33 @@ export default async function ImportBatchPage({
                 known institution — only after you decide who the row is.
               </p>
             </div>
-            <form action={lookUpBatchInOpenAlexAction}>
-              <input type="hidden" name="batchId" value={batchId} />
-              <Button type="submit" size="sm" emphasis="secondary">
-                Look up in OpenAlex
-              </Button>
-            </form>
+            <div className="flex flex-wrap gap-2">
+              <form action={lookUpBatchInOpenAlexAction}>
+                <input type="hidden" name="batchId" value={batchId} />
+                <Button type="submit" size="sm" emphasis="secondary">
+                  Look up in OpenAlex
+                </Button>
+              </form>
+              {matchedPeople.length > 0 ? (
+                <form action={bringInBatchHistoryAction}>
+                  <input type="hidden" name="batchId" value={batchId} />
+                  {matchedPeople.map((id) => (
+                    <input key={id} type="hidden" name="personId" value={id} />
+                  ))}
+                  <Button type="submit" size="sm">
+                    Bring in their history ({matchedPeople.length})
+                  </Button>
+                </form>
+              ) : null}
+            </div>
           </div>
+          {matchedPeople.length > 0 ? (
+            <p className="mt-3 max-w-prose text-sm text-muted-foreground">
+              <strong className="font-medium text-foreground">Bring in their history</strong> adds, for everyone with an
+              accepted match, the institutions they were affiliated with over the years (including closed or renamed ones,
+              from ROR) and their theses, articles and datasets — all provisional, each with its public link.
+            </p>
+          ) : null}
 
           {external && external.rows.some((r) => r.matches.length > 0) ? (
             <ul className="mt-6 flex flex-col gap-4">

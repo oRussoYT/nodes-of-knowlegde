@@ -14,6 +14,7 @@ import { ContributionReservedSection } from "@/features/contribution/components/
 import { contributionCopy, NARRATIVE_FACET_LABELS } from "@/features/contribution/copy";
 import { narrativeFacet } from "@/features/contribution/derive";
 import { getContribution, getContributionTimeline } from "@/features/contribution/read";
+import { getRecordSource } from "@/features/external/read";
 import { Timeline } from "@/features/timeline/components/Timeline";
 
 // The Contribution page -- a first-class historical reading experience for a
@@ -54,6 +55,7 @@ export default async function ContributionPage({ params }: ContributionPageProps
   }
 
   const timeline = await getContributionTimeline(contributionId);
+  const sourceLink = await getRecordSource("contribution", contributionId);
   const hasRelatedEvents = timeline !== null && timeline.events.length > 0;
 
   const overview = narrativeFacet(contribution, "overview");
@@ -65,6 +67,15 @@ export default async function ContributionPage({ params }: ContributionPageProps
     <main id="main-content" tabIndex={-1} className="py-16">
       <Container width="content">
         <ContributionIdentityHeader contribution={contribution} />
+
+        {sourceLink ? (
+          <p className="mt-4 text-sm text-muted-foreground">
+            Brought in from a public source (provisional until confirmed):{" "}
+            <a href={sourceLink.url} className="break-all text-foreground underline underline-offset-4" rel="noopener noreferrer" target="_blank">
+              {sourceLink.url.replace(/^https?:\/\//, "")}
+            </a>
+          </p>
+        ) : null}
 
         <Divider />
 
