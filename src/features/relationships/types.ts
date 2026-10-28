@@ -54,6 +54,10 @@ export interface Relationship {
   narrative: string | null;
   temporal: TemporalValue;
   provenance: ProvenanceInfo;
+  /** The person this page is about hid the link from their own page (only they see it then). */
+  hidden?: boolean;
+  /** The viewer is that person and may hide or bring back the link. */
+  canHide?: boolean;
 }
 
 /** Canonical person-relationships read document (from

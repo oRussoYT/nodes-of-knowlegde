@@ -22,7 +22,7 @@ export function Relationships({ document }: { document: RelationshipDocument | n
     : { isEmpty: true as const, groups: [], relationshipCount: 0 };
 
   return (
-    <section aria-labelledby={headingId}>
+    <section id="relationships" aria-labelledby={headingId}>
       <h2 id={headingId} className="text-sm font-medium text-foreground">
         {relationshipsCopy.sectionTitle}
       </h2>
@@ -34,7 +34,7 @@ export function Relationships({ document }: { document: RelationshipDocument | n
       ) : (
         <div className="mt-4 flex flex-col gap-8">
           {view.groups.map((group) => (
-            <RelationshipGroup key={group.key} heading={group.heading} relationships={group.relationships} />
+            <RelationshipGroup key={group.key} heading={group.heading} relationships={group.relationships} personId={document?.personId} />
           ))}
         </div>
       )}

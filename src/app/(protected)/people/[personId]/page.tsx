@@ -32,6 +32,8 @@ import { bringInPersonHistoryAction } from "@/features/external/history-actions"
 import { ContactPanel } from "@/features/messages/components/ContactPanel";
 import { getContactOptions } from "@/features/messages/read";
 import { PublishControl } from "@/features/public-person/components/PublishControl";
+import { RevelationHighlights } from "@/features/revelation/components/RevelationHighlights";
+import { buildRevelationHighlights } from "@/features/revelation/highlights";
 import { getPublicPerson } from "@/features/public-person/read";
 import { isCurrentUserSteward } from "@/features/review/authorization";
 import { PersonOverviewBand } from "@/features/trajectory/components/PersonOverviewBand";
@@ -97,6 +99,7 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
   // derived from the reads above -- no extra query, nothing ranked.
   const trajectory = buildTrajectory(participation, new Date().getUTCFullYear());
   const overview = buildPersonOverview(trajectory, cohorts, mentorshipLineage);
+  const highlights = buildRevelationHighlights(personId, cohorts, mentorshipLineage, recurrence);
   // Steward-only publish control (ROTEIRO etapa 2). Readers never see it.
   const isReviewer = await isCurrentUserSteward();
   const contactOptions = await getContactOptions(personId);
@@ -106,6 +109,8 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
     <main id="main-content" tabIndex={-1} className="py-16">
       <Container width="content">
         <IdentityHeader document={document} />
+
+        <RevelationHighlights highlights={highlights} personName={document.identity.displayName} />
 
         <PersonOverviewBand personId={personId} overview={overview} trajectory={trajectory} />
 
