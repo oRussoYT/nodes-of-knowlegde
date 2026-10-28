@@ -1751,6 +1751,34 @@ export type Database = {
       mark_messages_read: { Args: never; Returns: number }
       unread_message_count: { Args: never; Returns: number }
       search_people: { Args: { p_query?: string | null }; Returns: Json }
+      steward_university_report: {
+        Args: { p_from_year?: number; p_home_country?: string; p_organization_id: string; p_programme?: string; p_to_year?: number }
+        Returns: Json
+      }
+      steward_capes_export: {
+        Args: { p_from_year?: number; p_organization_id: string; p_programme?: string; p_to_year?: number }
+        Returns: {
+          person_id: string
+          display_name: string
+          orcid: string | null
+          level_pt: string
+          programme: string | null
+          graduation_year: number | null
+          destination_category: string
+          destination_institution: string | null
+          destination_country: string | null
+          destination_year: number | null
+          years_after: number | null
+          destination_source: string | null
+          confirmed_at: string | null
+          is_demo: boolean
+        }[]
+      }
+      request_plan: { Args: { p: Json }; Returns: string }
+      my_plan_requests: { Args: never; Returns: Json }
+      steward_list_plan_requests: { Args: never; Returns: Json }
+      steward_answer_plan_request: { Args: { p_note?: string; p_request_id: string; p_status: string }; Returns: undefined }
+      degree_level_of: { Args: { p_degree: string }; Returns: string }
       list_record_options: { Args: never; Returns: Json }
       propose_record: { Args: { p: Json }; Returns: string }
       my_record_candidates: { Args: never; Returns: Json }

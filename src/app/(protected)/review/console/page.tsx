@@ -117,6 +117,11 @@ export default async function StewardConsolePage({
               description="Contributions people proposed for their own record, waiting for a steward."
             />
             <ActionTile
+              href="/review/university"
+              title="University reports"
+              description="Graduates by level, the CAPES egressos file and indicators for rankings, with the method stated."
+            />
+            <ActionTile
               href="/review/names"
               title="Institution names"
               description="Former, other and translated names, with the years each was used."
@@ -127,6 +132,11 @@ export default async function StewardConsolePage({
                   href="/review/stewards"
                   title="Institutions and stewards"
                   description="Add an institution and appoint the people who look after it."
+                />
+                <ActionTile
+                  href="/review/plans"
+                  title="Plan requests"
+                  description="Institutions asking for a pro bono or paid plan."
                 />
                 <ActionTile
                   href="/review/claims"
