@@ -71,10 +71,10 @@ fase 1.
 | **H. Observatório** | Números e evolução de cada Nó; difusão do conhecimento | 15 dez | feito (28 out) |
 | **I. IA de conexões** | Pessoas, temas, métodos, organismos e lugares afins, dentro e fora da instituição; sempre com o motivo | 15 dez | feito (28 out) — sugestões por IA ligam com a chave |
 | **J. Editais e bolsas** | Editais nacionais e internacionais combinados com o histórico da pessoa ou do grupo | 15 dez | feito (28 out) |
-| **K. Bibliotecário de IA** | Perguntas com fontes, resumos, comparações, ajuda a arquivistas e ao ensino | 22 dez | — |
-| **L. Espaço privado de pesquisa** | Notas, PDFs, entrevistas e hipóteses; envio para revisão quando pronto | 22 dez | — |
-| **M. Privacidade avançada e rede** | Revelações limitadas pelo consentimento; material sensível e soberania indígena; fórum; conexão entre Nós | 22 dez | — |
-| **N. Segundo Nó e comparações** | Cocha Cashu ou Mamirauá no mesmo motor; história comparada; revisão final → **produto completo** | ~8 jan 2027 | — |
+| **K. Bibliotecário de IA** | Perguntas com fontes, resumos, comparações, ajuda a arquivistas e ao ensino | 22 dez | feito (28 out) — respostas escritas pela IA ligam com a chave; sem ela, mostra as fontes |
+| **L. Espaço privado de pesquisa** | Notas, PDFs, entrevistas e hipóteses; envio para revisão quando pronto | 22 dez | feito (28 out) |
+| **M. Privacidade avançada e rede** | Revelações limitadas pelo consentimento; material sensível e soberania indígena; fórum; conexão entre Nós | 22 dez | feito (28 out) |
+| **N. Segundo Nó e comparações** | Cocha Cashu ou Mamirauá no mesmo motor; história comparada; revisão final → **produto completo** | ~8 jan 2027 | motor pronto (28 out): criar Nó em /review/nodes e comparar em /compare — falta o contato do segundo Nó |
 
 O que depende do fundador: material real (listas de pessoas, teses,
 relatórios); decisões de custo (assinatura de IA na etapa D, conta de
