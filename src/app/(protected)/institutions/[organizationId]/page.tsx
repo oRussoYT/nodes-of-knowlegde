@@ -19,6 +19,8 @@ import { getOrganization, getOrganizationParticipation, getOrganizationTimeline 
 import { InstitutionLineage } from "@/features/network/components/InstitutionLineage";
 import { getOrganizationNetwork } from "@/features/network/read";
 import { HeritageList } from "@/features/heritage/components/HeritageList";
+import { LocationPanel } from "@/features/map/components/LocationPanel";
+import { getOrganizationLocation } from "@/features/map/read";
 import { getHeritageFor } from "@/features/heritage/read";
 import { OrganizationContinuity } from "@/features/revelation/components/OrganizationContinuity";
 import { OrganizationGenerations } from "@/features/revelation/components/OrganizationGenerations";
@@ -68,10 +70,12 @@ export const metadata: Metadata = {
 
 interface InstitutionPageProps {
   params: Promise<{ organizationId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default async function InstitutionPage({ params }: InstitutionPageProps) {
+export default async function InstitutionPage({ params, searchParams }: InstitutionPageProps) {
   const { organizationId } = await params;
+  const query = await searchParams;
   const organization = await getOrganization(organizationId);
 
   if (!organization) {
@@ -87,6 +91,7 @@ export default async function InstitutionPage({ params }: InstitutionPageProps) 
   const continuity = await getOrganizationContinuity(organizationId);
   const recurrence = await getOrganizationRecurrence(organizationId);
   const heritage = await getHeritageFor({ organizationId });
+  const location = await getOrganizationLocation(organizationId);
 
   const introduction = narrativeFacet(organization, "introduction");
   const overview = narrativeFacet(organization, "overview");
@@ -176,6 +181,15 @@ export default async function InstitutionPage({ params }: InstitutionPageProps) 
               </div>
             )}
           </section>
+
+          {location ? (
+            <LocationPanel
+              organizationId={organizationId}
+              location={location}
+              saved={query.locationSaved === "1"}
+              error={typeof query.locationError === "string" ? query.locationError : null}
+            />
+          ) : null}
 
           {heritage.length > 0 ? (
             <section aria-labelledby="heritage-heading">

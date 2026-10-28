@@ -1751,6 +1751,18 @@ export type Database = {
       mark_messages_read: { Args: never; Returns: number }
       unread_message_count: { Args: never; Returns: number }
       search_people: { Args: { p_query?: string | null }; Returns: Json }
+      steward_set_organization_location: {
+        Args: { p_city?: string; p_country_code?: string; p_latitude: number; p_longitude: number; p_organization_id: string; p_source?: string }
+        Returns: undefined
+      }
+      steward_organizations_without_location: { Args: { p_limit?: number }; Returns: Json }
+      steward_propose_organization_location: { Args: { p: Json; p_organization_id: string }; Returns: string }
+      steward_list_location_proposals: { Args: never; Returns: Json }
+      steward_decide_location_proposal: { Args: { p_accept: boolean; p_id: string }; Returns: undefined }
+      map_places: { Args: { p_year?: number }; Returns: Json }
+      map_today: { Args: never; Returns: Json }
+      map_movements: { Args: { p_from_year?: number; p_to_year?: number }; Returns: Json }
+      get_organization_location: { Args: { p_organization_id: string }; Returns: Json }
       list_heritage_kinds: { Args: never; Returns: Json }
       heritage_counts: { Args: never; Returns: Json }
       list_heritage_items: { Args: { p_kind?: string; p_query?: string }; Returns: Json }
