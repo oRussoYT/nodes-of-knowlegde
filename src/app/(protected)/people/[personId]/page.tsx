@@ -30,6 +30,7 @@ import {
 import { Timeline } from "@/features/timeline/components/Timeline";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 import { bringInPersonHistoryAction } from "@/features/external/history-actions";
+import { getPersonTopics } from "@/features/connections/read";
 import { HeritageList } from "@/features/heritage/components/HeritageList";
 import { getHeritageFor } from "@/features/heritage/read";
 import { ContactPanel } from "@/features/messages/components/ContactPanel";
@@ -107,6 +108,7 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
   const isReviewer = await isCurrentUserSteward();
   const contactOptions = await getContactOptions(personId);
   const heritage = await getHeritageFor({ personId });
+  const topics = (await getPersonTopics(personId)).filter((t) => t.status === "confirmed");
   const isPublic = isReviewer ? (await getPublicPerson(personId)) !== null : false;
 
   return (
@@ -134,6 +136,21 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
             Know something about {document.identity.displayName}? Propose it, with its source
           </Link>
         </p>
+
+        {topics.length > 0 ? (
+          <section aria-labelledby="person-topics-heading" className="mt-8">
+            <h2 id="person-topics-heading" className="text-sm font-medium text-foreground">
+              Works on
+            </h2>
+            <ul className="mt-2 flex flex-wrap gap-2 text-sm">
+              {topics.map((t) => (
+                <li key={t.id} className="rounded-full border border-border-default px-3 py-1">
+                  {t.label}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         {heritage.length > 0 ? (
           <section id="history" aria-labelledby="person-heritage-heading" className="mt-8">

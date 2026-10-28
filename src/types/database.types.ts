@@ -1751,6 +1751,13 @@ export type Database = {
       mark_messages_read: { Args: never; Returns: number }
       unread_message_count: { Args: never; Returns: number }
       search_people: { Args: { p_query?: string | null }; Returns: Json }
+      my_linked_person: { Args: never; Returns: string }
+      add_person_topics: { Args: { p_person_id: string; p_source?: string; p_topics: Json }; Returns: number }
+      decide_person_topic: { Args: { p_confirm: boolean; p_topic_id: string }; Returns: undefined }
+      remove_person_topic: { Args: { p_topic_id: string }; Returns: undefined }
+      person_topics_json: { Args: { p_person_id: string }; Returns: Json }
+      person_topic_material: { Args: { p_person_id: string }; Returns: Json }
+      my_topic_connections: { Args: never; Returns: Json }
       node_observatory: { Args: { p_slug: string }; Returns: Json }
       steward_set_organization_location: {
         Args: { p_city?: string; p_country_code?: string; p_latitude: number; p_longitude: number; p_organization_id: string; p_source?: string }
