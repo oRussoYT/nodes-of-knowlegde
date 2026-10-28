@@ -123,6 +123,13 @@ export const navigationConfig: NavItem[] = [
     availability: { status: "available" },
   },
   {
+    id: "workspace",
+    label: "My research space",
+    href: "/workspace",
+    groups: ["protected-primary"],
+    availability: { status: "available" },
+  },
+  {
     id: "messages",
     label: "Messages",
     href: "/messages",
