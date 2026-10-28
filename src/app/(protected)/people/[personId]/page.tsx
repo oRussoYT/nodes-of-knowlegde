@@ -36,6 +36,7 @@ import { getHeritageFor } from "@/features/heritage/read";
 import { ContactPanel } from "@/features/messages/components/ContactPanel";
 import { getContactOptions } from "@/features/messages/read";
 import { PublishControl } from "@/features/public-person/components/PublishControl";
+import { getPersonPrivacy } from "@/features/privacy/read";
 import { RevelationHighlights } from "@/features/revelation/components/RevelationHighlights";
 import { buildRevelationHighlights } from "@/features/revelation/highlights";
 import { getPublicPerson } from "@/features/public-person/read";
@@ -104,6 +105,8 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
   const trajectory = buildTrajectory(participation, new Date().getUTCFullYear());
   const overview = buildPersonOverview(trajectory, cohorts, mentorshipLineage);
   const highlights = buildRevelationHighlights(personId, cohorts, mentorshipLineage, recurrence);
+  const privacy = await getPersonPrivacy(personId);
+  const revealsLimited = privacy.limitRevelations && !privacy.isSelf && !privacy.viewerIsSteward;
   // Steward-only publish control (ROTEIRO etapa 2). Readers never see it.
   const isReviewer = await isCurrentUserSteward();
   const contactOptions = await getContactOptions(personId);
@@ -116,7 +119,13 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
       <Container width="content">
         <IdentityHeader document={document} />
 
-        <RevelationHighlights highlights={highlights} personName={document.identity.displayName} />
+        {revealsLimited ? (
+          <p className="mt-6 rounded-md border border-border-default px-4 py-3 text-sm text-muted-foreground">
+            {document.identity.displayName} asked that this page not highlight what the record reveals about them. The documented sources below remain.
+          </p>
+        ) : (
+          <RevelationHighlights highlights={highlights} personName={document.identity.displayName} />
+        )}
 
         <PersonOverviewBand personId={personId} overview={overview} trajectory={trajectory} />
 

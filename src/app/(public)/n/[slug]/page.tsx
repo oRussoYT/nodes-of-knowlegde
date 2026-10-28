@@ -7,6 +7,7 @@ import { SubmitButton } from "@/components/ui/SubmitButton";
 import { pageTitle } from "@/config/site";
 import { joinNodeAction, leaveNodeAction } from "@/features/nodes/actions";
 import { PLAN_LABELS, ROLE_LABELS, nodeLabel } from "@/features/nodes/parse";
+import { getNodeLinks } from "@/features/forum/read";
 import { getNode } from "@/features/nodes/read";
 import { createClient } from "@/lib/supabase/server";
 
@@ -38,6 +39,7 @@ export default async function NodePage({ params, searchParams }: NodePageProps) 
   const { data } = await supabase.auth.getClaims();
   const signedIn = Boolean(data?.claims);
   const label = nodeLabel(node);
+  const links = await getNodeLinks(node.slug);
   const cover = node.coverPhoto ?? "/photos/aerial";
 
   const stats = [
@@ -119,7 +121,31 @@ export default async function NodePage({ params, searchParams }: NodePageProps) 
           <Link href={`/n/${node.slug}/observatory`} className="text-sm font-semibold underline underline-offset-4">
             Open the {label} Observatory — numbers over time and where knowledge travelled
           </Link>
+          {node.isMember ? (
+            <>
+              {" · "}
+              <Link href={`/forum/${node.slug}`} className="text-sm font-semibold underline underline-offset-4">
+                Forum
+              </Link>
+            </>
+          ) : null}
         </p>
+        {links.length > 0 ? (
+          <section aria-labelledby="links-heading" className="mt-6">
+            <h2 id="links-heading" className="text-sm font-medium text-foreground">
+              Connected Nodes
+            </h2>
+            <ul className="mt-2 flex flex-wrap gap-2 text-sm">
+              {links.map((l) => (
+                <li key={l.slug}>
+                  <Link href={`/n/${l.slug}`} className="rounded-full border border-border-default px-3 py-1 underline-offset-2 hover:underline">
+                    {l.shortName ?? l.name} · {l.peopleInCommon} {l.peopleInCommon === 1 ? "person" : "people"} in common
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
 
         <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <section aria-labelledby="about-heading">
