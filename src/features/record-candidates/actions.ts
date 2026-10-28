@@ -10,8 +10,10 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/types/database.types";
 
+import { AI_MAX_BYTES, AI_TYPES, aiIsOn, buildPrompt, parseExtraction, readDocumentWithAi } from "./ai";
 import { decodeLattes, fetchOrcidPeriods, orcidId, periodsFromLattes, type ImportedPeriod } from "./importers";
 import { parseColleagueForm, parseParticipationForm, type ProposalResult } from "./parse";
+import { getRecordOptions } from "./read";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -131,6 +133,58 @@ export async function importLattesAction(form: FormData): Promise<void> {
   const { periods } = periodsFromLattes(xml);
   if (periods.length === 0) redirect(`/member/add?error=${encodeURIComponent("No education or positions were found in this file. Is it the XML export of the Lattes CV?")}#import`);
   const sent = await proposeImported(personId, periods, "lattes", "Currículo Lattes (XML sent by the person)");
+  revalidatePath("/member/add");
+  redirect(`/member/add?imported=${sent}#mine`);
+}
+
+/** AI reads one document and proposes what it states (to be reviewed). */
+export async function readDocumentAction(form: FormData): Promise<void> {
+  const personId = String(form.get("aboutPersonId") ?? "");
+  const personName = String(form.get("aboutPersonName") ?? "").slice(0, 200) || "the person";
+  const file = form.get("document");
+  const fail = (msg: string) => redirect(`/member/add?error=${encodeURIComponent(msg)}#ai`);
+  if (!UUID.test(personId)) redirect("/member/add");
+  if (!aiIsOn()) fail("AI reading is not switched on yet.");
+  if (!(file instanceof File) || file.size === 0) fail("Choose a document.");
+  const doc = file as File;
+  if (!(AI_TYPES as readonly string[]).includes(doc.type)) fail("Use a PDF, a photo (JPG, PNG, WebP) or a text file.");
+  if (doc.size > AI_MAX_BYTES) fail("The document is larger than 10 MB.");
+
+  const supabase = await createClient();
+  const { data: claims } = await supabase.auth.getClaims();
+  const uid = claims?.claims?.sub;
+  if (typeof uid !== "string") redirect("/login");
+  const bytes = new Uint8Array(await doc.arrayBuffer());
+  const safe = doc.name.normalize("NFD").replace(/[^\w.-]+/g, "_").slice(-80);
+  const path = `${uid}/${Date.now()}-${safe}`;
+  const up = await supabase.storage.from("evidence").upload(path, bytes, { contentType: doc.type, upsert: false });
+  if (up.error) fail("The document could not be stored. Please try again.");
+
+  const options = await getRecordOptions();
+  const answer = await readDocumentWithAi({ bytes, type: doc.type }, buildPrompt(personName, options.capacities, options.relationshipKinds));
+  if (answer === null) fail("The AI could not read this document right now. Try again in a minute.");
+  const found = parseExtraction(answer!, options.capacities, options.relationshipKinds);
+  if (found.periods.length + found.colleagues.length === 0) fail("The AI found no periods or colleagues in this document.");
+
+  const note = (quote: string | null) =>
+    `Extracted by AI from “${doc.name.slice(0, 120)}”${quote ? `: “${quote}”` : ""} — check against the attached file`.slice(0, 1000);
+  let sent = 0;
+  const items: Record<string, unknown>[] = [
+    ...found.periods.map((p, i) => ({
+      kind: "participation", newOrganizationName: p.organizationName, capacity: p.capacity, startYear: p.startYear, endYear: p.endYear,
+      isOngoing: p.isOngoing, summary: p.summary, sourceNote: note(p.quote), externalKey: `ai-${path}-p${i}`,
+    })),
+    ...found.colleagues.map((c, i) => ({
+      kind: "relationship", relationshipKind: c.relationshipKind, colleagueGivenName: c.givenName, colleagueFamilyName: c.familyName,
+      startYear: c.startYear, endYear: c.endYear, summary: c.summary, sourceNote: note(c.quote), externalKey: `ai-${path}-c${i}`,
+    })),
+  ];
+  for (const item of items) {
+    const { error } = await supabase.rpc("propose_record", {
+      p: { ...item, origin: "ai", aboutPersonId: personId, evidencePaths: [path] } as Json,
+    });
+    if (!error) sent += 1;
+  }
   revalidatePath("/member/add");
   redirect(`/member/add?imported=${sent}#mine`);
 }
