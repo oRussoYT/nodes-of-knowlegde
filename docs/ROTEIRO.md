@@ -5,7 +5,8 @@
 > não número de milestone. Cada etapa só termina quando existe **um link** que
 > o fundador abre no navegador.
 >
-> Atualizado: 21 out 2026.
+> Atualizado: 28 out 2026 — alinhamento: o produto final é o Nodes of
+> Knowledge completo (ver `PRODUTO.md`, "Decisão de 28 out 2026").
 
 ## Já feito (base que serve a qualquer versão do produto)
 
@@ -34,7 +35,7 @@ e marcação + limpeza dos dados de demonstração
 (`20261017100000_add_demo_marking.sql`; a limpeza é `select
 wipe_demo_data();`, rodada só pelo painel do Supabase).
 
-## Etapas
+## Fase 1 — base (feita, 13–23 out 2026)
 
 | Etapa | O que o fundador vê no final | Situação |
 |---|---|---|
@@ -48,9 +49,36 @@ wipe_demo_data();`, rodada só pelo painel do Supabase).
 | **6. Confirmação pelo egresso** | E-mail ao ex-aluno; ele confirma ou corrige a própria trajetória (tela 02) | **pronta** (17 out): o steward cria um link privado por formado (na tela da lista) e o envia pelo canal que já usa; o formado abre sem conta e responde "está certo", "algo está errado" (com nota) ou "não me liste" (a página sai do ar na hora e ele sai das contagens públicas). Uso único, vale 90 dias, tudo registrado. Envio automático de e-mail fica para quando houver um serviço de e-mail configurado |
 | **7. Sugestões com o porquê** | Colaboradores e parcerias sugeridos, sempre com a razão, nunca ranqueados (telas 08 e 11) | **pronta (primeira versão)** (17 out): `/member/suggestions` — pessoas documentadas no mesmo lugar e na mesma época, ou formadas pelo mesmo orientador; cada uma com o motivo; "agora não" e "me deixe fora das sugestões de todos". Não escreve nada no registro |
 
-Durações aproximadas (dias de trabalho com o Claude): etapa 0 = 1–2 dias;
-1 = 2–3 dias; 2 = ~1 semana; 3 = 1–2 semanas; 4 = ~2 semanas; 5 = ~2 semanas;
-6 = ~1 semana.
+Também feito depois (22–23 out): site na Cloudflare Pages; dados fictícios
+apagados; perfil com foto e "Acesso e segurança"; visual de dentro refeito;
+história da pessoa trazida do OpenAlex e do ROR; busca de pessoas; mensagens
+entre membros; 42 instituições de referência.
+
+## Fase 2 — o produto completo (cronograma intensivo, 28 out 2026 → ~8 jan 2027)
+
+Cada etapa termina com um link funcionando. As letras evitam confusão com a
+fase 1.
+
+| Etapa | O que o fundador vê no final | Prazo | Situação |
+|---|---|---|---|
+| **A. Alinhamento** | `PRODUTO.md` e `ROTEIRO.md` com a visão completa; testes mais rápidos | 29 out | em andamento |
+| **B. Os Nós** | Nó PDBFF com página, identidade e responsáveis próprios; "Entrar no PDBFF" (conta única); plano gratuito ou pago por Nó | 3 nov | — |
+| **C. Revelações visíveis** | Coortes, linhagem, descendentes, continuidade, recorrência e caminhos em destaque; "você tem N descendentes" ao reivindicar; abrir uma ligação com as fontes e escondê-la | 3 nov | — |
+| **D. Entrada do conhecimento** | "Trabalhei com o João"; envio de documentos, fotos e CV; Lattes e ORCID; IA que extrai para revisão; fila única de revisão | 17 nov | — |
+| **E. Pacote universidade** | Graduação, mestrado e doutorado; relatórios CAPES e indicadores de rankings; console completo; planos e cobrança → **versão vendável** | 17 nov | — |
+| **F. Tudo tem história** | Páginas de projetos, estações, expedições, coleções, espécies, fotos, documentos, mapas antigos e histórias orais | 1 dez | — |
+| **G. Mapas** | Onde estão hoje; mapa no tempo ("em 1994, 37 pessoas estavam aqui"); migrações e carreiras | 1 dez | — |
+| **H. Observatório** | Números e evolução de cada Nó; difusão do conhecimento | 15 dez | — |
+| **I. IA de conexões** | Pessoas, temas, métodos, organismos e lugares afins, dentro e fora da instituição; sempre com o motivo | 15 dez | — |
+| **J. Editais e bolsas** | Editais nacionais e internacionais combinados com o histórico da pessoa ou do grupo | 15 dez | — |
+| **K. Bibliotecário de IA** | Perguntas com fontes, resumos, comparações, ajuda a arquivistas e ao ensino | 22 dez | — |
+| **L. Espaço privado de pesquisa** | Notas, PDFs, entrevistas e hipóteses; envio para revisão quando pronto | 22 dez | — |
+| **M. Privacidade avançada e rede** | Revelações limitadas pelo consentimento; material sensível e soberania indígena; fórum; conexão entre Nós | 22 dez | — |
+| **N. Segundo Nó e comparações** | Cocha Cashu ou Mamirauá no mesmo motor; história comparada; revisão final → **produto completo** | ~8 jan 2027 | — |
+
+O que depende do fundador: material real (listas de pessoas, teses,
+relatórios); decisões de custo (assinatura de IA na etapa D, conta de
+cobrança na E); um contato num segundo Nó (etapa N).
 
 ## Como se trabalha
 
@@ -60,22 +88,22 @@ Durações aproximadas (dias de trabalho com o Claude): etapa 0 = 1–2 dias;
    **Sync Changes**.
 4. O GitHub roda os testes sozinho (aba **Actions**). Verde = pode seguir;
    vermelho = o Claude corrige.
-5. A Netlify publica sozinha a versão nova.
+5. A Cloudflare Pages publica sozinha a versão nova (o banco recebe as
+   migrações pela integração do Supabase).
 
 ## O que saiu do plano
 
-- Federação, "segundo Node" e arquitetura de Node único → viram a etapa 3,
-  mais simples.
-- "M9 — motor de interpretação" → fora do plano.
+- Auditoria "constitucional" antes de cada etapa e os 67 documentos →
+  substituídos por 3 documentos, testes e publicação contínua.
 - Recomeçar do zero num repositório novo → descartado.
 - O vigia do Terminal (`ship-watch.sh`) → substituído pelos testes no GitHub.
+- (Em 28 out 2026 voltaram ao plano: vários Nós, interpretação por IA,
+  arquivo de fotos e documentos — agora nas etapas B, K e F.)
 
 ## Depois (ideias guardadas, sem documento)
 
-- História oral, fotos, cadernos de campo (camada de arquivo).
-- Verticais: estações biológicas (PDBFF, Cocha Cashu, Mamirauá...).
 - Triagem de conflito de interesse / integridade.
 - Ajudar o pesquisador a declarar vínculos corretamente (NIH Other Support,
   NSF Current and Pending).
 - API pública, ROR, Wikidata.
-- Interpretação assinada sobre o registro.
+- Interpretação assinada sobre o registro (parte da etapa K).

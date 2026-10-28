@@ -38,6 +38,9 @@ async function assertPageQuality(page: import("@playwright/test").Page, issues: 
 }
 
 test.describe("the /dev/exhibition doorway", () => {
+  // /dev routes exist only in development by design (src/lib/dev-only-route.ts,
+  // unit-tested); CI runs the screens on the production build, where they are blocked.
+  test.skip(process.env.PLAYWRIGHT_WEB_COMMAND === "npm run start", "dev-only route: absent from the production build");
   for (const theme of ["light", "dark"] as const) {
     test(`opens and lists the seeded world, with no quality regressions (${theme})`, async ({ page }) => {
       test.slow();
