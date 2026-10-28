@@ -1738,6 +1738,12 @@ export type Database = {
       }
       steward_decide_external_match: { Args: { p_accept: boolean; p_match_id: string }; Returns: string }
       steward_demo_summary: { Args: never; Returns: Json }
+      get_node: { Args: { p_slug: string }; Returns: Json }
+      list_nodes: { Args: never; Returns: Json }
+      join_node: { Args: { p_slug: string }; Returns: string }
+      leave_node: { Args: { p_slug: string }; Returns: undefined }
+      my_nodes: { Args: never; Returns: Json }
+      steward_set_node_plan: { Args: { p_plan: string; p_reason: string; p_slug: string }; Returns: undefined }
       steward_openalex_author_for_person: { Args: { p_person_id: string }; Returns: string }
       steward_record_openalex_history: { Args: { p_payload: Json; p_person_id: string }; Returns: Json }
       my_messages: { Args: never; Returns: Json }
