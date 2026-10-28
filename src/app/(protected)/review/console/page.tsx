@@ -144,6 +144,11 @@ export default async function StewardConsolePage({
                   description="Add an institution and appoint the people who look after it."
                 />
                 <ActionTile
+                  href="/review/nodes"
+                  title="Nodes"
+                  description="Create a Node for a new institution and choose its institutions."
+                />
+                <ActionTile
                   href="/review/plans"
                   title="Plan requests"
                   description="Institutions asking for a pro bono or paid plan."
