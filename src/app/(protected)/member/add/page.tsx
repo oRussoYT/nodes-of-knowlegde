@@ -101,6 +101,7 @@ export default async function AddToRecordPage({
     <>
       <input type="hidden" name="aboutPersonId" value={aboutId} />
       {aboutOther ? <input type="hidden" name="returnAbout" value={aboutId} /> : null}
+      {aboutOther && aboutNameParam ? <input type="hidden" name="returnName" value={aboutNameParam} /> : null}
     </>
   );
   const whose = aboutOther ? (aboutNameParam ?? "this person") : "you";

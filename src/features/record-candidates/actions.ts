@@ -24,7 +24,8 @@ function friendly(message: string | undefined): string {
 
 function back(form: FormData): string {
   const about = String(form.get("returnAbout") ?? "");
-  return UUID.test(about) ? `/member/add?about=${about}` : "/member/add";
+  const name = String(form.get("returnName") ?? "").slice(0, 200);
+  return UUID.test(about) ? `/member/add?about=${about}${name ? `&name=${encodeURIComponent(name)}` : ""}` : "/member/add";
 }
 
 function withParam(path: string, key: string, value: string): string {
