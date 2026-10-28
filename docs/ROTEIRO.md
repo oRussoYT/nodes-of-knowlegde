@@ -61,16 +61,16 @@ fase 1.
 
 | Etapa | O que o fundador vê no final | Prazo | Situação |
 |---|---|---|---|
-| **A. Alinhamento** | `PRODUTO.md` e `ROTEIRO.md` com a visão completa; testes mais rápidos | 29 out | em andamento |
-| **B. Os Nós** | Nó PDBFF com página, identidade e responsáveis próprios; "Entrar no PDBFF" (conta única); plano gratuito ou pago por Nó | 3 nov | — |
-| **C. Revelações visíveis** | Coortes, linhagem, descendentes, continuidade, recorrência e caminhos em destaque; "você tem N descendentes" ao reivindicar; abrir uma ligação com as fontes e escondê-la | 3 nov | — |
-| **D. Entrada do conhecimento** | "Trabalhei com o João"; envio de documentos, fotos e CV; Lattes e ORCID; IA que extrai para revisão; fila única de revisão | 17 nov | — |
-| **E. Pacote universidade** | Graduação, mestrado e doutorado; relatórios CAPES e indicadores de rankings; console completo; planos e cobrança → **versão vendável** | 17 nov | — |
-| **F. Tudo tem história** | Páginas de projetos, estações, expedições, coleções, espécies, fotos, documentos, mapas antigos e histórias orais | 1 dez | — |
-| **G. Mapas** | Onde estão hoje; mapa no tempo ("em 1994, 37 pessoas estavam aqui"); migrações e carreiras | 1 dez | — |
-| **H. Observatório** | Números e evolução de cada Nó; difusão do conhecimento | 15 dez | — |
-| **I. IA de conexões** | Pessoas, temas, métodos, organismos e lugares afins, dentro e fora da instituição; sempre com o motivo | 15 dez | — |
-| **J. Editais e bolsas** | Editais nacionais e internacionais combinados com o histórico da pessoa ou do grupo | 15 dez | — |
+| **A. Alinhamento** | `PRODUTO.md` e `ROTEIRO.md` com a visão completa; testes mais rápidos | 29 out | feito (28 out) |
+| **B. Os Nós** | Nó PDBFF com página, identidade e responsáveis próprios; "Entrar no PDBFF" (conta única); plano gratuito ou pago por Nó | 3 nov | feito (28 out) |
+| **C. Revelações visíveis** | Coortes, linhagem, descendentes, continuidade, recorrência e caminhos em destaque; "você tem N descendentes" ao reivindicar; abrir uma ligação com as fontes e escondê-la | 3 nov | feito (28 out) |
+| **D. Entrada do conhecimento** | "Trabalhei com o João"; envio de documentos, fotos e CV; Lattes e ORCID; IA que extrai para revisão; fila única de revisão | 17 nov | feito (28 out) — IA liga quando a chave for colada |
+| **E. Pacote universidade** | Graduação, mestrado e doutorado; relatórios CAPES e indicadores de rankings; console completo; planos e cobrança → **versão vendável** | 17 nov | feito (28 out) — cobrança: falta conta de pagamento |
+| **F. Tudo tem história** | Páginas de projetos, estações, expedições, coleções, espécies, fotos, documentos, mapas antigos e histórias orais | 1 dez | feito (28 out) |
+| **G. Mapas** | Onde estão hoje; mapa no tempo ("em 1994, 37 pessoas estavam aqui"); migrações e carreiras | 1 dez | feito (28 out) |
+| **H. Observatório** | Números e evolução de cada Nó; difusão do conhecimento | 15 dez | feito (28 out) |
+| **I. IA de conexões** | Pessoas, temas, métodos, organismos e lugares afins, dentro e fora da instituição; sempre com o motivo | 15 dez | feito (28 out) — sugestões por IA ligam com a chave |
+| **J. Editais e bolsas** | Editais nacionais e internacionais combinados com o histórico da pessoa ou do grupo | 15 dez | feito (28 out) |
 | **K. Bibliotecário de IA** | Perguntas com fontes, resumos, comparações, ajuda a arquivistas e ao ensino | 22 dez | — |
 | **L. Espaço privado de pesquisa** | Notas, PDFs, entrevistas e hipóteses; envio para revisão quando pronto | 22 dez | — |
 | **M. Privacidade avançada e rede** | Revelações limitadas pelo consentimento; material sensível e soberania indígena; fórum; conexão entre Nós | 22 dez | — |
