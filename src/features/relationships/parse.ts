@@ -104,6 +104,8 @@ function parseRelationship(input: unknown): Relationship | null {
     narrative: asString(input.narrative),
     temporal,
     provenance: { sourceType, verificationStatus },
+    ...(input.hidden === true ? { hidden: true } : {}),
+    ...(input.canHide === true ? { canHide: true } : {}),
   };
 }
 

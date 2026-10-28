@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { setRelationshipHiddenAction } from "../actions";
 import { describeRelationshipProvenance } from "../derive";
 import type { Relationship } from "../types";
 import { RelationshipNarrative } from "./RelationshipNarrative";
@@ -21,9 +22,10 @@ import { RelationshipProvenance } from "./RelationshipProvenance";
 // narrative is simply absent -- never fabricated. Server Component.
 export interface RelationshipEntryProps {
   relationship: Relationship;
+  personId?: string;
 }
 
-export function RelationshipEntry({ relationship }: RelationshipEntryProps) {
+export function RelationshipEntry({ relationship, personId }: RelationshipEntryProps) {
   const provenance = describeRelationshipProvenance(
     relationship.provenance.sourceType,
     relationship.provenance.verificationStatus,
@@ -48,6 +50,19 @@ export function RelationshipEntry({ relationship }: RelationshipEntryProps) {
           statusLabel={provenance.statusLabel}
         />
       </div>
+      {relationship.canHide && personId ? (
+        <form action={setRelationshipHiddenAction} className="mt-2 flex flex-wrap items-center gap-3 text-xs">
+          <input type="hidden" name="relationshipId" value={relationship.id} />
+          <input type="hidden" name="personId" value={personId} />
+          <input type="hidden" name="hidden" value={relationship.hidden ? "false" : "true"} />
+          {relationship.hidden ? (
+            <span className="rounded-full bg-surface-sunken px-2 py-0.5 text-muted-foreground">Hidden from your page — only you see it</span>
+          ) : null}
+          <button type="submit" className="text-muted-foreground underline underline-offset-4 hover:text-foreground">
+            {relationship.hidden ? "Show on my page again" : "Hide this link from my page"}
+          </button>
+        </form>
+      ) : null}
     </li>
   );
 }

@@ -17,6 +17,8 @@ import { nodeLabel } from "@/features/nodes/parse";
 import { getMyNodes, listNodes } from "@/features/nodes/read";
 import { getIdentityStatusCopy } from "@/features/identity/copy";
 import { isCurrentUserSteward } from "@/features/review/authorization";
+import { buildRevelationHighlights, claimRevelationSentence } from "@/features/revelation/highlights";
+import { getPersonCohorts, getPersonMentorshipLineage, getPersonRecurrence } from "@/features/revelation/read";
 import { createClient } from "@/lib/supabase/server";
 
 import { WithdrawClaimButton } from "./WithdrawClaimButton";
@@ -64,6 +66,14 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
   const identityStatus = await getIdentityStatus();
   const statusCopy = getIdentityStatusCopy(identityStatus);
   const isSteward = await isCurrentUserSteward();
+  // The claim moment's revelation (screen 02): once the record is yours, what
+  // it documents -- counts of documented things only.
+  let claimRevelation: string | null = null;
+  if (identityStatus.kind === "approved") {
+    const linkedId = identityStatus.claim.personId;
+    const [c, l, r] = await Promise.all([getPersonCohorts(linkedId), getPersonMentorshipLineage(linkedId), getPersonRecurrence(linkedId)]);
+    claimRevelation = claimRevelationSentence(buildRevelationHighlights(linkedId, c, l, r));
+  }
   const mine = await getMyProfile();
   const profile = mine?.profile;
   const photoUrl = mine?.photoUrl ?? null;
@@ -193,7 +203,7 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
           ) : identityStatus.kind === "approved" ? (
             <EmptyState
               title={statusCopy.title}
-              description={statusCopy.description}
+              description={claimRevelation ? `${statusCopy.description} ${claimRevelation}` : statusCopy.description}
               action={
                 <Link
                   href={`/people/${identityStatus.claim.personId}`}

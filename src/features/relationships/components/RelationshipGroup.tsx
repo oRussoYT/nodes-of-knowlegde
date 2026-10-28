@@ -10,15 +10,17 @@ import { RelationshipEntry } from "./RelationshipEntry";
 export interface RelationshipGroupProps {
   heading: string;
   relationships: Relationship[];
+  /** The person whose page this is (for "hide from my page"). */
+  personId?: string;
 }
 
-export function RelationshipGroup({ heading, relationships }: RelationshipGroupProps) {
+export function RelationshipGroup({ heading, relationships, personId }: RelationshipGroupProps) {
   return (
     <div>
       <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{heading}</h3>
       <ul className="mt-3 flex flex-col gap-6">
         {relationships.map((relationship) => (
-          <RelationshipEntry key={relationship.id} relationship={relationship} />
+          <RelationshipEntry key={relationship.id} relationship={relationship} personId={personId} />
         ))}
       </ul>
     </div>
