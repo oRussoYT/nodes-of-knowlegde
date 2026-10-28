@@ -122,6 +122,11 @@ export default async function StewardConsolePage({
               description="Graduates by level, the CAPES egressos file and indicators for rankings, with the method stated."
             />
             <ActionTile
+              href="/review/locations"
+              title="Place institutions on the map"
+              description="Find locations in ROR and accept the right ones."
+            />
+            <ActionTile
               href="/review/names"
               title="Institution names"
               description="Former, other and translated names, with the years each was used."
