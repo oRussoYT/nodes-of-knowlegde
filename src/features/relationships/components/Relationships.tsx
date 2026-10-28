@@ -34,7 +34,7 @@ export function Relationships({ document }: { document: RelationshipDocument | n
       ) : (
         <div className="mt-4 flex flex-col gap-8">
           {view.groups.map((group) => (
-            <RelationshipGroup key={group.key} heading={group.heading} relationships={group.relationships} personId={document.personId} />
+            <RelationshipGroup key={group.key} heading={group.heading} relationships={group.relationships} personId={document?.personId} />
           ))}
         </div>
       )}
