@@ -16,7 +16,7 @@
 import { sanitizeReturnTo } from "./validation";
 
 /** Routes that require an authenticated session. */
-export const PROTECTED_PATH_PREFIXES = ["/member", "/account", "/profile", "/messages", "/update-password", "/review"] as const;
+export const PROTECTED_PATH_PREFIXES = ["/member", "/account", "/profile", "/messages", "/update-password", "/review", "/workspace"] as const;
 
 /** Routes an already-authenticated visitor shouldn't be shown again. */
 export const AUTH_ONLY_PATH_PREFIXES = ["/login", "/register"] as const;

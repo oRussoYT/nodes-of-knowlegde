@@ -1751,6 +1751,11 @@ export type Database = {
       mark_messages_read: { Args: never; Returns: number }
       unread_message_count: { Args: never; Returns: number }
       search_people: { Args: { p_query?: string | null }; Returns: Json }
+      my_research_notes: { Args: { p_query?: string }; Returns: Json }
+      get_my_research_note: { Args: { p_id: string }; Returns: Json }
+      save_research_note: { Args: { p: Json }; Returns: string }
+      delete_research_note: { Args: { p_id: string }; Returns: undefined }
+      mark_research_note_submitted: { Args: { p_id: string; p_item_id: string }; Returns: undefined }
       librarian_sources: { Args: { p_words: string[] }; Returns: Json }
       librarian_gaps: { Args: { p_person_id: string }; Returns: Json }
       save_funding_call: { Args: { p: Json }; Returns: string }
