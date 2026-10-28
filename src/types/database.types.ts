@@ -1751,6 +1751,9 @@ export type Database = {
       mark_messages_read: { Args: never; Returns: number }
       unread_message_count: { Args: never; Returns: number }
       search_people: { Args: { p_query?: string | null }; Returns: Json }
+      steward_create_node: { Args: { p: Json }; Returns: string }
+      steward_update_node: { Args: { p: Json; p_slug: string }; Returns: undefined }
+      steward_set_node_organization: { Args: { p_include: boolean; p_organization_id: string; p_role: string; p_slug: string }; Returns: undefined }
       set_my_privacy: { Args: { p_limit_revelations: boolean }; Returns: undefined }
       person_privacy_view: { Args: { p_person_id: string }; Returns: Json }
       heritage_care: { Args: { p_item_id: string }; Returns: Json }

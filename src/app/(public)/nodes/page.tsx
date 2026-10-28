@@ -28,6 +28,15 @@ export default async function NodesPage() {
         Each Node is an institution or a project with its own people, history and stewards — all in one connected
         record of who produced knowledge, with whom, where and when. One account works across every Node.
       </p>
+      <p className="mt-4 text-sm">
+        <Link href="/compare" className="underline underline-offset-4">
+          Compare Nodes
+        </Link>
+        {" · "}
+        <Link href="/plans" className="underline underline-offset-4">
+          Bring your institution
+        </Link>
+      </p>
 
       {nodes.length === 0 ? (
         <p className="mt-10 text-muted-foreground">No Nodes yet.</p>
