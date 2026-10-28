@@ -14,7 +14,8 @@ import { Textarea } from "@/components/ui/Textarea";
 import { pageTitle } from "@/config/site";
 import { getInstitutionsIndex } from "@/features/directory/read";
 import { getIdentityStatus } from "@/features/identity/status";
-import { importLattesAction, importOrcidAction, proposeColleagueAction, proposePeriodAction } from "@/features/record-candidates/actions";
+import { importLattesAction, importOrcidAction, proposeColleagueAction, proposePeriodAction, readDocumentAction } from "@/features/record-candidates/actions";
+import { aiIsOn } from "@/features/record-candidates/ai";
 import { EvidenceUploader } from "@/features/record-candidates/components/EvidenceUploader";
 import { PersonPicker } from "@/features/record-candidates/components/PersonPicker";
 import { describeCandidate, ORIGIN_LABELS } from "@/features/record-candidates/parse";
@@ -105,6 +106,8 @@ export default async function AddToRecordPage({
     </>
   );
   const whose = aboutOther ? (aboutNameParam ?? "this person") : "you";
+  const aboutName = aboutOther ? (aboutNameParam ?? "the person") : identity.kind === "approved" ? (identity.personDisplayName ?? "the person") : "the person";
+  const aiOn = aiIsOn();
 
   return (
     <main id="main-content" tabIndex={-1} className="py-16">
@@ -252,6 +255,33 @@ export default async function AddToRecordPage({
             </div>
           </section>
         ) : null}
+
+        <section id="ai" aria-labelledby="ai-heading" className="mt-12">
+          <h2 id="ai-heading" className="text-lg font-semibold text-foreground">
+            Let AI read a document
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            A CV, a thesis page, a field roster, a photo of an old list. The AI only suggests: each period or colleague it finds becomes a proposal marked “Extracted by AI”, with the file and a quote attached, and a steward checks it.
+          </p>
+          {aiOn ? (
+            <form action={readDocumentAction} className="mt-4 flex flex-col gap-3 rounded-md border border-border-default px-4 py-5">
+              <input type="hidden" name="aboutPersonId" value={aboutId} />
+              <input type="hidden" name="aboutPersonName" value={aboutName} />
+              {aboutOther ? <input type="hidden" name="returnAbout" value={aboutId} /> : null}
+              <Label htmlFor="ai-document">Document (PDF, photo or text, up to 10 MB)</Label>
+              <input id="ai-document" name="document" type="file" required accept="application/pdf,image/jpeg,image/png,image/webp,text/plain" className="text-sm text-foreground" />
+              <div>
+                <Button type="submit" emphasis="secondary">
+                  Read and propose
+                </Button>
+              </div>
+            </form>
+          ) : (
+            <p className="mt-4 rounded-md border border-dashed border-border-default px-4 py-4 text-sm text-muted-foreground">
+              AI reading is not switched on yet. Meanwhile, attach the document to a period or colleague above.
+            </p>
+          )}
+        </section>
 
         <section id="mine" aria-labelledby="mine-heading" className="mt-12">
           <h2 id="mine-heading" className="text-lg font-semibold text-foreground">
