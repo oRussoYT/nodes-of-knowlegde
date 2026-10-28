@@ -1751,6 +1751,11 @@ export type Database = {
       mark_messages_read: { Args: never; Returns: number }
       unread_message_count: { Args: never; Returns: number }
       search_people: { Args: { p_query?: string | null }; Returns: Json }
+      save_funding_call: { Args: { p: Json }; Returns: string }
+      steward_set_funding_call_status: { Args: { p_id: string; p_status: string }; Returns: undefined }
+      list_funding_calls: { Args: { p_query?: string }; Returns: Json }
+      funding_matches_for: { Args: { p_person_id: string }; Returns: Json }
+      node_funding_matches: { Args: { p_slug: string }; Returns: Json }
       my_linked_person: { Args: never; Returns: string }
       add_person_topics: { Args: { p_person_id: string; p_source?: string; p_topics: Json }; Returns: number }
       decide_person_topic: { Args: { p_confirm: boolean; p_topic_id: string }; Returns: undefined }

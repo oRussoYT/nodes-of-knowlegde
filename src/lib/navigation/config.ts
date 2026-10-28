@@ -102,6 +102,13 @@ export const navigationConfig: NavItem[] = [
     availability: { status: "available" },
   },
   {
+    id: "funding",
+    label: "Calls and grants",
+    href: "/funding",
+    groups: ["protected-primary"],
+    availability: { status: "available" },
+  },
+  {
     id: "member",
     label: "Member",
     href: "/member",
