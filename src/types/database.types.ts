@@ -1751,6 +1751,15 @@ export type Database = {
       mark_messages_read: { Args: never; Returns: number }
       unread_message_count: { Args: never; Returns: number }
       search_people: { Args: { p_query?: string | null }; Returns: Json }
+      list_heritage_kinds: { Args: never; Returns: Json }
+      heritage_counts: { Args: never; Returns: Json }
+      list_heritage_items: { Args: { p_kind?: string; p_query?: string }; Returns: Json }
+      get_heritage_item: { Args: { p_id: string }; Returns: Json }
+      heritage_for: { Args: { p_organization_id?: string; p_person_id?: string }; Returns: Json }
+      propose_heritage_item: { Args: { p: Json }; Returns: string }
+      link_heritage_item: { Args: { p: Json; p_item_id: string }; Returns: undefined }
+      steward_decide_heritage_item: { Args: { p_decision: string; p_id: string; p_note?: string }; Returns: undefined }
+      steward_list_heritage_proposals: { Args: never; Returns: Json }
       steward_university_report: {
         Args: { p_from_year?: number; p_home_country?: string; p_organization_id: string; p_programme?: string; p_to_year?: number }
         Returns: Json

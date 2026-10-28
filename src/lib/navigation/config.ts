@@ -88,6 +88,13 @@ export const navigationConfig: NavItem[] = [
     availability: { status: "available" },
   },
   {
+    id: "history",
+    label: "History",
+    href: "/history",
+    groups: ["protected-primary"],
+    availability: { status: "available" },
+  },
+  {
     id: "member",
     label: "Member",
     href: "/member",
