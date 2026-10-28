@@ -15,6 +15,7 @@ import { proposeHeritageAction } from "@/features/heritage/actions";
 import { HeritageFileInput } from "@/features/heritage/components/HeritageFileInput";
 import { PeoplePicker } from "@/features/heritage/components/PeoplePicker";
 import { getHeritageKinds } from "@/features/heritage/read";
+import { getCareOptions } from "@/features/privacy/read";
 import { getMyUserId } from "@/features/record-candidates/read";
 
 export const metadata: Metadata = {
@@ -28,7 +29,7 @@ export default async function NewHeritagePage({
 }) {
   const raw = await searchParams;
   const error = typeof raw.error === "string" ? raw.error : null;
-  const [kinds, institutions, userId] = await Promise.all([getHeritageKinds(), getInstitutionsIndex(), getMyUserId()]);
+  const [kinds, institutions, userId, care] = await Promise.all([getHeritageKinds(), getInstitutionsIndex(), getMyUserId(), getCareOptions()]);
   const preset = typeof raw.kind === "string" && kinds.some((k) => k.key === raw.kind) ? raw.kind : "";
 
   return (
@@ -126,9 +127,38 @@ export default async function NewHeritagePage({
             <Label htmlFor="sourceNote">What documents it</Label>
             <Input id="sourceNote" name="sourceNote" required maxLength={1000} placeholder="e.g. INPA archive, box 12 · personal album · recorded in 2019" />
           </div>
-          <label className="flex items-center gap-2 text-sm text-foreground sm:col-span-2">
-            <input type="checkbox" name="restricted" /> Sensitive — show only to stewards (and me)
-          </label>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="visibility">Who can see it</Label>
+            <Select id="visibility" name="visibility" defaultValue="members">
+              <option value="members">Every member</option>
+              <option value="restricted">Sensitive — stewards only (and me)</option>
+              <option value="community">Community material — only that community&apos;s stewards decide</option>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="communityOrganizationId">Community (for community material)</Label>
+            <Select id="communityOrganizationId" name="communityOrganizationId" defaultValue="">
+              <option value="">None</option>
+              {care.communities.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <fieldset className="sm:col-span-2">
+            <legend className="text-sm font-medium text-foreground">Labels from the community (optional, Local Contexts TK/BC)</legend>
+            <div className="mt-2 grid gap-2 sm:grid-cols-2">
+              {care.labels.map((l) => (
+                <label key={l.key} className="flex items-start gap-2 text-sm text-foreground">
+                  <input type="checkbox" name="careLabel" value={l.key} className="mt-0.5" />
+                  <span>
+                    {l.label} <span className="block text-xs text-muted-foreground">{l.description}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
           <div className="sm:col-span-2">
             <Button type="submit">Send</Button>
           </div>
