@@ -54,7 +54,9 @@ export function parseCalls(data: unknown): FundingCall[] {
         reasons: r
           ? {
               sharedThemes: Array.isArray(r.sharedThemes)
-                ? r.sharedThemes.flatMap((t) => (typeof t === "string" ? [t] : isRecord(t) && typeof t.label === "string" ? [{ label: t.label, people: Number(t.people) || 0 }] : []))
+                ? r.sharedThemes.flatMap((t): (string | { label: string; people: number })[] =>
+                    typeof t === "string" ? [t] : isRecord(t) && typeof t.label === "string" ? [{ label: t.label, people: Number(t.people) || 0 }] : [],
+                  )
                 : [],
               country: str(r.country),
               careerStage: str(r.careerStage),
