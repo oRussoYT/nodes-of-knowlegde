@@ -412,10 +412,12 @@ create function public.list_heritage_kinds()
 returns jsonb
 language sql
 stable
+security definer
 set search_path = public, pg_temp
 as $$
   select coalesce(jsonb_agg(jsonb_build_object('key', key, 'label', label, 'plural', plural, 'isMedia', is_media) order by sort_order), '[]'::jsonb)
     from public.heritage_kinds;
 $$;
 
+revoke all on function public.list_heritage_kinds() from public, anon;
 grant execute on function public.list_heritage_kinds() to authenticated;
