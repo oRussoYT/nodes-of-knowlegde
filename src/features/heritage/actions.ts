@@ -35,7 +35,13 @@ export async function decideHeritageAction(form: FormData): Promise<void> {
   const supabase = await createClient();
   const { error } = await supabase.rpc("steward_decide_heritage_item", { p_id: id, p_decision: decision, p_note: note || undefined });
   if (error) {
-    const msg = error.message.includes("own proposal") ? "Someone else must review your own proposal." : "The decision could not be saved.";
+    const msg = error.message.includes("own proposal")
+      ? "Someone else must review your own proposal."
+      : error.message.includes("second person")
+        ? "Another steward must confirm — not the one who added or accepted it."
+        : error.message.includes("community decides")
+          ? "Only the community's own stewards decide about its material."
+          : "The decision could not be saved.";
     redirect(`${back}?error=${encodeURIComponent(msg)}`);
   }
   revalidatePath("/history");

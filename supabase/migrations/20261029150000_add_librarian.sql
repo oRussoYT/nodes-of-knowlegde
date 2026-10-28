@@ -72,7 +72,8 @@ as $$
       'text', c.title || '. ' || coalesce(k.label, c.contribution_kind) || coalesce(', ' || extract(year from c.start_date)::int, '') ||
         coalesce('. ' || left(c.description, 300), '') ||
         coalesce('. People: ' || (select string_agg(p.display_name, ', ') from (select p.display_name from public.person_contributions pc
-                   join public.people p on p.id = pc.person_id where pc.contribution_id = c.id limit 6) p), '')) as j
+                   join public.people p on p.id = pc.person_id where pc.contribution_id = c.id
+                    and not exists (select 1 from public.suggestion_opt_outs o where o.person_id = pc.person_id) limit 6) p), '')) as j
       from works c left join public.contribution_kinds k on k.key = c.contribution_kind
      where c.hits > 0 order by c.title limit 10
   ),
@@ -100,7 +101,10 @@ stable
 security definer
 set search_path = public, pg_temp
 as $$
-  select case when auth.uid() is null then null else jsonb_build_object(
+  select case when auth.uid() is null
+              or (exists (select 1 from public.suggestion_opt_outs o where o.person_id = p_person_id)
+                  and p_person_id is distinct from (select l.person_id from public.user_person_links l where l.user_id = auth.uid() and l.status = 'active' limit 1)
+                  and not public.is_any_steward(auth.uid())) then null else jsonb_build_object(
     'undatedPeriods', (select count(*) from public.participations where person_id = p_person_id and start_date is null),
     'periods', (select count(*) from public.participations where person_id = p_person_id),
     'works', (select count(*) from public.person_contributions where person_id = p_person_id),
