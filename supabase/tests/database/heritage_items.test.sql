@@ -72,7 +72,7 @@ grant select on h2 to authenticated;
 select is(public.get_heritage_item((select id from h2)) ->> 'reviewStatus', 'accepted', 'a steward''s addition is accepted at once'); -- 14
 select throws_ok(format('select public.steward_decide_heritage_item(%L, %L)', (select id from h2), 'reject'), '42501', null,
   'nobody reviews their own'); -- 15
-select lives_ok(format('select public.steward_decide_heritage_item(%L, %L)', (select id from h1), 'confirm'), 'a steward confirms'); -- 16
+select throws_ok(format('select public.steward_decide_heritage_item(%L, %L)', (select id from h1), 'confirm'), '42501', null, 'whoever accepted does not also confirm'); -- 16
 
 -- 17-18: restricted items stay with the proposer and stewards.
 set local request.jwt.claim.sub to :'ana';

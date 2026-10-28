@@ -55,7 +55,7 @@ set search_path = public, pg_temp
 as $$
   select jsonb_build_object(
     'limitRevelations', coalesce((select limit_revelations from public.person_privacy where person_id = p_person_id), false),
-    'isSelf', p_person_id = public.my_linked_person(),
+    'isSelf', p_person_id is not distinct from public.my_linked_person(),
     'viewerIsSteward', public.is_any_steward(auth.uid()))
    where auth.uid() is not null;
 $$;
@@ -152,7 +152,9 @@ begin
   if v_file is not null and split_part(v_file, '/', 1) <> v_uid::text then
     raise exception 'propose_heritage_item: the file must be one of your own uploads' using errcode = '42501';
   end if;
-  if coalesce(p ->> 'visibility', '') = 'community' and v_community is null then
+  if coalesce(p ->> 'visibility', '') = 'community' and (v_community is null or not exists (
+       select 1 from public.organizations o where o.id = v_community
+          and o.organization_type in ('indigenous_organization', 'community_organization'))) then
     raise exception 'propose_heritage_item: community material needs its community' using errcode = '23514';
   end if;
   -- community material is never accepted at once, except by that community's own stewards
@@ -223,6 +225,9 @@ begin
   end if;
   if p_decision = 'reject' and nullif(btrim(coalesce(p_note, '')), '') is null then
     raise exception 'steward_decide_heritage_item: a rejection needs a reason' using errcode = '22023';
+  end if;
+  if p_decision = 'confirm' and (v_i.proposed_by_user_id = auth.uid() or v_i.decided_by_user_id = auth.uid()) then
+    raise exception 'steward_decide_heritage_item: a second person confirms' using errcode = '42501';
   end if;
   if p_decision = 'confirm' and v_i.review_status <> 'accepted' then
     raise exception 'steward_decide_heritage_item: accept before confirming' using errcode = '22023';
@@ -439,7 +444,9 @@ declare
   v_p public.forum_posts%rowtype;
 begin
   select * into v_p from public.forum_posts where id = p_post_id;
-  if not found or not (v_p.author_user_id = auth.uid() or public.is_any_steward(auth.uid())) then
+  if not found or not (v_p.author_user_id = auth.uid() or public.is_active_reviewer(auth.uid())
+       or exists (select 1 from public.forum_threads t join public.node_organizations no on no.node_id = t.node_id
+                   where t.id = v_p.thread_id and public.is_community_steward(auth.uid(), no.organization_id))) then
     raise exception 'forum_hide_post: not allowed' using errcode = '42501';
   end if;
   update public.forum_posts set is_hidden = true where id = p_post_id;
@@ -479,12 +486,23 @@ grant execute on function public.node_links(text) to anon, authenticated;
 
 -- Files of community material: only the community's stewards (and the
 -- proposer, whose folder it is) can open them -- not platform reviewers.
+create function public.heritage_file_visible(p_name text)
+returns boolean
+language sql
+stable
+security definer
+set search_path = public, pg_temp
+as $$
+  select auth.uid() is not null and (
+    split_part(p_name, '/', 1) = auth.uid()::text
+    or exists (select 1 from public.heritage_items i where i.file_path = p_name and public.can_see_heritage_item(auth.uid(), i)));
+$$;
+revoke all on function public.heritage_file_visible(text) from public, anon;
+grant execute on function public.heritage_file_visible(text) to authenticated;
+
+-- Policies run as the caller, so they use a granted helper that only looks
+-- at the caller's own rights. Community files: only that community.
 drop policy heritage_read_visible on storage.objects;
 create policy heritage_read_visible on storage.objects
   for select to authenticated
-  using (bucket_id = 'heritage' and (
-    (storage.foldername(name))[1] = auth.uid()::text
-    or exists (select 1 from public.heritage_items i
-                where i.file_path = name and public.can_see_heritage_item(auth.uid(), i))
-    or (public.is_any_steward(auth.uid())
-        and not exists (select 1 from public.heritage_items i where i.file_path = name and i.visibility = 'community'))));
+  using (bucket_id = 'heritage' and public.heritage_file_visible(name));
