@@ -115,6 +115,12 @@ export default async function NodePage({ params, searchParams }: NodePageProps) 
           ))}
         </dl>
 
+        <p className="mt-6">
+          <Link href={`/n/${node.slug}/observatory`} className="text-sm font-semibold underline underline-offset-4">
+            Open the {label} Observatory — numbers over time and where knowledge travelled
+          </Link>
+        </p>
+
         <div className="mt-12 grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
           <section aria-labelledby="about-heading">
             <h2 id="about-heading" className="font-display text-3xl font-bold tracking-tight text-foreground">
