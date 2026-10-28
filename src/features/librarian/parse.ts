@@ -11,9 +11,11 @@ export interface Source {
 }
 
 const STOP = new Set(
-  "the and for with from that this what who when where which were was are how many much about into onto than then there their they them have has had did does can could would should our your you all any some more most also not but only over under after before between during " +
-    "que quem quando onde qual quais como para por com sem uma umas uns dos das nos nas pelo pela pelos pelas sobre entre ate até depois antes mais menos muito muita muitos muitas foi foram era eram ser estar esta este isso isto essa esse aquele aquela tem têm tinha seus suas seu sua",
-).add("");
+  (
+    "the and for with from that this what who when where which were was are how many much about into onto than then there their they them have has had did does can could would should our your you all any some more most also not but only over under after before between during " +
+    "que quem quando onde qual quais como para por com sem uma umas uns dos das nos nas pelo pela pelos pelas sobre entre ate até depois antes mais menos muito muita muitos muitas foi foram era eram ser estar esta este isso isto essa esse aquele aquela tem têm tinha seus suas seu sua"
+  ).split(" "),
+);
 
 /** The words worth searching for in a question (no stop words, max 12). */
 export function wordsOf(question: string): string[] {
