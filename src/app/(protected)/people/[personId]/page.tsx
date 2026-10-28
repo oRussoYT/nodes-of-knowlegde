@@ -30,6 +30,8 @@ import {
 import { Timeline } from "@/features/timeline/components/Timeline";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 import { bringInPersonHistoryAction } from "@/features/external/history-actions";
+import { HeritageList } from "@/features/heritage/components/HeritageList";
+import { getHeritageFor } from "@/features/heritage/read";
 import { ContactPanel } from "@/features/messages/components/ContactPanel";
 import { getContactOptions } from "@/features/messages/read";
 import { PublishControl } from "@/features/public-person/components/PublishControl";
@@ -104,6 +106,7 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
   // Steward-only publish control (ROTEIRO etapa 2). Readers never see it.
   const isReviewer = await isCurrentUserSteward();
   const contactOptions = await getContactOptions(personId);
+  const heritage = await getHeritageFor({ personId });
   const isPublic = isReviewer ? (await getPublicPerson(personId)) !== null : false;
 
   return (
@@ -131,6 +134,17 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
             Know something about {document.identity.displayName}? Propose it, with its source
           </Link>
         </p>
+
+        {heritage.length > 0 ? (
+          <section id="history" aria-labelledby="person-heritage-heading" className="mt-8">
+            <h2 id="person-heritage-heading" className="text-sm font-medium text-foreground">
+              In the history
+            </h2>
+            <div className="mt-3">
+              <HeritageList items={heritage} showRole />
+            </div>
+          </section>
+        ) : null}
 
         {isReviewer ? (
           <PublishControl
