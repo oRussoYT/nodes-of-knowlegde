@@ -1751,6 +1751,15 @@ export type Database = {
       mark_messages_read: { Args: never; Returns: number }
       unread_message_count: { Args: never; Returns: number }
       search_people: { Args: { p_query?: string | null }; Returns: Json }
+      list_record_options: { Args: never; Returns: Json }
+      propose_record: { Args: { p: Json }; Returns: string }
+      my_record_candidates: { Args: never; Returns: Json }
+      steward_list_record_candidates: { Args: never; Returns: Json }
+      steward_decide_record_candidate: {
+        Args: { p_accept: boolean; p_candidate_id: string; p_note?: string }
+        Returns: string
+      }
+      find_people_for_proposal: { Args: { p_query: string }; Returns: Json }
       send_message_to_person: { Args: { p_body: string; p_person_id: string }; Returns: string }
       reply_to_message: { Args: { p_body: string; p_message_id: string }; Returns: string }
       person_contact_options: { Args: { p_person_id: string }; Returns: Json }

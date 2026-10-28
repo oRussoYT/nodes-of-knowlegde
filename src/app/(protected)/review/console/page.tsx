@@ -107,6 +107,11 @@ export default async function StewardConsolePage({
               description="Where your graduates went, by sector, country and year. Export or publish without names."
             />
             <ActionTile
+              href="/review/queue"
+              title="Review queue"
+              description="Periods and bonds proposed by members or imported from CVs, with their documents."
+            />
+            <ActionTile
               href="/review/contributions"
               title="Proposed contributions"
               description="Contributions people proposed for their own record, waiting for a steward."

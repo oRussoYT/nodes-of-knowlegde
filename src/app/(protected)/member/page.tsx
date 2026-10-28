@@ -264,6 +264,11 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
                 description="Documented in the same place at the same time, or trained by the same mentor. Always with the reason."
               />
               <ActionTile
+                href="/member/add"
+                title="Add to your history"
+                description="A period somewhere, someone you worked with, your ORCID or Lattes CV. A steward checks each item."
+              />
+              <ActionTile
                 href="/member/contributions"
                 title="Propose a contribution"
                 description="Something you helped bring into being. A steward checks what documents it."
