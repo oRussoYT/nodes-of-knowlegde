@@ -61,7 +61,7 @@ writeFileSync(
     {
       version: 1,
       include: ["/*"],
-      exclude: ["/_next/static/*", "/photos/*", "/favicon.ico"],
+      exclude: ["/_next/static/*", "/photos/*", "/maps/*", "/favicon.ico"],
     },
     null,
     2,
