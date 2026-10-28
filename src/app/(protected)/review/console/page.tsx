@@ -127,6 +127,11 @@ export default async function StewardConsolePage({
               description="Find locations in ROR and accept the right ones."
             />
             <ActionTile
+              href="/review/funding"
+              title="Calls and grants"
+              description="Add calls, import from Grants.gov, see which match the group."
+            />
+            <ActionTile
               href="/review/names"
               title="Institution names"
               description="Former, other and translated names, with the years each was used."
