@@ -259,6 +259,11 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
                 />
               )}
               <ActionTile
+                href="/member/connections"
+                title="Connections"
+                description="Themes, methods, organisms and places you share with others — at your institutions and beyond, always with the reason."
+              />
+              <ActionTile
                 href="/member/suggestions"
                 title="People you may know"
                 description="Documented in the same place at the same time, or trained by the same mentor. Always with the reason."
