@@ -22,6 +22,13 @@ import type { NavItem } from "./types";
 
 export const navigationConfig: NavItem[] = [
   {
+    id: "plans",
+    label: "Plans",
+    href: "/plans",
+    groups: ["public-primary"],
+    availability: { status: "available" },
+  },
+  {
     id: "login",
     label: "Log in",
     href: "/login",
