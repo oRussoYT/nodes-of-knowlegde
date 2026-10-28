@@ -1,6 +1,7 @@
 # PRODUTO — o que é o Nodes of Knowledge
 
-> Documento único de produto. Substitui, como guia de trabalho diário, a
+> Atualizado em 28 out 2026 (alinhamento: o produto final é o Nodes of
+> Knowledge **completo**). Documento único de produto. Substitui, como guia de trabalho diário, a
 > Constituição, o Product Blueprint e a Design Bible (que ficam guardados como
 > história em `docs/arquivo/`). Se algo aqui contradiz um documento antigo,
 > vale este.
@@ -19,6 +20,44 @@ A lacuna que ele ocupa:
 | ORCID | quem você é |
 | Crossref, OpenAlex | o que você publicou |
 | **ninguém** | **com quem você fez, quem te formou e onde vocês estavam** |
+
+## Decisão de 28 out 2026 — o produto completo
+
+O produto final é a visão original **inteira** do Nodes of Knowledge, sem
+cortar funcionalidade. Só saem os problemas de produção do passado (auditoria
+"constitucional" antes de cada etapa, 67 documentos): continuamos com 3
+documentos, testes automáticos e publicação a cada mudança.
+
+- **Um motor, vários Nós.** Nodes of Knowledge é a plataforma global. Cada
+  instituição ou projeto que a usa é um **Nó**, com identidade, responsáveis,
+  pessoas e história próprios, dentro da mesma rede. O **Nó PDBFF** é o
+  primeiro cliente. Depois: Cocha Cashu, Mamirauá, ForestGEO, universidades,
+  museus.
+- **Uma conta por pessoa**, uma biografia científica contínua através de
+  todos os Nós.
+- **Modelo de negócio:** **gratuito (pro bono)** para instituições de pesquisa
+  em conservação da biodiversidade; **pago** para universidades públicas e
+  privadas, centros de pesquisa e museus.
+- **O que vende para universidades** (já começado): para onde foram
+  graduados, mestres e doutores; confirmação pelo egresso; painel; relatórios
+  para CAPES e rankings.
+- **O que mais pode gerar receita** (volta ao plano): conexão por IA entre
+  pessoas dentro e fora da instituição; sugestões para pesquisa (temas,
+  pessoas, lugares) a partir da história e da rede; ajuda para encontrar e
+  ganhar editais e bolsas, nacionais e internacionais.
+
+As 14 áreas e as ~90 funcionalidades previstas estão listadas, com o que já
+existe, no Claude Doc "Nodes of Knowledge — Funcionalidades do projeto
+original" (28 out 2026): plataforma e Nós · biografia científica · tudo tem
+história (projetos, estações, expedições, coleções, espécies, fotos,
+documentos, histórias orais) · entrada do conhecimento (contribuição e
+curadoria, Lattes, ORCID, IA que extrai para revisão) · revelações · bibliotecário
+de IA · conexões e recomendações (editais) · mapas · observatório e análises ·
+rede de conhecimento · pacote para instituições · espaço privado de pesquisa ·
+privacidade e consentimento · experiência de leitura.
+
+**Toda IA só sugere**: sempre rotulada, sempre com o motivo, nunca vira
+registro sem uma pessoa confirmar, nunca ranqueia pessoas.
 
 ## Três propriedades que separam o produto de tudo ao lado
 
@@ -103,10 +142,12 @@ sessão longa.
 
 ## Para quem vendemos primeiro
 
-Alvo atual (decisão de 15 set 2026): **universidades de pesquisa dos EUA e
-Canadá** — registro de trajetória de doutores e pós-docs ("para onde foram"),
-todas as áreas. O painel do steward (tela 09) é o produto pago. A confirmar
-pelo fundador antes da etapa 5 do `ROTEIRO.md`.
+Primeiro cliente: o **Nó PDBFF** (pro bono). Primeiros pagantes (decisão de
+28 out 2026, ampliando a de 15 set): **universidades e centros de pesquisa**
+(Brasil, EUA, Canadá — começando pela McGill) e **museus**. O pacote pago:
+para onde foram os formados (graduação, mestrado, doutorado, pós-doc),
+confirmação pelo egresso, painel, relatórios CAPES e rankings; depois as
+conexões por IA e os editais.
 
 ## Teste para qualquer ideia nova
 
@@ -115,6 +156,6 @@ legível**? Se não, vai para a lista "depois" do `ROTEIRO.md`.
 
 ## Dados de demonstração
 
-Os dados de hoje são fictícios e servem só para testar a plataforma. Devem
-estar sempre marcados como demonstração, e precisa existir um caminho limpo
-para apagar tudo antes de entrar dado real.
+Os dados fictícios foram apagados do site em 22 out 2026 (`wipe_demo_data()`).
+Desde então tudo no site é real e com fonte. Os testes automáticos continuam
+usando dados de demonstração, sempre marcados como tal.

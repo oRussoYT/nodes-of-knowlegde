@@ -1,11 +1,11 @@
 # CLAUDE.md
 
 Regras permanentes de trabalho para quem altera este projeto — pessoa ou
-agente de IA. Atualizado em 21 out 2026.
+agente de IA. Atualizado em 28 out 2026.
 
 ## Leia primeiro (e só isto é obrigatório)
 
-1. `docs/PRODUTO.md` — o que é o produto e as 11 telas.
+1. `docs/PRODUTO.md` — o que é o produto completo (decisão de 28 out 2026), os Nós e as 11 telas.
 2. `docs/REGRAS.md` — as regras inegociáveis e o teste que garante cada uma.
 3. `docs/ROTEIRO.md` — a lista única de etapas e o que já está feito.
 
@@ -26,7 +26,7 @@ contradiz os três documentos acima, valem os três.
 
 - O código mora no GitHub (`oRussoYT/nodes-of-knowlegde`). Os testes rodam
   sozinhos no GitHub Actions (`.github/workflows/testes.yml`) a cada envio.
-- A publicação é pela **Netlify** (não Vercel) com Supabase hospedado.
+- A publicação é pela **Cloudflare Pages** (nodes-bdffp.pages.dev; não Vercel, não mais Netlify) com Supabase hospedado.
 - Nada vai para a branch principal com teste vermelho.
 - Cada etapa do `ROTEIRO.md` termina com um link que o fundador abre.
 - Ideia nova fora do plano vai para a lista "Depois" do `ROTEIRO.md`, sem
@@ -54,7 +54,7 @@ contradiz os três documentos acima, valem os três.
   distintos no banco e na tela.
 - Vocabulários controlados ficam no banco/config, não dentro de componentes.
 - Nunca ranquear pessoas.
-- Dados atuais são fictícios (demonstração): sempre marcados como tal.
+- O site só tem dados reais, com fonte (fictícios apagados em 22 out 2026). Dados de demonstração existem só nos testes, sempre marcados como tal.
 
 ## Código
 

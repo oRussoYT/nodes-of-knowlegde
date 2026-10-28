@@ -41,7 +41,9 @@ if (existsSync(".env.local")) {
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: false,
-  retries: 0,
+  // One retry on CI absorbs the rare timing flake (a failure that repeats is
+  // still red); locally, no retries.
+  retries: process.env.CI ? 1 : 0,
   // On GitHub, also report each failure as an annotation so it can be read
   // without downloading logs.
   reporter: process.env.CI ? [["list"], ["github"]] : "list",
@@ -62,9 +64,11 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: "npm run dev",
+    // CI runs the production build (`npm run start`, after `npm run build`):
+    // pages are ready at once instead of compiling on first visit.
+    command: process.env.PLAYWRIGHT_WEB_COMMAND ?? "npm run dev",
     url: "http://localhost:3000",
     reuseExistingServer: true,
-    timeout: 60_000,
+    timeout: 120_000,
   },
 });

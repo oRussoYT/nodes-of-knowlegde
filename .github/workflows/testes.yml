@@ -60,10 +60,14 @@ jobs:
           exit $code
 
   completo:
-    name: Completo (banco + telas)
+    name: Completo (banco + telas) ${{ matrix.shard }}/4
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 30
     needs: rapido
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -73,9 +77,10 @@ jobs:
       - run: npm ci
 
       - name: Ligar o Supabase local (aplica todas as migrações)
-        run: npx supabase start
+        run: npx supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor
 
       - name: Testes do banco (pgTAP)
+        if: matrix.shard == 1
         run: npx supabase test db
 
       - name: Preparar variáveis para o app
@@ -88,17 +93,24 @@ jobs:
             echo "SUPABASE_SERVICE_ROLE_KEY=${SERVICE_ROLE_KEY}"
           } > .env.local
 
+      - name: Montar o site (versão de produção)
+        run: |
+          set -a; . ./.env.local; set +a
+          npm run build
+
       - name: Instalar navegador dos testes de tela
         run: npx playwright install --with-deps chromium
 
-      - name: Testes de tela (Playwright)
-        run: npm run test:e2e
+      - name: Testes de tela (Playwright) — parte ${{ matrix.shard }} de 4
+        env:
+          PLAYWRIGHT_WEB_COMMAND: npm run start
+        run: npx playwright test --shard=${{ matrix.shard }}/4
 
       - name: Guardar relatório se falhar
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: relatorio-playwright
+          name: relatorio-playwright-${{ matrix.shard }}
           path: test-results/
           retention-days: 7
 
