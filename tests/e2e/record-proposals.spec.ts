@@ -23,8 +23,8 @@ test("a member proposes a period about someone, with its source", async ({ page 
 
   await page.goto("/people?q=arvoredo");
   await page.getByRole("link", { name: /Helena Arvoredo/ }).first().click();
-  await page.getByRole("link", { name: /Know something about Helena Arvoredo/ }).click();
-  await expect(page.getByRole("heading", { level: 1, name: /Propose something about Helena Arvoredo/ })).toBeVisible();
+  await page.getByRole("link", { name: /Know something about .*Helena Arvoredo/ }).click();
+  await expect(page.getByRole("heading", { level: 1, name: /Propose something about .*Helena Arvoredo/ })).toBeVisible();
 
   const period = page.locator("#period");
   await period.getByLabel("Institution name, if not in the list").fill("Estação Experimental do Km 41");
@@ -44,7 +44,7 @@ test("a proposal without a source is refused with a clear message", async ({ pag
   await registerAndConfirm(page, `e2e-propose-bad-${Date.now()}@example.com`, "correcthorse1");
   await page.goto("/people?q=arvoredo");
   await page.getByRole("link", { name: /Helena Arvoredo/ }).first().click();
-  await page.getByRole("link", { name: /Know something about Helena Arvoredo/ }).click();
+  await page.getByRole("link", { name: /Know something about .*Helena Arvoredo/ }).click();
   const period = page.locator("#period");
   await period.getByLabel("Institution name, if not in the list").fill("Somewhere");
   await period.getByLabel("Role").selectOption({ index: 1 });
