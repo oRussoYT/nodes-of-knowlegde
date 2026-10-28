@@ -12,6 +12,9 @@ import { pageTitle } from "@/config/site";
 import { getIdentityStatus } from "@/features/identity/status";
 import { Avatar } from "@/components/ui/Avatar";
 import { getMyProfile } from "@/features/member-profile/read";
+import { joinNodeAction } from "@/features/nodes/actions";
+import { nodeLabel } from "@/features/nodes/parse";
+import { getMyNodes, listNodes } from "@/features/nodes/read";
 import { getIdentityStatusCopy } from "@/features/identity/copy";
 import { isCurrentUserSteward } from "@/features/review/authorization";
 import { createClient } from "@/lib/supabase/server";
@@ -66,6 +69,8 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
   const photoUrl = mine?.photoUrl ?? null;
   const shown = profile?.displayName ?? email;
   const profileStarted = Boolean(profile?.displayName || profile?.headline || profile?.photoPath);
+  const [myNodes, allNodes] = await Promise.all([getMyNodes(), listNodes()]);
+  const joinable = allNodes.filter((n) => !myNodes.some((m) => m.slug === n.slug));
 
   return (
     <main id="main-content" tabIndex={-1} className="px-4 py-6 sm:px-8 sm:py-10">
@@ -131,6 +136,34 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
                 <dd className="text-foreground">Authenticated</dd>
               </div>
             </dl>
+          </section>
+
+          <section aria-labelledby="nodes-heading" className="rounded-3xl border border-border-default bg-surface p-6 sm:p-7">
+            <h2 id="nodes-heading" className="font-display text-2xl font-bold tracking-tight text-foreground">
+              Your Nodes
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              One account across every Node of Nodes of Knowledge.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-3">
+              {myNodes.map((n) => (
+                <Link key={n.slug} href={`/n/${n.slug}`} className="rounded-full bg-nk-lime px-4 py-2 text-sm font-semibold text-nk-ink">
+                  {nodeLabel(n)}
+                </Link>
+              ))}
+              {joinable.map((n) => (
+                <form key={n.slug} action={joinNodeAction}>
+                  <input type="hidden" name="slug" value={n.slug} />
+                  <input type="hidden" name="back" value="member" />
+                  <button type="submit" className="rounded-full border border-border-default px-4 py-2 text-sm font-medium text-foreground hover:border-foreground">
+                    Join {nodeLabel(n)}
+                  </button>
+                </form>
+              ))}
+              <Link href="/nodes" className="px-2 py-2 text-sm text-muted-foreground underline underline-offset-4">
+                All Nodes
+              </Link>
+            </div>
           </section>
 
           {/* 3. Identity-claim status — the real workflow, M5.3. Every branch

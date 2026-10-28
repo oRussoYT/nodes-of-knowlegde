@@ -46,6 +46,13 @@ export const navigationConfig: NavItem[] = [
     },
   },
   {
+    id: "nodes",
+    label: "Nodes",
+    href: "/nodes",
+    groups: ["protected-primary"],
+    availability: { status: "available" },
+  },
+  {
     id: "explore",
     label: "Explore",
     href: "/explore",
