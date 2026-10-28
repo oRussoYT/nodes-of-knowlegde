@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Container } from "@/components/ui/Container";
@@ -121,6 +122,15 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
           sent={messageSent === "1"}
           error={typeof messageError === "string" ? messageError : null}
         />
+
+        <p className="mt-6 text-sm">
+          <Link
+            href={`/member/add?about=${personId}&name=${encodeURIComponent(document.identity.displayName)}`}
+            className="underline underline-offset-2"
+          >
+            Know something about {document.identity.displayName}? Propose it, with its source
+          </Link>
+        </p>
 
         {isReviewer ? (
           <PublishControl
