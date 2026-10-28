@@ -18,6 +18,8 @@ import { narrativeFacet } from "@/features/institution/derive";
 import { getOrganization, getOrganizationParticipation, getOrganizationTimeline } from "@/features/institution/read";
 import { InstitutionLineage } from "@/features/network/components/InstitutionLineage";
 import { getOrganizationNetwork } from "@/features/network/read";
+import { HeritageList } from "@/features/heritage/components/HeritageList";
+import { getHeritageFor } from "@/features/heritage/read";
 import { OrganizationContinuity } from "@/features/revelation/components/OrganizationContinuity";
 import { OrganizationGenerations } from "@/features/revelation/components/OrganizationGenerations";
 import { OrganizationLineage } from "@/features/revelation/components/OrganizationLineage";
@@ -84,6 +86,7 @@ export default async function InstitutionPage({ params }: InstitutionPageProps) 
   const lineage = await getOrganizationLineage(organizationId);
   const continuity = await getOrganizationContinuity(organizationId);
   const recurrence = await getOrganizationRecurrence(organizationId);
+  const heritage = await getHeritageFor({ organizationId });
 
   const introduction = narrativeFacet(organization, "introduction");
   const overview = narrativeFacet(organization, "overview");
@@ -173,6 +176,17 @@ export default async function InstitutionPage({ params }: InstitutionPageProps) 
               </div>
             )}
           </section>
+
+          {heritage.length > 0 ? (
+            <section aria-labelledby="heritage-heading">
+              <h2 id="heritage-heading" className="text-sm font-medium text-foreground">
+                In the history
+              </h2>
+              <div className="mt-3">
+                <HeritageList items={heritage} />
+              </div>
+            </section>
+          ) : null}
 
           <p className="text-xs text-muted-foreground">{institutionCopy.withheldNote}</p>
         </ReadingSpine>
