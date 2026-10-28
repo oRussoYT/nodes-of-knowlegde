@@ -24,6 +24,7 @@ as $$
            (select count(*) from w where public.fold_text(p.display_name) like '%' || w.w || '%') as hits
       from public.people p
      where p.verification_status <> 'merged' and auth.uid() is not null
+       and not exists (select 1 from public.suggestion_opt_outs o where o.person_id = p.id)
   ),
   orgs as (
     select o.*, (select count(*) from w where public.fold_text(o.name || ' ' || coalesce(o.short_name, '') || ' ' ||
