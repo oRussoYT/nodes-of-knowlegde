@@ -18,13 +18,16 @@ import {
   shownName,
 } from "@/features/member-profile/parse";
 import { getMyProfile } from "@/features/member-profile/read";
+import { PrivacySection } from "@/features/privacy/PrivacySection";
+import { getPersonPrivacy } from "@/features/privacy/read";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: pageTitle("Your profile"),
 };
 
 interface ProfilePageProps {
-  searchParams: Promise<{ saved?: string; error?: string }>;
+  searchParams: Promise<{ saved?: string; error?: string; privacySaved?: string; privacyError?: string }>;
 }
 
 function initials(name: string): string {
@@ -44,6 +47,9 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
   if (!mine) redirect("/login?returnTo=%2Fprofile");
 
   const { profile, photoUrl, email, userId } = mine;
+  const supabase = await createClient();
+  const { data: myPerson } = await supabase.rpc("my_linked_person");
+  const privacy = typeof myPerson === "string" ? await getPersonPrivacy(myPerson) : null;
   const name = shownName(profile, email);
   const checklist = profileChecklist(profile);
   const done = checklist.filter((item) => item.done).length;
@@ -258,6 +264,13 @@ export default async function ProfilePage({ searchParams }: ProfilePageProps) {
             </ul>
           </aside>
         </div>
+
+        <PrivacySection
+          linked={privacy !== null}
+          limitRevelations={privacy?.limitRevelations ?? false}
+          saved={params.privacySaved === "1"}
+          error={params.privacyError ?? null}
+        />
 
         <AccessSection />
       </div>

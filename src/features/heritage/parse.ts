@@ -39,7 +39,7 @@ export interface HeritageItem {
   filePath: string | null;
   externalUrl: string | null;
   sourceNote: string;
-  visibility: "members" | "restricted";
+  visibility: "members" | "restricted" | "community";
   reviewStatus: "proposed" | "accepted" | "rejected";
   verificationStatus: "provisional" | "confirmed";
   decisionNote: string | null;
@@ -104,7 +104,7 @@ export function parseItem(raw: unknown): HeritageItem | null {
     filePath: str(raw.filePath),
     externalUrl: str(raw.externalUrl),
     sourceNote,
-    visibility: raw.visibility === "restricted" ? "restricted" : "members",
+    visibility: raw.visibility === "restricted" || raw.visibility === "community" ? raw.visibility : "members",
     reviewStatus: raw.reviewStatus === "accepted" || raw.reviewStatus === "rejected" ? raw.reviewStatus : "proposed",
     verificationStatus: raw.verificationStatus === "confirmed" ? "confirmed" : "provisional",
     decisionNote: str(raw.decisionNote),
@@ -207,6 +207,10 @@ export function parseHeritageForm(form: FormData, kinds: string[]): HeritageForm
   const url = get("externalUrl");
   if (url !== "" && !/^https?:\/\/\S+$/i.test(url)) return { ok: false, error: "The link should start with https://" };
   const org = get("organizationId");
+  const chosenVisibility = get("visibility");
+  const visibility = chosenVisibility === "community" || chosenVisibility === "restricted" ? chosenVisibility : form.get("restricted") === "on" ? "restricted" : "members";
+  const community = get("communityOrganizationId");
+  if (visibility === "community" && !UUID.test(community)) return { ok: false, error: "Choose the community that holds this material." };
   const people = form.getAll("personId").map(String).filter((p) => UUID.test(p));
   const role = get("personRole").slice(0, 120);
   return {
@@ -226,7 +230,9 @@ export function parseHeritageForm(form: FormData, kinds: string[]): HeritageForm
       filePath: get("filePath") || null,
       externalUrl: url || null,
       sourceNote,
-      visibility: form.get("restricted") === "on" ? "restricted" : "members",
+      visibility,
+      communityOrganizationId: visibility === "community" ? community : null,
+      careLabels: form.getAll("careLabel").map(String).filter((l) => /^[a-z_]{2,40}$/.test(l)).slice(0, 10),
       links: [...new Set(people)].map((personId) => ({ personId, role: role || null })),
     },
   };

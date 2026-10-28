@@ -1751,6 +1751,16 @@ export type Database = {
       mark_messages_read: { Args: never; Returns: number }
       unread_message_count: { Args: never; Returns: number }
       search_people: { Args: { p_query?: string | null }; Returns: Json }
+      set_my_privacy: { Args: { p_limit_revelations: boolean }; Returns: undefined }
+      person_privacy_view: { Args: { p_person_id: string }; Returns: Json }
+      heritage_care: { Args: { p_item_id: string }; Returns: Json }
+      list_care_options: { Args: never; Returns: Json }
+      forum_threads_for: { Args: { p_slug: string }; Returns: Json }
+      forum_thread: { Args: { p_thread_id: string }; Returns: Json }
+      forum_start_thread: { Args: { p_body: string; p_slug: string; p_title: string }; Returns: string }
+      forum_reply: { Args: { p_body: string; p_thread_id: string }; Returns: string }
+      forum_hide_post: { Args: { p_post_id: string }; Returns: undefined }
+      node_links: { Args: { p_slug: string }; Returns: Json }
       my_research_notes: { Args: { p_query?: string }; Returns: Json }
       get_my_research_note: { Args: { p_id: string }; Returns: Json }
       save_research_note: { Args: { p: Json }; Returns: string }

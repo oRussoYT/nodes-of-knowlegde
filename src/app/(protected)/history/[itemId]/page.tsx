@@ -12,6 +12,7 @@ import { pageTitle } from "@/config/site";
 import { decideHeritageAction } from "@/features/heritage/actions";
 import { describeSpan, fileView } from "@/features/heritage/parse";
 import { getHeritageItem } from "@/features/heritage/read";
+import { getHeritageCare } from "@/features/privacy/read";
 import { isCurrentUserSteward } from "@/features/review/authorization";
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -34,6 +35,7 @@ export default async function HeritageItemPage({
   if (!found) notFound();
   const { item, fileUrl } = found;
   const isSteward = await isCurrentUserSteward();
+  const care = await getHeritageCare(item.id);
   const span = describeSpan(item);
   const view = fileView(item.filePath);
   const error = typeof raw.error === "string" ? raw.error : null;
@@ -59,6 +61,7 @@ export default async function HeritageItemPage({
             <Badge tone="neutral">Provisional</Badge>
           )}
           {item.visibility === "restricted" ? <Badge tone="warning">Restricted — stewards only</Badge> : null}
+          {item.visibility === "community" ? <Badge tone="warning">Community material{care.community ? ` — ${care.community.name}` : ""}</Badge> : null}
           {span ? <span>{span}</span> : null}
           {item.place ? <span>· {item.place}</span> : null}
           {item.organizationId ? (
@@ -93,6 +96,16 @@ export default async function HeritageItemPage({
               Open the file
             </a>
           </p>
+        ) : null}
+
+        {care.labels.length > 0 ? (
+          <ul aria-label="Community labels" className="mt-6 flex flex-col gap-2">
+            {care.labels.map((l) => (
+              <li key={l.key} className="rounded-md border border-border-default px-3 py-2 text-sm">
+                <strong>{l.label}</strong> <span className="text-muted-foreground">— {l.description}</span>
+              </li>
+            ))}
+          </ul>
         ) : null}
 
         {item.summary ? <p className="mt-8 whitespace-pre-line text-foreground">{item.summary}</p> : null}

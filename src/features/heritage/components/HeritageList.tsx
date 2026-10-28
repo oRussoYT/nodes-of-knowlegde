@@ -25,6 +25,11 @@ export function HeritageList({ items, showRole = false }: { items: HeritageItem[
                   Provisional
                 </Badge>
               ) : null}
+              {i.visibility === "community" ? (
+                <Badge size="sm" tone="warning">
+                  Community material
+                </Badge>
+              ) : null}
               {i.visibility === "restricted" ? (
                 <Badge size="sm" tone="warning">
                   Restricted
