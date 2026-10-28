@@ -88,6 +88,13 @@ export const navigationConfig: NavItem[] = [
     availability: { status: "available" },
   },
   {
+    id: "ask",
+    label: "Ask the record",
+    href: "/ask",
+    groups: ["protected-primary"],
+    availability: { status: "available" },
+  },
+  {
     id: "history",
     label: "History",
     href: "/history",

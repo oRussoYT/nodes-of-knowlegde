@@ -1751,6 +1751,8 @@ export type Database = {
       mark_messages_read: { Args: never; Returns: number }
       unread_message_count: { Args: never; Returns: number }
       search_people: { Args: { p_query?: string | null }; Returns: Json }
+      librarian_sources: { Args: { p_words: string[] }; Returns: Json }
+      librarian_gaps: { Args: { p_person_id: string }; Returns: Json }
       save_funding_call: { Args: { p: Json }; Returns: string }
       steward_set_funding_call_status: { Args: { p_id: string; p_status: string }; Returns: undefined }
       list_funding_calls: { Args: { p_query?: string }; Returns: Json }
