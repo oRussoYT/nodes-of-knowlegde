@@ -4,9 +4,10 @@
 // attached so the steward can check it. Uses the Anthropic Messages API over
 // fetch (no extra dependency). Off until ANTHROPIC_API_KEY is set.
 
+import { askClaude, claudeIsOn } from "@/lib/ai/claude";
+
 import type { Option } from "./parse";
 
-export const AI_MODEL = "claude-sonnet-5-5";
 export const AI_MAX_BYTES = 10 * 1024 * 1024;
 export const AI_TYPES = ["application/pdf", "image/jpeg", "image/png", "image/webp", "text/plain"] as const;
 
@@ -36,7 +37,7 @@ export interface Extraction {
 }
 
 export function aiIsOn(): boolean {
-  return typeof process.env.ANTHROPIC_API_KEY === "string" && process.env.ANTHROPIC_API_KEY.trim() !== "";
+  return claudeIsOn();
 }
 
 export function buildPrompt(personName: string, capacities: Option[], kinds: Option[]): string {
@@ -120,25 +121,5 @@ export async function readDocumentWithAi(file: { bytes: Uint8Array; type: string
       : file.type === "application/pdf"
         ? { type: "document", source: { type: "base64", media_type: "application/pdf", data: toBase64(file.bytes) } }
         : { type: "image", source: { type: "base64", media_type: file.type, data: toBase64(file.bytes) } };
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 90_000);
-  try {
-    const r = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": process.env.ANTHROPIC_API_KEY!.trim(),
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({ model: AI_MODEL, max_tokens: 4000, messages: [{ role: "user", content: [source, { type: "text", text: prompt }] }] }),
-      signal: controller.signal,
-    });
-    if (!r.ok) return null;
-    const json = (await r.json()) as { content?: { type: string; text?: string }[] };
-    return json.content?.filter((c) => c.type === "text").map((c) => c.text ?? "").join("") || null;
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
+  return askClaude([source, { type: "text", text: prompt }], 4000, 90_000);
 }

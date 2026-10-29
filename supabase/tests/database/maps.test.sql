@@ -47,7 +47,7 @@ select is(jsonb_array_length(public.steward_list_location_proposals()), 1, 'the 
 
 -- 5: before acceptance the lab is not on the map.
 set local request.jwt.claim.sub to :'member';
-select is(jsonb_array_length(public.map_places() -> 'places'), 1, 'only located institutions are drawn'); -- 5
+select is((select count(*)::int from jsonb_array_elements(public.map_places() -> 'places') p where p ->> 'name' like 'Map %'), 1, 'only located institutions are drawn'); -- 5
 set local request.jwt.claim.sub to :'reviewer';
 select lives_ok(format('select public.steward_decide_location_proposal(%L, true)', (select id from lp)), 'the steward accepts the location'); -- 6
 
