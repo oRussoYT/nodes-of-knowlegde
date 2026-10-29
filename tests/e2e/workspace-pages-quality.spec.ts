@@ -124,7 +124,7 @@ test.describe("/account — accessible structure and honest empty state", () => 
     await expect(page.getByRole("heading", { level: 2, name: "Person-record link" })).toBeVisible();
     await expect(page.getByText("Not yet connected to a Nodes BDFFP person record")).toBeVisible();
     await expect(page.getByRole("button", { name: /withdraw claim/i })).toHaveCount(0);
-    await expect(page.getByRole("link", { name: /search|claim a person/i })).toHaveCount(0);
+    await expect(page.getByRole("main").getByRole("link", { name: /search|claim a person/i })).toHaveCount(0);
 
     // "Account → Security" is an honest placeholder, not a real destination
     // or a "Change password" affordance. The phrase now appears twice by
