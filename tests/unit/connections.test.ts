@@ -45,3 +45,27 @@ describe("connections", () => {
     expect(claudeIsOn()).toBe(false);
   });
 });
+
+describe("AI through OpenRouter", () => {
+  it("picks the provider from the key and converts content", async () => {
+    const { aiProvider, toOpenRouterContent, openRouterText } = await import("../../src/lib/ai/claude");
+    process.env.ANTHROPIC_API_KEY = "sk-or-v1-test";
+    expect(aiProvider()?.kind).toBe("openrouter");
+    process.env.ANTHROPIC_API_KEY = "sk-ant-test";
+    expect(aiProvider()?.kind).toBe("anthropic");
+    delete process.env.ANTHROPIC_API_KEY;
+    expect(
+      toOpenRouterContent([
+        { type: "text", text: "hi" },
+        { type: "image", source: { type: "base64", media_type: "image/png", data: "AAA" } },
+        { type: "document", source: { type: "base64", media_type: "application/pdf", data: "BBB" } },
+      ]),
+    ).toEqual([
+      { type: "text", text: "hi" },
+      { type: "image_url", image_url: { url: "data:image/png;base64,AAA" } },
+      { type: "file", file: { filename: "document.pdf", file_data: "data:application/pdf;base64,BBB" } },
+    ]);
+    expect(openRouterText({ choices: [{ message: { content: "ok" } }] })).toBe("ok");
+    expect(openRouterText({})).toBeNull();
+  });
+});
