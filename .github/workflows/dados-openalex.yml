@@ -1,0 +1,33 @@
+name: Dados OpenAlex
+
+# Coleta pessoas reais publicadas (OpenAlex) para um Nó. Só roda quando
+# alguém aciona; o resultado vira um arquivo para revisão, nada entra no
+# banco sozinho.
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Nó (ex.: pdbff)"
+        required: true
+      search:
+        description: "Instituição no OpenAlex"
+        required: true
+      max:
+        description: "Máximo de pessoas"
+        required: false
+        default: "150"
+
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/data/openalex-node-people.mjs "${{ inputs.slug }}" "${{ inputs.search }}" "${{ inputs.max }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openalex-${{ inputs.slug }}
+          path: openalex-${{ inputs.slug }}.json
