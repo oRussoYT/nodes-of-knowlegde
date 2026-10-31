@@ -37,12 +37,12 @@ const chosen = inst.results.find((i) => i.works_count > 20) ?? null;
 const filter = chosen ? `institutions.id:${short(chosen.id)}` : `title_and_abstract.search:${encodeURIComponent(`"${phrase}"`)}`;
 console.error("works filter:", filter);
 const works = [];
-let cursor = "*";
-while (cursor && works.length < 2000) {
-  const page = await get(`https://api.openalex.org/works?filter=${filter}&per-page=100&cursor=${cursor}&select=id,display_name,publication_year,type,doi,primary_location,authorships`);
+// Plain pages (deep cursors need an API key).
+for (let n = 1; n <= 20 && works.length < 2000; n++) {
+  const page = await get(`https://api.openalex.org/works?filter=${filter}&per-page=100&page=${n}&select=id,display_name,publication_year,type,doi,primary_location,authorships`);
   works.push(...page.results);
-  cursor = page.meta.next_cursor;
-  await sleep(120);
+  if (page.results.length < 100) break;
+  await sleep(150);
 }
 console.error("works:", works.length);
 
