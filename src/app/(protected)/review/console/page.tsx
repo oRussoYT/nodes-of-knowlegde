@@ -100,6 +100,7 @@ export default async function StewardConsolePage({
               title: "What needs a human",
               tiles: [
                 { href: "/review/queue", title: "Review queue", description: "Everything proposed — periods, bonds, contributions, history items — with its documents." },
+                { href: "/review/interpretations", title: "Interpretations", description: "Signed readings about people in the record, waiting to be published." },
                 ...(scope.platform
                   ? [
                       {

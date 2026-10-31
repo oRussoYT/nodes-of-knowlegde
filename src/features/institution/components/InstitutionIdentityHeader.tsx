@@ -2,6 +2,7 @@ import { describeInstitutionProvenance, institutionPeriod } from "../derive";
 import { SCHEME_LABELS, STATUS_LABELS } from "../copy";
 import type { Organization } from "../types";
 import { InstitutionProvenance } from "./InstitutionProvenance";
+import { identifierUrls } from "@/features/public-api/envelope";
 
 // The institution identity header: the canonical name (one clear h1), its short
 // form, type, historical STATUS (distinct from verification), operating period,
@@ -17,7 +18,12 @@ export function InstitutionIdentityHeader({ organization }: { organization: Orga
   const meta = [organization.type?.label, STATUS_LABELS[organization.status], period, organization.location].filter(
     (part): part is string => Boolean(part),
   );
-  const schemes = organization.externalIdentifiers.map((identifier) => SCHEME_LABELS[identifier.scheme]);
+  // ROR and Wikidata ids open their public pages; others are named only.
+  const identifiers = organization.externalIdentifiers.map((identifier) => {
+    const links = identifierUrls({ [identifier.scheme]: identifier.identifierValue });
+    const href = identifier.url ?? (identifier.scheme === "ror" ? links.ror : identifier.scheme === "wikidata" ? links.wikidata : null);
+    return { id: identifier.id, label: SCHEME_LABELS[identifier.scheme], href };
+  });
 
   return (
     <header>
@@ -45,8 +51,22 @@ export function InstitutionIdentityHeader({ organization }: { organization: Orga
         </p>
       ) : null}
 
-      {schemes.length > 0 ? (
-        <p className="mt-1 text-xs text-muted-foreground">External identifiers: {schemes.join(", ")}</p>
+      {identifiers.length > 0 ? (
+        <p className="mt-1 text-xs text-muted-foreground">
+          External identifiers:{" "}
+          {identifiers.map((i, n) => (
+            <span key={i.id}>
+              {n > 0 ? ", " : ""}
+              {i.href ? (
+                <a href={i.href} className="underline underline-offset-2" rel="noreferrer noopener" target="_blank">
+                  {i.label}
+                </a>
+              ) : (
+                i.label
+              )}
+            </span>
+          ))}
+        </p>
       ) : null}
 
       <div className="mt-3">

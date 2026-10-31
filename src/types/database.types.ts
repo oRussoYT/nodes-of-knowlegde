@@ -1756,6 +1756,18 @@ export type Database = {
       node_vocabulary_for: { Args: { p_slug: string }; Returns: Json }
       steward_set_node_vocabulary: { Args: { p: Json; p_remove?: string; p_slug: string }; Returns: undefined }
       node_observatory_more: { Args: { p_slug: string }; Returns: Json }
+      write_interpretation: { Args: { p_type: string; p_subject: string; p_body: string; p_sources?: string | null }; Returns: string }
+      interpretations_for: { Args: { p_type: string; p_subject: string }; Returns: Json }
+      steward_decide_interpretation: { Args: { p_id: string; p_publish: boolean; p_note?: string | null }; Returns: undefined }
+      withdraw_interpretation: { Args: { p_id: string }; Returns: undefined }
+      hide_interpretation_about_me: { Args: { p_id: string }; Returns: undefined }
+      steward_list_interpretations: { Args: never; Returns: Json }
+      save_support_item: { Args: { p: Json; p_id?: string | null }; Returns: string }
+      delete_support_item: { Args: { p_id: string }; Returns: undefined }
+      my_support_draft: { Args: never; Returns: Json }
+      conflict_check: { Args: { p_people: string[] }; Returns: Json }
+      public_api_nodes: { Args: never; Returns: Json }
+      public_api_organization: { Args: { p_org: string }; Returns: Json }
       search_contributions: {
         Args: { p_query: string }
         Returns: { id: string; title: string; contribution_kind: string; contribution_kind_label: string | null; verification_status: string }[]
