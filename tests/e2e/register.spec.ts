@@ -66,7 +66,7 @@ test.describe("Registration", () => {
     // appears inside *that* element specifically.
     const welcomeSentence = page.locator("main p", { hasText: "You're signed in as" });
     await expect(welcomeSentence.getByText(email)).toBeVisible();
-    await expect(page.getByText(/connected to a Nodes BDFFP person record/)).toBeVisible();
+    await expect(page.getByText(/connected to a Nodes of Knowledge person record/)).toBeVisible();
   });
 
   test("resend confirmation sends another email and enforces a cooldown", async ({ page }) => {

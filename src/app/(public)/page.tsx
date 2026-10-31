@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 import { SITE_NAME } from "@/config/site";
+import { nodeLabel } from "@/features/nodes/parse";
+import { listNodes } from "@/features/nodes/read";
 import { Cursor } from "@/features/home/Cursor";
 import { HorizontalSteps } from "@/features/home/HorizontalSteps";
 import { LineageScrub } from "@/features/home/LineageScrub";
@@ -12,8 +14,8 @@ import { RevealImage } from "@/features/home/RevealImage";
 import { SmoothScroll } from "@/features/home/SmoothScroll";
 import { cn } from "@/lib/ui/cn";
 
-// Public landing -- the front door of Nodes BDFFP (docs/PRODUTO.md): the human
-// record of the Biological Dynamics of Forest Fragments Project, told the way
+// Public landing -- the front door of Nodes of Knowledge (docs/PRODUTO.md): one
+// engine, many Nodes (the PDBFF was the first), told the way
 // a racing driver's site tells a season. Ink and bone bands, a lime signal,
 // full-bleed photographs of the forest that wipe in and drift, an opening
 // counter, inertial scrolling, a trailing cursor, magnetic buttons, letters
@@ -59,12 +61,6 @@ const ROLES = [
   "Translator",
   "Data manager",
   "Mateiro",
-] as const;
-
-const FACTS = [
-  { value: "1979", label: "the year the experiment began, north of Manaus" },
-  { value: "1 · 10 · 100", label: "hectares — the sizes of the forest fragments studied" },
-  { value: "INPA + Smithsonian", label: "the two institutions behind it" },
 ] as const;
 
 const RAIL: readonly RailPhoto[] = [
@@ -144,7 +140,12 @@ const CREDITS = [
 const pill =
   "nk-fill inline-flex items-center justify-center rounded-full px-7 py-4 text-base font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-nk-lime focus-visible:ring-offset-2 focus-visible:ring-offset-nk-ink";
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+const nf = new Intl.NumberFormat("en");
+
+export default async function HomePage() {
+  const nodes = await listNodes();
   return (
     <main id="main-content" tabIndex={-1} data-motion="on" className="nk-motion flex-1 overflow-x-clip bg-nk-ink text-nk-bone">
       <Preloader />
@@ -170,9 +171,11 @@ export default function HomePage() {
         <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-nk-bone">
           <p className="flex items-center gap-3">
             <span aria-hidden="true" className="nk-live-dot" />
-            {SITE_NAME} — the people behind the forest science
+            {SITE_NAME} — the people behind science, one Node at a time
           </p>
-          <p className="hidden rounded-full bg-nk-ink/70 px-3 py-1 backdrop-blur sm:block">Demonstration data</p>
+          <Link href="/nodes" className="hidden rounded-full bg-nk-ink/70 px-3 py-1 backdrop-blur hover:text-nk-lime sm:block">
+            {nodes.length} {nodes.length === 1 ? "Node" : "Nodes"} on the engine
+          </Link>
         </div>
 
         <h1
@@ -242,36 +245,62 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* The project. */}
-      <section aria-labelledby="project-heading" className="grid gap-12 px-6 py-24 sm:px-10 sm:py-36 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-center">
-        <div>
-          <p className="text-sm font-semibold text-nk-lime">The project</p>
-          <h2 id="project-heading" className="mt-4 font-display text-4xl font-bold leading-[1] tracking-[-0.025em] sm:text-6xl">
-            The longest-running experiment on what happens when a forest is cut into pieces.
-          </h2>
-          <p className="mt-6 max-w-xl text-lg text-[#c3c8b6]">
-            The Biological Dynamics of Forest Fragments Project has followed isolated patches of Amazon
-            forest since 1979. Its science is published. The people who made it — and who trained whom —
-            mostly are not. That is the record this Node keeps.
+      {/* The Nodes: one engine, many institutions. */}
+      <section aria-labelledby="nodes-heading" className="px-6 py-24 sm:px-10 sm:py-36">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:items-end">
+          <div>
+            <p className="text-sm font-semibold text-nk-lime">The Nodes</p>
+            <h2 id="nodes-heading" className="mt-4 font-display text-4xl font-bold leading-[1] tracking-[-0.025em] sm:text-6xl">
+              One engine. Each institution, its own Node.
+            </h2>
+          </div>
+          <p className="max-w-xl text-lg text-[#c3c8b6]">
+            A Node is a research institution, a field project or a museum, with its own people, history and stewards. All
+            Nodes share one record, so a person who passed through two of them is one person with one history.
           </p>
-          <dl className="mt-10 grid gap-6 border-t border-nk-ink-3 pt-8 sm:grid-cols-3">
-            {FACTS.map((f) => (
-              <div key={f.value}>
-                <dt className="font-display text-3xl font-bold tracking-tight text-nk-bone [font-stretch:85%]">{f.value}</dt>
-                <dd className="mt-2 text-sm text-nk-moss">{f.label}</dd>
-              </div>
-            ))}
-          </dl>
         </div>
-        <figure>
-          <RevealImage
-            src="satellite"
-            alt="The Amazon seen from space: dark forest broken by pale cleared land into separate patches."
-            className="aspect-[4/3] rounded-3xl"
-            drift={70}
-          />
-          <figcaption className="mt-3 text-sm text-nk-moss">Forest and cleared land, seen from the International Space Station.</figcaption>
-        </figure>
+        <ul className="mt-14 grid gap-5 md:grid-cols-2">
+          {nodes.map((n) => (
+            <li key={n.slug} className="flex flex-col justify-between rounded-3xl border border-nk-ink-3 bg-nk-ink-2 p-8">
+              <div>
+                <p className="text-sm text-nk-moss">{n.plan === "pro_bono" ? "Conservation research — pro bono" : "Institutional plan"}</p>
+                <h3 className="mt-3 font-display text-4xl font-bold tracking-tight">{nodeLabel(n)}</h3>
+                <p className="mt-1 text-nk-bone">{n.name}</p>
+                {n.tagline ? <p className="mt-4 text-[#c3c8b6]">{n.tagline}</p> : null}
+              </div>
+              <div className="mt-8">
+                <dl className="grid grid-cols-3 gap-4 border-t border-nk-ink-3 pt-6">
+                  {[
+                    { v: n.counts.people, l: "people" },
+                    { v: n.counts.institutions, l: "institutions" },
+                    { v: n.counts.works, l: "works" },
+                  ].map((c) => (
+                    <div key={c.l}>
+                      <dt className="font-display text-3xl font-bold tabular-nums [font-stretch:85%]">{nf.format(c.v)}</dt>
+                      <dd className="text-sm text-nk-moss">{c.l}</dd>
+                    </div>
+                  ))}
+                </dl>
+                <div className="mt-6 flex flex-wrap gap-4 text-sm font-semibold">
+                  <Link href={`/n/${n.slug}`} className="underline decoration-nk-lime decoration-2 underline-offset-[6px]">
+                    Open {nodeLabel(n)}
+                  </Link>
+                  <Link href={`/n/${n.slug}/observatory`} className="underline decoration-2 underline-offset-[6px]">
+                    Observatory
+                  </Link>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-10 flex flex-wrap gap-x-8 gap-y-3 text-lg">
+          <Link href="/compare" className="font-semibold underline decoration-2 underline-offset-[6px]">
+            Compare Nodes
+          </Link>
+          <Link href="/plans" className="font-semibold underline decoration-2 underline-offset-[6px]">
+            Bring your institution
+          </Link>
+        </div>
       </section>
 
       {/* Statement that lights up word by word, over the forest. */}
@@ -390,14 +419,20 @@ export default function HomePage() {
           </Link>
         </div>
         <p className="mt-12 max-w-2xl text-[#c3c8b6]">
-          This platform is under development. Reading requires a free account, and the record currently holds
-          demonstration data only.
+          Reading requires a free account. Conservation research institutions use the engine free of charge;
+          universities, research centres and museums subscribe. Everything in the record has a source.
         </p>
 
         <footer className="mt-24 border-t border-nk-ink-3 pt-8">
           <div className="flex flex-wrap items-start justify-between gap-8 text-sm text-nk-moss">
-            <p>{SITE_NAME}, a Node of Nodes of Knowledge</p>
+            <p>{SITE_NAME}</p>
             <nav aria-label="Footer" className="flex flex-wrap gap-6">
+              <Link href="/nodes" className="hover:text-nk-bone">
+                Nodes
+              </Link>
+              <Link href="/plans" className="hover:text-nk-bone">
+                Plans
+              </Link>
               <Link href="/programmes" className="hover:text-nk-bone">
                 Programmes
               </Link>
@@ -424,9 +459,9 @@ export default function HomePage() {
           </details>
           <p
             aria-hidden="true"
-            className="nk-outline mt-10 select-none whitespace-nowrap font-display text-[15.2vw] font-extrabold leading-[0.8] tracking-[-0.045em] [--nk-stroke-w:2px] [--nk-stroke:var(--nk-moss)] [font-stretch:80%]"
+            className="nk-outline mt-10 select-none whitespace-nowrap font-display text-[8.4vw] font-extrabold leading-[0.8] tracking-[-0.045em] [--nk-stroke-w:2px] [--nk-stroke:var(--nk-moss)] [font-stretch:80%]"
           >
-            NODES BDFFP
+            NODES OF KNOWLEDGE
           </p>
         </footer>
       </section>

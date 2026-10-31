@@ -22,7 +22,7 @@ export function getIdentityStatusCopy(status: IdentityStatus): IdentityStatusCop
   switch (status.kind) {
     case "no_claim":
       return {
-        title: "Not yet connected to a Nodes BDFFP person record",
+        title: "Not yet connected to a Nodes of Knowledge person record",
         description:
           "You can search the record for an existing person that represents you and submit a claim to link it to your account. Claims are reviewed before a person record is linked.",
       };

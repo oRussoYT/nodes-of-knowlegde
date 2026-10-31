@@ -48,7 +48,7 @@ export default async function AccountPage() {
       <Container width="content">
         <PageHeader
           title="Account"
-          description="Minimal information about your Nodes BDFFP sign-in account. This is not a person profile."
+          description="Minimal information about your Nodes of Knowledge sign-in account. This is not a person profile."
         />
 
         {/* Authentication/account information — real, currently-true facts. */}

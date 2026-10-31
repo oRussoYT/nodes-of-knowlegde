@@ -43,7 +43,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             replaces. */}
         <PageHeader
           title="Log in"
-          description={cameFromProtectedRoute ? undefined : "Sign in to your Nodes BDFFP account."}
+          description={cameFromProtectedRoute ? undefined : "Sign in to your Nodes of Knowledge account."}
         />
 
         {/* Explicit "expired session" state. */}

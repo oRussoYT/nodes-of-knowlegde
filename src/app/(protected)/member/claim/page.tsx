@@ -45,7 +45,7 @@ export default async function ClaimPage() {
       <Container width="content">
         <PageHeader
           title="Claim a person record"
-          description="Search for an existing Nodes BDFFP person record that represents you, and submit a claim for review."
+          description="Search for an existing Nodes of Knowledge person record that represents you, and submit a claim for review."
         />
 
         {blocked ? (

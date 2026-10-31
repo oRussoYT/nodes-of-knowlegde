@@ -28,6 +28,8 @@ test.describe("the public entrance", () => {
     await page.goto("/");
 
     await expect(page.getByRole("link", { name: "Create an account to read" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 2, name: "One engine. Each institution, its own Node." })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Open PDBFF" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Sign in" })).toBeVisible();
     await expect(page.getByText(/a reading record of scientific lives/i)).toBeVisible();
 

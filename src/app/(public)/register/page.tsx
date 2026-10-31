@@ -21,7 +21,7 @@ export default function RegisterPage() {
       <Container width="form">
         <PageHeader
           title="Create an account"
-          description="This creates a Nodes BDFFP account you can sign in with. Connecting the account to a specific person in PDBFF's history is a separate step, available after you confirm your email."
+          description="This creates a Nodes of Knowledge account you can sign in with. Connecting the account to the person you are in a Node's history is a separate step, available after you confirm your email."
         />
 
         <div className="mt-8">

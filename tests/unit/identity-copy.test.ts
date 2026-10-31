@@ -6,7 +6,7 @@ import type { IdentityStatus } from "../../src/features/identity/types";
 describe("getIdentityStatusCopy", () => {
   it("no_claim preserves the exact 'not yet connected' wording other tests key off of", () => {
     const copy = getIdentityStatusCopy({ kind: "no_claim" });
-    expect(copy.title).toMatch(/connected to a Nodes BDFFP person record/);
+    expect(copy.title).toMatch(/connected to a Nodes of Knowledge person record/);
   });
 
   it("interpolates the person's name when known, for pending/approved/rejected/withdrawn", () => {
