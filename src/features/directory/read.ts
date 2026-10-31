@@ -30,9 +30,10 @@ export async function getInstitutionsIndex(): Promise<InstitutionIndexEntry[]> {
   return parseInstitutionsIndex(data);
 }
 
-export async function getContributionsIndex(): Promise<ContributionIndexEntry[]> {
+export async function getContributionsIndex(query?: string | null): Promise<ContributionIndexEntry[]> {
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("list_contributions");
+  const q = query?.trim();
+  const { data, error } = q ? await supabase.rpc("search_contributions", { p_query: q }) : await supabase.rpc("list_contributions");
   if (error || data === null || data === undefined) return [];
   return parseContributionsIndex(data);
 }
