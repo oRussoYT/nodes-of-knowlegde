@@ -30,8 +30,9 @@ jobs:
           mkdir -p /tmp/out && cp openalex-*.json log-*.txt /tmp/out/ 2>/dev/null || true
           git config user.name "dados-bot"
           git config user.email "dados-bot@users.noreply.github.com"
-          git fetch -q origin dados-openalex-saida && git checkout -q -B dados-openalex-saida origin/dados-openalex-saida
+          git checkout --orphan dados-openalex-saida-2
+          git rm -rfq .
           cp /tmp/out/* . 2>/dev/null || true
           git add -A
           git commit -qm "Saída da coleta OpenAlex" || true
-          git push -f origin dados-openalex-saida
+          git push -f origin dados-openalex-saida-2
