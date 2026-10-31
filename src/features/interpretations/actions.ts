@@ -18,7 +18,7 @@ function back(form: FormData): string {
 }
 
 function withParam(path: string, key: string, value: string): string {
-  const [base, hash] = path.split("#");
+  const [base = path, hash] = path.split("#");
   const sep = base.includes("?") ? "&" : "?";
   return `${base}${sep}${key}=${encodeURIComponent(value)}#${hash ?? "interpretations"}`;
 }
@@ -39,7 +39,7 @@ export async function writeInterpretationAction(form: FormData): Promise<void> {
     p_sources: sources.slice(0, 1000) || null,
   });
   if (error) redirect(withParam(to, "interpretationError", interpretationError(error.message)));
-  revalidatePath(to.split("?")[0]);
+  revalidatePath(to.split("?")[0] ?? to);
   redirect(withParam(to, "interpretation", "sent"));
 }
 
@@ -54,7 +54,7 @@ export async function decideInterpretationAction(form: FormData): Promise<void> 
     p_note: String(form.get("note") ?? "").trim() || null,
   });
   if (error) redirect(withParam(to, "interpretationError", "That decision could not be saved."));
-  revalidatePath(to.split("?")[0]);
+  revalidatePath(to.split("?")[0] ?? to);
   redirect(to);
 }
 
@@ -65,7 +65,7 @@ export async function withdrawInterpretationAction(form: FormData): Promise<void
     const supabase = await createClient();
     await supabase.rpc("withdraw_interpretation", { p_id: id });
   }
-  revalidatePath(to.split("?")[0]);
+  revalidatePath(to.split("?")[0] ?? to);
   redirect(to);
 }
 
@@ -76,6 +76,6 @@ export async function hideInterpretationAction(form: FormData): Promise<void> {
     const supabase = await createClient();
     await supabase.rpc("hide_interpretation_about_me", { p_id: id });
   }
-  revalidatePath(to.split("?")[0]);
+  revalidatePath(to.split("?")[0] ?? to);
   redirect(to);
 }
