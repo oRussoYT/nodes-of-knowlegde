@@ -162,6 +162,9 @@ test.describe("browser quality and accessibility", () => {
     const trigger = page.getByRole("button", { name: /Provenance of this event/i }).first();
     await trigger.focus();
     await expect(trigger).toBeFocused();
-    await expect(page.getByText("Imported from historical records").first()).toBeVisible();
+    // As in the relationship test: the provenance is exposed through the
+    // trigger's server-rendered accessible name (deterministic), independent
+    // of the visual tooltip portal, whose opening on focus is timing-bound.
+    await expect(trigger).toHaveAccessibleName(/Imported from historical records/);
   });
 });
