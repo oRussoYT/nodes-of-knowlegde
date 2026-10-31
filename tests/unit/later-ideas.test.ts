@@ -44,7 +44,7 @@ describe("declaring support and ties", () => {
   });
   it("reads the draft", () => {
     expect(draft?.support).toHaveLength(3);
-    expect(draft?.advisees[0].name).toBe("Quinn, Jr.");
+    expect(draft?.advisees[0]?.name).toBe("Quinn, Jr.");
   });
   it("writes Other Support in the funder's order", () => {
     const text = otherSupportText(draft!);
@@ -92,7 +92,7 @@ describe("checking ties", () => {
     ],
   });
   it("says what links each pair, with years", () => {
-    expect(pairSentences(check.pairs[0])).toEqual([
+    expect(pairSentences(check.pairs[0]!)).toEqual([
       "Mentorship, 2005 (not yet confirmed)",
       "2 works together, the latest in 2021",
       "Both at Station, 2005–2010",
