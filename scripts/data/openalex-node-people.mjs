@@ -20,8 +20,9 @@ const short = (id) => id.replace("https://openalex.org/", "");
 
 async function get(url) {
   for (let i = 0; i < 5; i++) {
-    const r = await fetch(url + (url.includes("?") ? "&" : "?") + MAILTO);
-    if (r.ok) return r.json();
+    const r = await fetch(url + (url.includes("?") ? "&" : "?") + MAILTO).catch(() => null);
+    if (r && r.ok) return r.json();
+    console.error("retry", r ? r.status : "network", url.slice(0, 160));
     await sleep(1500 * (i + 1));
   }
   throw new Error(`failed ${url}`);
@@ -37,8 +38,8 @@ const filter = chosen ? `institutions.id:${short(chosen.id)}` : `title_and_abstr
 console.error("works filter:", filter);
 const works = [];
 let cursor = "*";
-while (cursor && works.length < 4000) {
-  const page = await get(`https://api.openalex.org/works?filter=${filter}&per-page=200&cursor=${cursor}&select=id,display_name,publication_year,type,doi,primary_location,authorships`);
+while (cursor && works.length < 2000) {
+  const page = await get(`https://api.openalex.org/works?filter=${filter}&per-page=100&cursor=${cursor}&select=id,display_name,publication_year,type,doi,primary_location,authorships`);
   works.push(...page.results);
   cursor = page.meta.next_cursor;
   await sleep(120);
