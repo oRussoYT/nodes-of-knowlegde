@@ -1,0 +1,4 @@
+institution candidates: https://openalex.org/I4210147329 Instituto de Desenvolvimento Sustentável Mamirauá (1525 works)
+works filter: institutions.id:I4210147329
+works: 1049
+mamiraua: 150 people, 1049 works
