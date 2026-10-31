@@ -31,6 +31,8 @@ import { Timeline } from "@/features/timeline/components/Timeline";
 import { SubmitButton } from "@/components/ui/SubmitButton";
 import { bringInPersonHistoryAction } from "@/features/external/history-actions";
 import { getPersonTopics } from "@/features/connections/read";
+import { TrajectoryMap } from "@/features/cv/TrajectoryMap";
+import { getPersonCv } from "@/features/cv/read";
 import { HeritageList } from "@/features/heritage/components/HeritageList";
 import { getHeritageFor } from "@/features/heritage/read";
 import { ContactPanel } from "@/features/messages/components/ContactPanel";
@@ -111,6 +113,7 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
   const isReviewer = await isCurrentUserSteward();
   const contactOptions = await getContactOptions(personId);
   const heritage = await getHeritageFor({ personId });
+  const cv = await getPersonCv(personId);
   const topics = (await getPersonTopics(personId)).filter((t) => t.status === "confirmed");
   const isPublic = isReviewer ? (await getPublicPerson(personId)) !== null : false;
 
@@ -145,6 +148,14 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
             Know something about {document.identity.displayName}? Propose it, with its source
           </Link>
         </p>
+
+        <p className="mt-4 text-sm">
+          <Link href={`/people/${personId}/cv`} className="underline underline-offset-2">
+            See this record as a CV (print or PDF)
+          </Link>
+        </p>
+
+        {cv ? <TrajectoryMap periods={cv.periods} name={document.identity.displayName} /> : null}
 
         {topics.length > 0 ? (
           <section aria-labelledby="person-topics-heading" className="mt-8">

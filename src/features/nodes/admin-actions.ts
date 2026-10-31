@@ -50,3 +50,21 @@ export async function setNodeOrganizationAction(form: FormData): Promise<void> {
   revalidatePath(`/n/${slug}`);
   redirect(`${PAGE}?saved=${slug}#${slug}`);
 }
+
+export async function setNodeVocabularyAction(form: FormData): Promise<void> {
+  const slug = String(form.get("slug") ?? "");
+  if (!isNodeSlug(slug)) redirect(PAGE);
+  const remove = String(form.get("removeId") ?? "");
+  const kind = form.get("kind") === "field" ? "field" : "role";
+  const label = String(form.get("label") ?? "").trim();
+  if (!UUID.test(remove) && (label.length < 2 || label.length > 120)) redirect(`${PAGE}?error=${encodeURIComponent("Write the word (2 to 120 characters).")}#${slug}`);
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("steward_set_node_vocabulary", {
+    p_slug: slug,
+    p: { kind, label, baseKey: String(form.get("baseKey") ?? "") || null, description: String(form.get("description") ?? "").trim() || null },
+    ...(UUID.test(remove) ? { p_remove: remove } : {}),
+  });
+  if (error) redirect(`${PAGE}?error=${encodeURIComponent(kind === "role" ? "Choose the common role it corresponds to." : "That could not be saved.")}#${slug}`);
+  revalidatePath(`/n/${slug}`);
+  redirect(`${PAGE}?saved=${slug}#${slug}`);
+}

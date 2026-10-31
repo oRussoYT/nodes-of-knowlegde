@@ -12,7 +12,9 @@ import { Select } from "@/components/ui/Select";
 import { Textarea } from "@/components/ui/Textarea";
 import { pageTitle } from "@/config/site";
 import { getInstitutionsIndex } from "@/features/directory/read";
-import { createNodeAction, setNodeOrganizationAction } from "@/features/nodes/admin-actions";
+import { createNodeAction, setNodeOrganizationAction, setNodeVocabularyAction } from "@/features/nodes/admin-actions";
+import { getNodeVocabulary } from "@/features/nodes/vocabulary";
+import { getRecordOptions } from "@/features/record-candidates/read";
 import { PLAN_LABELS, nodeLabel } from "@/features/nodes/parse";
 import { getNode, listNodes } from "@/features/nodes/read";
 import { getStewardScope } from "@/features/steward/read";
@@ -42,6 +44,8 @@ export default async function NodeAdminPage({
   }
   const [nodes, institutions] = await Promise.all([listNodes(), getInstitutionsIndex()]);
   const details = await Promise.all(nodes.map((n) => getNode(n.slug)));
+  const vocabularies = await Promise.all(nodes.map((n) => getNodeVocabulary(n.slug)));
+  const { capacities } = await getRecordOptions();
   const error = typeof raw.error === "string" ? raw.error : null;
 
   return (
@@ -68,7 +72,7 @@ export default async function NodeAdminPage({
         ) : null}
 
         <ul className="mt-8 flex flex-col gap-4">
-          {details.map((n) =>
+          {details.map((n, idx) =>
             n ? (
               <li key={n.slug} id={n.slug} className="rounded-md border border-border-default px-4 py-4 text-sm">
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -118,6 +122,43 @@ export default async function NodeAdminPage({
                     Add
                   </Button>
                 </form>
+                <div className="mt-4 border-t border-border-default pt-3">
+                  <p className="font-medium text-foreground">The Node&apos;s own words</p>
+                  <ul className="mt-2 flex flex-wrap gap-2">
+                    {vocabularies[idx]!.map((v) => (
+                      <li key={v.id} className="flex items-center gap-1 rounded-full border border-border-default px-3 py-1">
+                        <span className="text-muted-foreground">{v.kind === "role" ? "Role" : "Field"}:</span> {v.label}
+                        {v.baseLabel ? <span className="text-muted-foreground">({v.baseLabel})</span> : null}
+                        <form action={setNodeVocabularyAction}>
+                          <input type="hidden" name="slug" value={n.slug} />
+                          <input type="hidden" name="removeId" value={v.id} />
+                          <button type="submit" aria-label={`Remove ${v.label}`} className="ml-1 text-muted-foreground">
+                            ×
+                          </button>
+                        </form>
+                      </li>
+                    ))}
+                  </ul>
+                  <form action={setNodeVocabularyAction} className="mt-2 flex flex-wrap items-end gap-2">
+                    <input type="hidden" name="slug" value={n.slug} />
+                    <Select aria-label="Kind of word" name="kind" defaultValue="role">
+                      <option value="role">A role</option>
+                      <option value="field">A field of study</option>
+                    </Select>
+                    <Input aria-label="The word" name="label" placeholder="e.g. Mateiro" className="w-48" />
+                    <Select aria-label="Common role it corresponds to" name="baseKey" defaultValue="">
+                      <option value="">(for roles) common role…</option>
+                      {capacities.map((c) => (
+                        <option key={c.key} value={c.key}>
+                          {c.label}
+                        </option>
+                      ))}
+                    </Select>
+                    <Button type="submit" size="sm" emphasis="secondary">
+                      Add word
+                    </Button>
+                  </form>
+                </div>
               </li>
             ) : null,
           )}

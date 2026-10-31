@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { pageTitle } from "@/config/site";
 import { COUNTRY_POINTS } from "@/features/map/countries";
 import { busiestYear, yearBars } from "@/features/observatory/parse";
-import { getObservatory } from "@/features/observatory/read";
+import { getObservatory, getObservatoryMore } from "@/features/observatory/read";
 
 export const dynamic = "force-dynamic";
 
@@ -28,6 +28,7 @@ export default async function ObservatoryPage({ params }: Props) {
   const { slug } = await params;
   const o = await getObservatory(slug);
   if (!o) notFound();
+  const more = await getObservatoryMore(slug);
   const label = o.node.shortName ?? o.node.name;
   const t = o.totals;
   const W = 720;
@@ -174,6 +175,76 @@ export default async function ObservatoryPage({ params }: Props) {
           )}
         </section>
       </div>
+
+      {more ? (
+        <div className="mt-14 grid gap-10 lg:grid-cols-3">
+          <section aria-labelledby="stay-heading">
+            <h2 id="stay-heading" className="font-display text-2xl font-bold tracking-tight text-foreground">
+              How long people stayed
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">Median length of a dated period here, by the decade it began.</p>
+            {more.stayByDecade.length === 0 ? (
+              <p className="mt-3 text-sm text-muted-foreground">Not enough dated periods yet.</p>
+            ) : (
+              <ul className="mt-4 flex flex-col gap-2 text-sm">
+                {more.stayByDecade.map((d) => (
+                  <li key={d.decade} className="flex justify-between border-b border-border-default pb-2">
+                    <span>{d.decade}s</span>
+                    <span className="tabular-nums text-muted-foreground">
+                      {d.medianYears === null ? "—" : `${d.medianYears} ${d.medianYears === 1 ? "year" : "years"}`} · {d.periods} periods
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+          <section aria-labelledby="themes-heading">
+            <h2 id="themes-heading" className="font-display text-2xl font-bold tracking-tight text-foreground">
+              Themes
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">What people of this Node say they work on (alphabetical).</p>
+            {more.themes.length === 0 ? (
+              <p className="mt-3 text-sm text-muted-foreground">No themes stated yet.</p>
+            ) : (
+              <ul className="mt-4 flex flex-wrap gap-2 text-sm">
+                {more.themes.map((t) => (
+                  <li key={t.label} className="rounded-full border border-border-default px-3 py-1">
+                    {t.label} <span className="text-muted-foreground">{t.people}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+          <section aria-labelledby="shape-heading">
+            <h2 id="shape-heading" className="font-display text-2xl font-bold tracking-tight text-foreground">
+              Shape of the community
+            </h2>
+            <dl className="mt-4 grid grid-cols-[1fr_auto] gap-x-4 gap-y-2 text-sm">
+              <dt className="text-muted-foreground">Bonds between its people</dt>
+              <dd className="tabular-nums">{nf.format(more.bondsInside)}</dd>
+              <dt className="text-muted-foreground">People with at least one documented bond</dt>
+              <dd className="tabular-nums">{nf.format(more.peopleWithBonds)}</dd>
+              <dt className="text-muted-foreground">Generations of advisors and advisees</dt>
+              <dd className="tabular-nums">{more.mentorGenerations}</dd>
+            </dl>
+            {more.bridges.length > 0 ? (
+              <>
+                <h3 className="mt-5 text-sm font-medium text-foreground">Bridges to other Nodes</h3>
+                <ul className="mt-2 flex flex-col gap-1 text-sm">
+                  {more.bridges.map((b) => (
+                    <li key={b.slug}>
+                      <Link href={`/n/${b.slug}/observatory`} className="underline underline-offset-2">
+                        {b.name}
+                      </Link>{" "}
+                      <span className="text-muted-foreground">· {b.people} {b.people === 1 ? "person" : "people"} in both</span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : null}
+          </section>
+        </div>
+      ) : null}
 
       {o.institutionsReachedList.length > 0 ? (
         <section aria-labelledby="reached-heading" className="mt-14">

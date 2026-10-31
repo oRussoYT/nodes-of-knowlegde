@@ -75,3 +75,24 @@ export function yearBars(series: { year: number; value: number }[], width: numbe
 export function busiestYear(byYear: { year: number; active: number }[]): { year: number; active: number } | null {
   return byYear.reduce<{ year: number; active: number } | null>((best, y) => (y.active > (best?.active ?? 0) ? y : best), null);
 }
+
+export interface ObservatoryMore {
+  stayByDecade: { decade: number; periods: number; medianYears: number | null }[];
+  themes: { label: string; people: number }[];
+  bridges: { slug: string; name: string; people: number }[];
+  bondsInside: number;
+  peopleWithBonds: number;
+  mentorGenerations: number;
+}
+
+export function parseObservatoryMore(data: unknown): ObservatoryMore | null {
+  if (!isRecord(data)) return null;
+  return {
+    stayByDecade: list(data.stayByDecade, (r) => (typeof r.decade === "number" ? { decade: r.decade, periods: n(r.periods), medianYears: typeof r.medianYears === "number" ? r.medianYears : null } : null)),
+    themes: list(data.themes, (r) => (s(r.label) ? { label: r.label as string, people: n(r.people) } : null)),
+    bridges: list(data.bridges, (r) => (s(r.slug) ? { slug: r.slug as string, name: s(r.name) ?? (r.slug as string), people: n(r.people) } : null)),
+    bondsInside: n(data.bondsInside),
+    peopleWithBonds: n(data.peopleWithBonds),
+    mentorGenerations: n(data.mentorGenerations),
+  };
+}
