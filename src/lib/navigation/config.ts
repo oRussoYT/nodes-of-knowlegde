@@ -117,6 +117,14 @@ export const navigationConfig: NavItem[] = [
     availability: { status: "available" },
   },
   {
+    id: "integrity",
+    label: "Check ties",
+    href: "/integrity",
+    groups: ["protected-primary"],
+    section: "Tools",
+    availability: { status: "available" },
+  },
+  {
     id: "funding",
     label: "Calls and grants",
     href: "/funding",

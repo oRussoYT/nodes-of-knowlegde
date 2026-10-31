@@ -32,6 +32,8 @@ import { SubmitButton } from "@/components/ui/SubmitButton";
 import { bringInPersonHistoryAction } from "@/features/external/history-actions";
 import { getPersonTopics } from "@/features/connections/read";
 import { TrajectoryMap } from "@/features/cv/TrajectoryMap";
+import { Interpretations } from "@/features/interpretations/Interpretations";
+import { getInterpretations } from "@/features/interpretations/read";
 import { getPersonCv } from "@/features/cv/read";
 import { HeritageList } from "@/features/heritage/components/HeritageList";
 import { getHeritageFor } from "@/features/heritage/read";
@@ -84,7 +86,8 @@ interface BiographyPageProps {
 
 export default async function BiographyPage({ params, searchParams }: BiographyPageProps) {
   const { personId } = await params;
-  const { pathwayTo, publishError, historyNotice, historyError, messageSent, messageError } = await searchParams;
+  const { pathwayTo, publishError, historyNotice, historyError, messageSent, messageError, interpretation, interpretationError } =
+    await searchParams;
   const document = await getPersonBiography(personId);
 
   if (!document) {
@@ -116,6 +119,7 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
   const cv = await getPersonCv(personId);
   const topics = (await getPersonTopics(personId)).filter((t) => t.status === "confirmed");
   const isPublic = isReviewer ? (await getPublicPerson(personId)) !== null : false;
+  const interpretations = await getInterpretations("person", personId);
 
   return (
     <main id="main-content" tabIndex={-1} className="py-16">
@@ -182,6 +186,16 @@ export default async function BiographyPage({ params, searchParams }: BiographyP
             </div>
           </section>
         ) : null}
+
+        <Interpretations
+          subjectType="person"
+          subjectId={personId}
+          subjectName={document.identity.displayName}
+          items={interpretations}
+          returnTo={`/people/${personId}`}
+          notice={interpretation === "sent" ? "Sent. A steward reads it before it appears here." : null}
+          error={typeof interpretationError === "string" ? interpretationError : null}
+        />
 
         {isReviewer ? (
           <PublishControl

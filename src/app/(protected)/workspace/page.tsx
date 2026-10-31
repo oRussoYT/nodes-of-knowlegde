@@ -44,6 +44,13 @@ export default async function WorkspacePage({
           </Alert>
         ) : null}
 
+        <p className="mt-6 text-sm">
+          <Link href="/workspace/support" className="underline underline-offset-2">
+            Declare your support and ties
+          </Link>{" "}
+          <span className="text-muted-foreground">— drafts for NIH Other Support and the NSF COA, filled from the record.</span>
+        </p>
+
         <section aria-labelledby="new-heading" className="mt-8">
           <h2 id="new-heading" className="mb-3 text-lg font-semibold text-foreground">
             New

@@ -102,8 +102,15 @@ cobrança na E); um contato num segundo Nó (etapa N).
 
 ## Depois (ideias guardadas, sem documento)
 
-- Triagem de conflito de interesse / integridade.
-- Ajudar o pesquisador a declarar vínculos corretamente (NIH Other Support,
-  NSF Current and Pending).
-- API pública, ROR, Wikidata.
-- Interpretação assinada sobre o registro (parte da etapa K).
+Feito em 31 out 2026:
+
+- Triagem de conflito de interesse: /integrity ("Check ties") mostra, para
+  até 15 pessoas, os vínculos, obras em comum e anos na mesma instituição —
+  só fatos, sem nota.
+- Declarar vínculos: /workspace/support — lista privada de apoios (só a
+  própria pessoa vê) e rascunho para NIH Other Support e NSF COA (CSV).
+- API pública só-leitura em /api/v1 (Nós, instituições com ROR e Wikidata,
+  pessoas com página pública); ROR e Wikidata viram links na página da
+  instituição.
+- Interpretação assinada: na página da pessoa; um responsável revisa antes
+  de aparecer; a pessoa pode esconder; fila em /review/interpretations.
