@@ -23,8 +23,8 @@ jobs:
         continue-on-error: true
         run: |
           set -o pipefail
-          node scripts/data/openalex-node-people.mjs pdbff "Biological Dynamics of Forest Fragments" 200 2>&1 | tee log-pdbff.txt
-          node scripts/data/openalex-node-people.mjs mamiraua "Mamirauá" 150 2>&1 | tee log-mamiraua.txt
+          node scripts/data/openalex-node-people.mjs pdbff "Biological Dynamics of Forest Fragments" "Biological Dynamics of Forest Fragments" 200 2>&1 | tee log-pdbff.txt || true
+          node scripts/data/openalex-node-people.mjs mamiraua "Mamirauá" "Mamirauá" 150 2>&1 | tee log-mamiraua.txt || true
       - name: Gravar no ramo de saída
         if: always()
         run: |
