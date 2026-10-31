@@ -103,10 +103,11 @@ describe("directory copy is honest and Node-neutral", () => {
 });
 
 describe("navigation exposes the reading experience", () => {
-  it("has available People/Institutions/Contributions/Explore entries in the authenticated nav", () => {
+  it("has available People/Institutions/Contributions/History/Map entries in the authenticated nav", () => {
     const byId = Object.fromEntries(navigationConfig.map((entry) => [entry.id, entry]));
     const expected: Array<[string, string]> = [
-      ["explore", "/explore"],
+      ["history", "/history"],
+      ["map", "/map"],
       ["people", "/people"],
       ["institutions", "/institutions"],
       ["contributions", "/contributions"],
