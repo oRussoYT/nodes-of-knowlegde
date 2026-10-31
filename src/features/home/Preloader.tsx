@@ -44,7 +44,7 @@ export function Preloader() {
   return (
     <div aria-hidden="true" className="nk-preloader flex flex-col justify-end">
       <div className="flex items-end justify-between px-6 pb-6 sm:px-10 sm:pb-10">
-        <span className="font-display text-xl font-extrabold [font-stretch:115%]">Nodes BDFFP</span>
+        <span className="font-display text-xl font-extrabold [font-stretch:115%]">Nodes of Knowledge</span>
         <span className="font-display text-[22vw] font-bold leading-[0.8] tabular-nums tracking-tighter text-nk-lime [font-stretch:75%] sm:text-[14vw]">
           {count}
         </span>

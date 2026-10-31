@@ -26,7 +26,7 @@ export interface SurfaceProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 // The generic building block underneath Card/Dialog/Drawer/Dropdown
-// surfaces — expresses Nodes BDFFP's surface hierarchy (background < surface <
+// surfaces — expresses Nodes of Knowledge's surface hierarchy (background < surface <
 // raised, plus a sunken variant for insets) as a single, reusable
 // primitive, rather than each higher-level component picking its own
 // background token ad hoc. Server Component: no interactivity.

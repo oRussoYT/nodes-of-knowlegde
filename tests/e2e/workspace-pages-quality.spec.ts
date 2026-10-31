@@ -79,7 +79,7 @@ test.describe("/member — accessible structure and honest empty state", () => {
     // what "no dead links, no fabricated functionality" requires once the
     // destination actually exists; asserting it's absent would now be
     // asserting the *wrong* thing.
-    await expect(page.getByText("Not yet connected to a Nodes BDFFP person record")).toBeVisible();
+    await expect(page.getByText("Not yet connected to a Nodes of Knowledge person record")).toBeVisible();
     await expect(page.getByRole("link", { name: "Claim a person record" })).toHaveAttribute(
       "href",
       "/member/claim",
@@ -122,7 +122,7 @@ test.describe("/account — accessible structure and honest empty state", () => 
     // hierarchy stays h1 -> h2, no skip, and no editing/claim controls
     // live in this section (see the assertions below).
     await expect(page.getByRole("heading", { level: 2, name: "Person-record link" })).toBeVisible();
-    await expect(page.getByText("Not yet connected to a Nodes BDFFP person record")).toBeVisible();
+    await expect(page.getByText("Not yet connected to a Nodes of Knowledge person record")).toBeVisible();
     await expect(page.getByRole("button", { name: /withdraw claim/i })).toHaveCount(0);
     await expect(page.getByRole("main").getByRole("link", { name: /search|claim a person/i })).toHaveCount(0);
 

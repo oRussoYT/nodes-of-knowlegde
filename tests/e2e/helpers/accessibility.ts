@@ -6,7 +6,7 @@
 // configured scan and the same critical/serious gate, rather than each
 // test hand-rolling AxeBuilder options and its own violation-formatting
 // logic. Generic and route-agnostic by design: nothing here is
-// Nodes BDFFP/PDBFF-specific, consistent with
+// Nodes of Knowledge/PDBFF-specific, consistent with
 // docs/decisions/0007-netpdbff-first-vertical-general-research-infrastructure.md's
 // naming discipline for shared test/helper infrastructure -- any future
 // product built on this architecture could reuse this file unchanged.

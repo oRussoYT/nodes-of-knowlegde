@@ -17,7 +17,7 @@ test.describe("Protected routes", () => {
   }) => {
     await page.goto("/login");
     await expect(page.getByText(/session may have expired/)).not.toBeVisible();
-    await expect(page.getByText("Sign in to your Nodes BDFFP account.")).toBeVisible();
+    await expect(page.getByText("Sign in to your Nodes of Knowledge account.")).toBeVisible();
   });
 
   test("an unauthenticated visitor is redirected from /account", async ({ page }) => {

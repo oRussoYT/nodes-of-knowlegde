@@ -77,7 +77,7 @@ export function RegisterForm() {
           aria-describedby={state.fieldErrors?.termsAccepted ? "termsAccepted-error" : undefined}
           label={
             <>
-              I agree to the Terms of Service and Privacy Notice. (Placeholder — Nodes BDFFP&apos;s
+              I agree to the Terms of Service and Privacy Notice. (Placeholder — Nodes of Knowledge&apos;s
               final policies have not been published yet.)
             </>
           }

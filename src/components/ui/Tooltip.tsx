@@ -8,7 +8,7 @@ import { cn } from "@/lib/ui/cn";
 
 // Headless-backed (ADR-0003). Needed for the uncertainty/approximate-date
 // disclosure pattern and truncated-name-with-full-text-on-hover, per
-// docs/design-system-architecture.md's "Signature Nodes BDFFP interaction
+// docs/design-system-architecture.md's "Signature Nodes of Knowledge interaction
 // principles" and docs/ui-vision.md's multilingual principles — not used by
 // any M5.1 page yet (that content doesn't exist until later milestones).
 // `TooltipProvider` must wrap the app once, near the root, so every
