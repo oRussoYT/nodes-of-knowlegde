@@ -1,40 +1,39 @@
 name: Dados OpenAlex
 
-# Coleta pessoas reais publicadas (OpenAlex) para um Nó. Só roda quando
-# alguém aciona; o resultado vira um arquivo para revisão, nada entra no
-# banco sozinho.
+# Coleta pessoas reais publicadas (OpenAlex) para os Nós. O resultado é
+# gravado num ramo à parte (dados-openalex-saida) para revisão; nada entra
+# no banco sozinho.
 on:
   push:
     branches: [dados-openalex]
-  workflow_dispatch:
-    inputs:
-      slug:
-        description: "Nó (ex.: pdbff)"
-        required: true
-      search:
-        description: "Instituição no OpenAlex"
-        required: true
-      max:
-        description: "Máximo de pessoas"
-        required: false
-        default: "150"
+
+permissions:
+  contents: write
 
 jobs:
   coletar:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 50
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - if: github.event_name == 'workflow_dispatch'
-        run: node scripts/data/openalex-node-people.mjs "${{ inputs.slug }}" "${{ inputs.search }}" "${{ inputs.max }}"
-      - if: github.event_name == 'push'
+      - name: Coletar
+        continue-on-error: true
         run: |
-          node scripts/data/openalex-node-people.mjs pdbff "Biological Dynamics of Forest Fragments" 200
-          node scripts/data/openalex-node-people.mjs mamiraua "Instituto de Desenvolvimento Sustentável Mamirauá" 150
-      - uses: actions/upload-artifact@v4
-        with:
-          name: openalex-dados
-          path: openalex-*.json
+          set -o pipefail
+          node scripts/data/openalex-node-people.mjs pdbff "Biological Dynamics of Forest Fragments" 200 2>&1 | tee log-pdbff.txt
+          node scripts/data/openalex-node-people.mjs mamiraua "Mamirauá" 150 2>&1 | tee log-mamiraua.txt
+      - name: Gravar no ramo de saída
+        if: always()
+        run: |
+          mkdir -p /tmp/out && cp openalex-*.json log-*.txt /tmp/out/ 2>/dev/null || true
+          git config user.name "dados-bot"
+          git config user.email "dados-bot@users.noreply.github.com"
+          git checkout --orphan dados-openalex-saida
+          git rm -rfq .
+          cp /tmp/out/* . 2>/dev/null || true
+          git add -A
+          git commit -qm "Saída da coleta OpenAlex" || true
+          git push -f origin dados-openalex-saida
