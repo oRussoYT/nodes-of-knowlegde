@@ -49,13 +49,15 @@ export function parseSources(data: unknown): Source[] {
   });
 }
 
-export type Mode = "answer" | "summary" | "compare" | "teach" | "archive";
+export type Mode = "answer" | "summary" | "compare" | "teach" | "archive" | "research" | "patterns";
 
 export const MODES: { key: Mode; label: string; hint: string; instruction: string }[] = [
   { key: "answer", label: "Answer a question", hint: "Who worked at Camp 41 in the 1980s?", instruction: "Answer the question." },
   { key: "summary", label: "Summarize", hint: "Summarize the history of the Dimona camp", instruction: "Write a short summary (one or two paragraphs)." },
   { key: "compare", label: "Compare", hint: "Compare INPA and the Smithsonian in this history", instruction: "Compare the things asked about, side by side, only on points the sources cover." },
   { key: "teach", label: "For a class", hint: "Explain the forest fragments project for undergraduates", instruction: "Explain it for students, simply, with 3 questions for discussion at the end." },
+  { key: "research", label: "Help my research", hint: "I study bats in fragments: what should I read, and whom could I interview?", instruction: "From the sources only, suggest research questions, works to read (cite them) and people to interview (cite them). Say clearly these are suggestions." },
+  { key: "patterns", label: "Explain a pattern", hint: "Why did so many people move from Camp 41 to INPA?", instruction: "Describe the pattern the sources show (who, where, when) and what the sources say about why; never invent causes. Keep facts and hypotheses apart, and label hypotheses as such." },
   { key: "archive", label: "For archivists", hint: "What is missing about the 1990s field assistants?", instruction: "Say what the sources show and, separately, what is missing or undated and which documents could fill it. Never guess facts." },
 ];
 

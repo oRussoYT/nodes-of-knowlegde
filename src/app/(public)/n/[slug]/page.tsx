@@ -9,6 +9,7 @@ import { joinNodeAction, leaveNodeAction } from "@/features/nodes/actions";
 import { PLAN_LABELS, ROLE_LABELS, nodeLabel } from "@/features/nodes/parse";
 import { getNodeLinks } from "@/features/forum/read";
 import { getNode } from "@/features/nodes/read";
+import { getNodeVocabulary } from "@/features/nodes/vocabulary";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -40,6 +41,7 @@ export default async function NodePage({ params, searchParams }: NodePageProps) 
   const signedIn = Boolean(data?.claims);
   const label = nodeLabel(node);
   const links = await getNodeLinks(node.slug);
+  const vocabulary = await getNodeVocabulary(node.slug);
   const cover = node.coverPhoto ?? "/photos/aerial";
 
   const stats = [
@@ -130,6 +132,30 @@ export default async function NodePage({ params, searchParams }: NodePageProps) 
             </>
           ) : null}
         </p>
+        {vocabulary.length > 0 ? (
+          <section aria-labelledby="vocab-heading" className="mt-8 grid gap-6 sm:grid-cols-2">
+            <h2 id="vocab-heading" className="sr-only">
+              The words of this Node
+            </h2>
+            {(["role", "field"] as const).map((kind) =>
+              vocabulary.some((v) => v.kind === kind) ? (
+                <div key={kind}>
+                  <h3 className="text-sm font-medium text-foreground">{kind === "role" ? `Roles at ${label}` : "Fields of study"}</h3>
+                  <ul className="mt-2 flex flex-wrap gap-2 text-sm">
+                    {vocabulary
+                      .filter((v) => v.kind === kind)
+                      .map((v) => (
+                        <li key={v.id} className="rounded-full border border-border-default px-3 py-1" title={v.description ?? undefined}>
+                          {v.label}
+                          {v.baseLabel && v.baseLabel.toLowerCase() !== v.label.toLowerCase() ? <span className="text-muted-foreground"> · {v.baseLabel}</span> : null}
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              ) : null,
+            )}
+          </section>
+        ) : null}
         {links.length > 0 ? (
           <section aria-labelledby="links-heading" className="mt-6">
             <h2 id="links-heading" className="text-sm font-medium text-foreground">
