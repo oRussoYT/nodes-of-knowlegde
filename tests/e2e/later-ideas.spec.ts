@@ -34,7 +34,7 @@ test("check ties and declare support", async ({ page }) => {
   await registerAndConfirm(page, `e2e-ties-${Date.now()}@example.com`, "correcthorse1");
   await page.goto("/integrity?q=arvoredo");
   await expect(page.getByRole("heading", { level: 1, name: "Check ties" })).toBeVisible();
-  await page.getByRole("link", { name: /^Add Helena Arvoredo/ }).first().click();
+  await page.getByRole("link", { name: /^Add .*Helena Arvoredo/ }).first().click();
   await expect(page.getByText("Chosen (1/15)")).toBeVisible();
 
   await page.goto("/workspace/support");
