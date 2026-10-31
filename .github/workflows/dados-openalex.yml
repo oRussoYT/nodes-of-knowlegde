@@ -4,6 +4,8 @@ name: Dados OpenAlex
 # alguém aciona; o resultado vira um arquivo para revisão, nada entra no
 # banco sozinho.
 on:
+  push:
+    branches: [dados-openalex]
   workflow_dispatch:
     inputs:
       slug:
@@ -26,8 +28,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: node scripts/data/openalex-node-people.mjs "${{ inputs.slug }}" "${{ inputs.search }}" "${{ inputs.max }}"
+      - if: github.event_name == 'workflow_dispatch'
+        run: node scripts/data/openalex-node-people.mjs "${{ inputs.slug }}" "${{ inputs.search }}" "${{ inputs.max }}"
+      - if: github.event_name == 'push'
+        run: |
+          node scripts/data/openalex-node-people.mjs pdbff "Biological Dynamics of Forest Fragments" 200
+          node scripts/data/openalex-node-people.mjs mamiraua "Instituto de Desenvolvimento Sustentável Mamirauá" 150
       - uses: actions/upload-artifact@v4
         with:
-          name: openalex-${{ inputs.slug }}
-          path: openalex-${{ inputs.slug }}.json
+          name: openalex-dados
+          path: openalex-*.json
