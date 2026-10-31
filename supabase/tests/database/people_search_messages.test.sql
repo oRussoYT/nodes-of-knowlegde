@@ -6,6 +6,12 @@ create extension if not exists pgtap;
 
 begin;
 
+-- Self-contained: set aside the real records imported from OpenAlex (rolled back at the end).
+delete from public.people where id in (select person_id from public.person_external_ids where source = 'openalex');
+delete from public.organizations where source_type = 'imported_historical' and id in (select subject_id from public.external_record_sources where subject_type = 'organization');
+delete from public.contributions where id in (select subject_id from public.external_record_sources where subject_type = 'contribution');
+delete from public.external_record_sources;
+
 select plan(17);
 
 \set ana    'af000000-0000-4000-8000-0000000000a1'
