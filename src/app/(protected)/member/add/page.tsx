@@ -122,6 +122,14 @@ export default async function AddToRecordPage({
           }
         />
 
+        <p className="mt-4 text-sm text-muted-foreground">
+          Something you helped bring into being — a protocol, a dataset, a trail, a training?{" "}
+          <Link href="/member/contributions" className="text-foreground underline underline-offset-2">
+            Propose a contribution
+          </Link>
+          .
+        </p>
+
         {error ? (
           <Alert tone="danger" className="mt-6">
             {error}
