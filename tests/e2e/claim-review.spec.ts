@@ -103,7 +103,7 @@ test.describe("Authorized reviewer — queue, detail, and evidence scoping", () 
     await grantReviewerStatus(reviewerId);
 
     await page.goto("/member");
-    await expect(page.getByRole("link", { name: "Steward console" })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Steward console" })).toBeVisible();
 
     await page.goto("/review/claims");
     await expect(page.getByRole("heading", { name: "Claim review" })).toBeVisible();
