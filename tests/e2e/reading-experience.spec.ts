@@ -63,7 +63,10 @@ test.describe("a first-time reader browses by name (no UUIDs)", () => {
       await expect(page).toHaveURL(/\/people$/);
       await expect(page.getByRole("heading", { level: 1, name: /People/ })).toBeVisible();
 
-      await page.getByRole("link", { name: /Helena Arvoredo/ }).click();
+      // Hundreds of real people now: find her by name.
+      await page.getByRole("searchbox", { name: "Search people by name or institution" }).fill("arvoredo");
+      await page.getByRole("search").getByRole("button", { name: "Search", exact: true }).click();
+      await page.getByRole("link", { name: /Helena Arvoredo/ }).first().click();
       await expect(page).toHaveURL(/\/people\/[0-9a-f-]+$/);
       await expect(page.getByRole("heading", { level: 1, name: /Helena Arvoredo/ })).toBeVisible();
       await expect(page.getByRole("heading", { name: "Timeline" })).toBeVisible();
@@ -102,6 +105,9 @@ test.describe("a first-time reader browses by name (no UUIDs)", () => {
     await page.goto("/contributions");
     await expect(page.getByRole("heading", { level: 1, name: /Contributions/ })).toBeVisible();
 
+    await page.getByRole("searchbox", { name: "Search contributions" }).fill("canopy-phenology");
+    await page.getByRole("search").getByRole("button", { name: "Search", exact: true }).click();
+    await expect(page).toHaveURL(/\/contributions\?q=canopy-phenology$/);
     await page.getByRole("link", { name: /Long-term canopy-phenology dataset/ }).first().click();
     await expect(page).toHaveURL(/\/contributions\/[0-9a-f-]+$/);
     await expect(

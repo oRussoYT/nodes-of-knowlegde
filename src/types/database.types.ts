@@ -1751,6 +1751,10 @@ export type Database = {
       mark_messages_read: { Args: never; Returns: number }
       unread_message_count: { Args: never; Returns: number }
       search_people: { Args: { p_query?: string | null }; Returns: Json }
+      search_contributions: {
+        Args: { p_query: string }
+        Returns: { id: string; title: string; contribution_kind: string; contribution_kind_label: string | null; verification_status: string }[]
+      }
       steward_create_node: { Args: { p: Json }; Returns: string }
       steward_update_node: { Args: { p: Json; p_slug: string }; Returns: undefined }
       steward_set_node_organization: { Args: { p_include: boolean; p_organization_id: string; p_role: string; p_slug: string }; Returns: undefined }

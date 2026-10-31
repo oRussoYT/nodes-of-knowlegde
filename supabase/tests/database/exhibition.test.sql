@@ -30,15 +30,15 @@ select plan(34);
 
 -- Deterministic showcase entities exist, in exactly the seeded counts
 -- (this doubles as a no-duplicate-canonical-records check).
-select is((select count(*)::int from public.people where id::text like 'e611%'), 5, '5 exhibition people');
-select is((select count(*)::int from public.organizations where id::text like 'e622%'), 3, '3 exhibition institutions');
-select is((select count(*)::int from public.events where id::text like 'e633%'), 13, '13 exhibition events');
-select is((select count(*)::int from public.participations where id::text like 'e644%'), 8, '8 exhibition participations');
-select is((select count(*)::int from public.relationships where id::text like 'e655%'), 6, '6 exhibition relationships');
-select is((select count(*)::int from public.contributions where id::text like 'e666%'), 3, '3 exhibition contributions');
+select is((select count(*)::int from public.people where id::text like 'e6110000-0000-4000-8000-%'), 5, '5 exhibition people');
+select is((select count(*)::int from public.organizations where id::text like 'e6220000-0000-4000-8000-%'), 3, '3 exhibition institutions');
+select is((select count(*)::int from public.events where id::text like 'e6330000-0000-4000-8000-%'), 13, '13 exhibition events');
+select is((select count(*)::int from public.participations where id::text like 'e6440000-0000-4000-8000-%'), 8, '8 exhibition participations');
+select is((select count(*)::int from public.relationships where id::text like 'e6550000-0000-4000-8000-%'), 6, '6 exhibition relationships');
+select is((select count(*)::int from public.contributions where id::text like 'e6660000-0000-4000-8000-%'), 3, '3 exhibition contributions');
 -- M7: institutional relationships (the one new canonical relation) seeded for
 -- Knowledge Network lineage inspection.
-select is((select count(*)::int from public.organization_relationships where id::text like 'e677%'), 2, '2 exhibition institutional relationships');
+select is((select count(*)::int from public.organization_relationships where id::text like 'e6770000-0000-4000-8000-%'), 2, '2 exhibition institutional relationships');
 
 set local role authenticated;
 set local request.jwt.claim.sub to '00000000-0000-4000-8000-0000000000aa';
