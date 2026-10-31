@@ -156,6 +156,8 @@ test.describe("browser quality and accessibility", () => {
     const person = await newPerson();
     await event(person.id, { kind: "publication", title: "A publication", startDate: "1987-01-01", startPrecision: "year" });
     await page.goto(person.url);
+    // Focus only after the page is interactive, or the tooltip never opens.
+    await page.waitForLoadState("networkidle");
 
     const trigger = page.getByRole("button", { name: /Provenance of this event/i }).first();
     await trigger.focus();
