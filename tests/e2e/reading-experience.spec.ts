@@ -121,7 +121,7 @@ test.describe("a first-time reader browses by name (no UUIDs)", () => {
     await registerAndConfirm(page);
     // /account has no reading hub of its own, so these links come from the nav.
     await page.goto("/account");
-    for (const name of ["Explore", "People", "Institutions", "Contributions"]) {
+    for (const name of ["People", "Institutions", "Contributions", "History", "Map"]) {
       await expect(page.getByRole("link", { name, exact: true }).first()).toBeVisible();
     }
   });

@@ -95,73 +95,61 @@ export default async function StewardConsolePage({
           <h2 id="work-heading" className="sr-only">
             Places to work
           </h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            <ActionTile
-              href="/review/import"
-              title="Import a list"
-              description="Upload graduates from a spreadsheet and decide each row: same person, new person, or skip."
-            />
-            <ActionTile
-              href="/review/outcomes"
-              title="Graduate outcomes"
-              description="Where your graduates went, by sector, country and year. Export or publish without names."
-            />
-            <ActionTile
-              href="/review/queue"
-              title="Review queue"
-              description="Periods and bonds proposed by members or imported from CVs, with their documents."
-            />
-            <ActionTile
-              href="/review/contributions"
-              title="Proposed contributions"
-              description="Contributions people proposed for their own record, waiting for a steward."
-            />
-            <ActionTile
-              href="/review/university"
-              title="University reports"
-              description="Graduates by level, the CAPES egressos file and indicators for rankings, with the method stated."
-            />
-            <ActionTile
-              href="/review/locations"
-              title="Place institutions on the map"
-              description="Find locations in ROR and accept the right ones."
-            />
-            <ActionTile
-              href="/review/funding"
-              title="Calls and grants"
-              description="Add calls, import from Grants.gov, see which match the group."
-            />
-            <ActionTile
-              href="/review/names"
-              title="Institution names"
-              description="Former, other and translated names, with the years each was used."
-            />
-            {scope.platform ? (
-              <>
-                <ActionTile
-                  href="/review/stewards"
-                  title="Institutions and stewards"
-                  description="Add an institution and appoint the people who look after it."
-                />
-                <ActionTile
-                  href="/review/nodes"
-                  title="Nodes"
-                  description="Create a Node for a new institution and choose its institutions."
-                />
-                <ActionTile
-                  href="/review/plans"
-                  title="Plan requests"
-                  description="Institutions asking for a pro bono or paid plan."
-                />
-                <ActionTile
-                  href="/review/claims"
-                  title="Claim review queue"
-                  description="People asking to link their account to a person record."
-                  meta={overview && overview.claimsAwaitingReview > 0 ? `${overview.claimsAwaitingReview} waiting` : undefined}
-                />
-              </>
-            ) : null}
-          </div>
+          {[
+            {
+              title: "What needs a human",
+              tiles: [
+                { href: "/review/queue", title: "Review queue", description: "Everything proposed — periods, bonds, contributions, history items — with its documents." },
+                ...(scope.platform
+                  ? [
+                      {
+                        href: "/review/claims",
+                        title: "Account claims",
+                        description: "People asking to link their account to a person record.",
+                        meta: overview && overview.claimsAwaitingReview > 0 ? `${overview.claimsAwaitingReview} waiting` : undefined,
+                      },
+                    ]
+                  : []),
+                { href: "/review/import", title: "Import a list", description: "Upload graduates from a spreadsheet and decide each row: same person, new person, or skip." },
+              ],
+            },
+            {
+              title: "Reports",
+              tiles: [
+                { href: "/review/outcomes", title: "Graduate outcomes", description: "Where your graduates went, by sector, country and year. Export or publish without names." },
+                { href: "/review/university", title: "University reports", description: "Graduates by level, the CAPES egressos file and indicators for rankings, with the method stated." },
+              ],
+            },
+            {
+              title: "Institutions and Nodes",
+              tiles: [
+                { href: "/review/names", title: "Institution names", description: "Former, other and translated names, with the years each was used." },
+                { href: "/review/locations", title: "Place institutions on the map", description: "Find locations in ROR and accept the right ones." },
+                ...(scope.platform
+                  ? [
+                      { href: "/review/stewards", title: "Institutions and stewards", description: "Add an institution and appoint the people who look after it." },
+                      { href: "/review/nodes", title: "Nodes", description: "Create a Node for a new institution and choose its institutions." },
+                    ]
+                  : []),
+              ],
+            },
+            {
+              title: "Calls and plans",
+              tiles: [
+                { href: "/review/funding", title: "Calls and grants", description: "Add calls, import from Grants.gov, see which match the group." },
+                ...(scope.platform ? [{ href: "/review/plans", title: "Plan requests", description: "Institutions asking for a pro bono or paid plan." }] : []),
+              ],
+            },
+          ].map((group) => (
+            <div key={group.title} className="mt-6 first:mt-0">
+              <h3 className="text-sm font-medium text-muted-foreground">{group.title}</h3>
+              <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {group.tiles.map((t) => (
+                  <ActionTile key={t.href} href={t.href} title={t.title} description={t.description} meta={"meta" in t ? (t.meta as string | undefined) : undefined} />
+                ))}
+              </div>
+            </div>
+          ))}
         </section>
 
         <form method="get" className="mt-6 flex flex-wrap items-center gap-3 text-sm">

@@ -4,6 +4,7 @@ import { LogoutButton } from "@/components/auth/LogoutButton";
 import { MobileNavigation } from "@/components/layout/MobileNavigation";
 import { NavLink } from "@/components/layout/NavLink";
 import { REVIEW_NAV_ITEM } from "@/components/layout/reviewNavItem";
+import { NAV_SECTIONS } from "@/lib/navigation/types";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Avatar } from "@/components/ui/Avatar";
 import {
@@ -66,11 +67,19 @@ export function ProtectedHeader({ email, displayName, photoUrl, isReviewer }: Pr
         </div>
       </div>
 
-      <nav aria-label="Primary" className="hidden flex-col gap-1 px-3 text-[15px] md:flex">
-        {primaryItems.map((item) => (
-          <NavLink key={item.id} item={item} className="nk-side-link" />
-        ))}
-        {isReviewer ? <NavLink item={REVIEW_NAV_ITEM} className="nk-side-link" /> : null}
+      <nav aria-label="Primary" className="hidden flex-col gap-1 overflow-y-auto px-3 pb-4 text-[15px] md:flex">
+        {NAV_SECTIONS.map((section) => {
+          const items = [...primaryItems, ...(isReviewer ? [REVIEW_NAV_ITEM] : [])].filter((item) => (item.section ?? "You") === section);
+          if (items.length === 0) return null;
+          return (
+            <div key={section} className="flex flex-col gap-1 pt-3 first:pt-0">
+              <p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">{section}</p>
+              {items.map((item) => (
+                <NavLink key={item.id} item={item} className="nk-side-link" />
+              ))}
+            </div>
+          );
+        })}
       </nav>
 
       <div className="mt-auto hidden items-center justify-between gap-3 border-t border-border-default px-5 py-4 md:flex">

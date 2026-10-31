@@ -56,3 +56,12 @@ describe("navigationConfig", () => {
     expect(about?.availability.status).toBe("planned");
   });
 });
+
+describe("sidebar sections", () => {
+  it("puts every signed-in entry under a known heading, without the old Explore hub", async () => {
+    const { NAV_SECTIONS } = await import("../../src/lib/navigation/types");
+    const primary = navigationConfig.filter((i) => i.groups.includes("protected-primary"));
+    for (const item of primary) expect(NAV_SECTIONS).toContain(item.section);
+    expect(primary.find((i) => i.id === "explore")).toBeUndefined();
+  });
+});

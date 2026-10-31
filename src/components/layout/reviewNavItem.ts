@@ -15,9 +15,10 @@ import type { NavItem } from "@/lib/navigation/types";
 // that prop itself is not the authorization boundary (see its own doc
 // comment on MobileNavigationProps), only a UI-visibility signal.
 export const REVIEW_NAV_ITEM: NavItem = {
-  id: "review-claims",
-  label: "Claim review",
-  href: "/review/claims",
+  id: "review-console",
+  label: "Steward console",
+  href: "/review/console",
+  section: "Stewards",
   matchPaths: ["/review"],
   groups: ["protected-primary"],
   availability: { status: "available" },

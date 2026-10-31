@@ -57,13 +57,7 @@ export const navigationConfig: NavItem[] = [
     label: "Nodes",
     href: "/nodes",
     groups: ["protected-primary"],
-    availability: { status: "available" },
-  },
-  {
-    id: "explore",
-    label: "Explore",
-    href: "/explore",
-    groups: ["protected-primary"],
+    section: "The record",
     availability: { status: "available" },
   },
   {
@@ -71,6 +65,7 @@ export const navigationConfig: NavItem[] = [
     label: "People",
     href: "/people",
     groups: ["protected-primary"],
+    section: "The record",
     availability: { status: "available" },
   },
   {
@@ -78,6 +73,7 @@ export const navigationConfig: NavItem[] = [
     label: "Institutions",
     href: "/institutions",
     groups: ["protected-primary"],
+    section: "The record",
     availability: { status: "available" },
   },
   {
@@ -85,6 +81,7 @@ export const navigationConfig: NavItem[] = [
     label: "Contributions",
     href: "/contributions",
     groups: ["protected-primary"],
+    section: "The record",
     availability: { status: "available" },
   },
   {
@@ -92,6 +89,7 @@ export const navigationConfig: NavItem[] = [
     label: "Ask the record",
     href: "/ask",
     groups: ["protected-primary"],
+    section: "Tools",
     availability: { status: "available" },
   },
   {
@@ -99,6 +97,7 @@ export const navigationConfig: NavItem[] = [
     label: "History",
     href: "/history",
     groups: ["protected-primary"],
+    section: "The record",
     availability: { status: "available" },
   },
   {
@@ -106,6 +105,7 @@ export const navigationConfig: NavItem[] = [
     label: "Map",
     href: "/map",
     groups: ["protected-primary"],
+    section: "The record",
     availability: { status: "available" },
   },
   {
@@ -113,6 +113,7 @@ export const navigationConfig: NavItem[] = [
     label: "Calls and grants",
     href: "/funding",
     groups: ["protected-primary"],
+    section: "Tools",
     availability: { status: "available" },
   },
   {
@@ -120,6 +121,7 @@ export const navigationConfig: NavItem[] = [
     label: "Member",
     href: "/member",
     groups: ["protected-primary", "user-menu"],
+    section: "You",
     availability: { status: "available" },
   },
   {
@@ -127,6 +129,7 @@ export const navigationConfig: NavItem[] = [
     label: "My research space",
     href: "/workspace",
     groups: ["protected-primary"],
+    section: "Tools",
     availability: { status: "available" },
   },
   {
@@ -134,6 +137,7 @@ export const navigationConfig: NavItem[] = [
     label: "Messages",
     href: "/messages",
     groups: ["protected-primary"],
+    section: "You",
     availability: { status: "available" },
   },
   {
@@ -141,6 +145,7 @@ export const navigationConfig: NavItem[] = [
     label: "Profile",
     href: "/profile",
     groups: ["protected-primary", "user-menu"],
+    section: "You",
     availability: { status: "available" },
   },
 ];

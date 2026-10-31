@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { FormMessage } from "@/components/ui/FormMessage";
-import { FutureAction } from "@/components/ui/FutureAction";
 import { Section } from "@/components/ui/Section";
 import { buttonVariants } from "@/components/ui/Button";
 import { ActionTile } from "@/components/ui/Tiles";
@@ -246,11 +245,6 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
               Where to go next
             </h2>
             <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              <ActionTile
-                href="/explore"
-                title="Read the record"
-                description="People, institutions and contributions, each with its sources."
-              />
               {identityStatus.kind === "approved" ? null : (
                 <ActionTile
                   href="/member/claim"
@@ -259,36 +253,22 @@ export default async function MemberPage({ searchParams }: MemberPageProps) {
                 />
               )}
               <ActionTile
-                href="/member/connections"
-                title="Connections"
-                description="Themes, methods, organisms and places you share with others — at your institutions and beyond, always with the reason."
-              />
-              <ActionTile
-                href="/member/suggestions"
-                title="People you may know"
-                description="Documented in the same place at the same time, or trained by the same mentor. Always with the reason."
-              />
-              <ActionTile
                 href="/member/add"
                 title="Add to your history"
-                description="A period somewhere, someone you worked with, your ORCID or Lattes CV. A steward checks each item."
+                description="A period somewhere, someone you worked with, a contribution, your ORCID or Lattes CV. A steward checks each item."
               />
               <ActionTile
-                href="/member/contributions"
-                title="Propose a contribution"
-                description="Something you helped bring into being. A steward checks what documents it."
+                href="/member/connections"
+                title="Connections"
+                description="People who share your themes, places or mentors — at your institutions and beyond, always with the reason."
               />
               {isSteward ? (
                 <ActionTile
                   href="/review/console"
                   title="Steward console"
-                  description="Import graduate lists, see where they went, and work through what needs a human."
+                  description="Everything waiting for a human, reports for your institution, and its place on the map."
                 />
               ) : null}
-              <ActionTile href="/profile" title="Your profile" description="Your photo and details, plus your email and password under Access and security." />
-            </div>
-            <div className="mt-4 text-sm">
-              <FutureAction label="Account → Security" />
             </div>
           </section>
         </Section>

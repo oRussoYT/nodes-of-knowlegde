@@ -29,6 +29,10 @@ import type { ComponentType, SVGProps } from "react";
  */
 export type NavGroup = "public-primary" | "protected-primary" | "user-menu";
 
+/** Sidebar headings, in display order. */
+export const NAV_SECTIONS = ["The record", "Tools", "You", "Stewards"] as const;
+export type NavSection = (typeof NAV_SECTIONS)[number];
+
 /**
  * Whether an entry is something a visitor can actually navigate to today.
  * `"planned"` entries render — communicating that the destination exists in
@@ -71,6 +75,8 @@ export interface NavItem {
   availability: NavAvailability;
   /** See `NavPermission` — unused until a real authorization system exists. */
   permission?: NavPermission;
+  /** Heading the entry is listed under in the signed-in sidebar ("The record", "Tools", "You"). */
+  section?: NavSection;
   /** Extra path prefixes that should also mark this item active, beyond `href` itself. */
   matchPaths?: string[];
   /** Require exact pathname equality rather than the default prefix match. */
