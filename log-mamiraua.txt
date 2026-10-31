@@ -1,0 +1,11 @@
+institution candidates: https://openalex.org/I4210147329 Instituto de Desenvolvimento Sustentável Mamirauá (1525 works)
+works filter: institutions.id:I4210147329
+file:///home/runner/work/nodes-of-knowlegde/nodes-of-knowlegde/scripts/data/openalex-node-people.mjs:27
+  throw new Error(`failed ${url}`);
+        ^
+
+Error: failed https://api.openalex.org/works?filter=institutions.id:I4210147329&per-page=200&cursor=Ils5OS4wLCAxNSwgJ2h0dHBzOi8vb3BlbmFsZXgub3JnL1c0Mzg5MzgxMzc1J10i&select=id,display_name,publication_year,type,doi,primary_location,authorships
+    at get (file:///home/runner/work/nodes-of-knowlegde/nodes-of-knowlegde/scripts/data/openalex-node-people.mjs:27:9)
+    at async file:///home/runner/work/nodes-of-knowlegde/nodes-of-knowlegde/scripts/data/openalex-node-people.mjs:41:16
+
+Node.js v22.23.4
